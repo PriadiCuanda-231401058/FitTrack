@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fittrack/features/auth/auth_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:fittrack/features/auth/screens/login_screen.dart';
 
 // import 'package:fittrack/features/auth/screens/login_screen.dart';
 
@@ -18,7 +19,7 @@ class _RegisterState extends State<RegisterScreen> {
   TextEditingController usernameController = TextEditingController();
   // String username = "", password = "", email = "";
   final _formKey = GlobalKey<FormState>();
-
+  String errorMessage = "";
 
   @override
   void dispose() {
@@ -30,14 +31,22 @@ class _RegisterState extends State<RegisterScreen> {
 
 
   void register() async{
-    try { await authController.value.register(
+    try { 
+      await authController.value.register(
         emailController.text,
         passwordController.text,
         usernameController.text,
       );
+      pop();
     } on FirebaseAuthException catch (e) {
-      print(  'Error: $e');
+      setState(() {
+        errorMessage = e.message ?? 'An error occurred';
+      });
     }
+  }
+
+  void pop(){
+    Navigator.pop(context);
   }
   
   @override
@@ -106,6 +115,9 @@ class _RegisterState extends State<RegisterScreen> {
                   //   });
                   // },
                 ),
+                Text(errorMessage,
+                  style: const TextStyle(color: Colors.red),
+                ),
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
@@ -116,10 +128,10 @@ class _RegisterState extends State<RegisterScreen> {
                 ),
                 TextButton(
                   onPressed: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => const LoginScreen()),
-                    // );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LoginScreen()),
+                    );
                   },
                   child: const Text('Already have an account? Login'),
                 ),

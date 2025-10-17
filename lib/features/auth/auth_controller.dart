@@ -9,7 +9,7 @@ class AuthController {
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 
   Future<User?> register(String email, String password, String username) async {
-    try {
+
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
@@ -19,33 +19,17 @@ class AuthController {
         await user.updateDisplayName(username);
       }
       return user;
-    } on FirebaseAuthException catch (e) {
-      // Handle specific Firebase authentication errors here
-      print('Error: $e');
-      return null;
-    } catch (e) {
-      // Handle other errors here
-      print('Error: $e');
-      return null;
-    }
+    
   }
 
   Future<User?> login(String email, String password) async {
-    try {
+
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
       return userCredential.user;
-    } on FirebaseAuthException catch (e) {
-      // Handle specific Firebase authentication errors here
-      print('Error: $e');
-      return null;
-    } catch (e) {
-      // Handle other errors here
-      print('Error: $e');
-      return null;
-    }
+
   }
 
   Future<void> logout() async {
