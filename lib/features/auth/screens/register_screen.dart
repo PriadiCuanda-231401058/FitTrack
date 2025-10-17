@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fittrack/features/auth/auth_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:fittrack/features/auth/screens/login_screen.dart';
 
 // import 'package:fittrack/features/auth/screens/login_screen.dart';
 
@@ -18,6 +19,8 @@ class _RegisterState extends State<RegisterScreen> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
   // String username = "", password = "", email = "";
+  final _formKey = GlobalKey<FormState>();
+  String errorMessage = "";
 
   @override
   void dispose() {
@@ -27,18 +30,26 @@ class _RegisterState extends State<RegisterScreen> {
     super.dispose();
   }
 
-  void register() async {
-    try {
+
+  void register() async{
+    try { 
       await authController.value.register(
         emailController.text,
         passwordController.text,
         usernameController.text,
       );
+      pop();
     } on FirebaseAuthException catch (e) {
-      print('Error: $e');
+      setState(() {
+        errorMessage = e.message ?? 'An error occurred';
+      });
     }
   }
 
+  void pop(){
+    Navigator.pop(context);
+  }
+  
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
