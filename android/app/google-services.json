@@ -12,7 +12,20 @@
           "package_name": "com.example.fittrack"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "147957760599-gi7hcvi969oud2bbf0130bvo2g59o0cq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fittrack",
+            "certificate_hash": "52177e980eac1e38eb619f8b958d51364c92ffc3"
+          }
+        },
+        {
+          "client_id": "147957760599-p0gtje679g60noejua0u90ltksg2f6ri.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAaGAmF5kpcSPIRSGEVb6Mg3P-Unp_pU5w"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "147957760599-p0gtje679g60noejua0u90ltksg2f6ri.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
