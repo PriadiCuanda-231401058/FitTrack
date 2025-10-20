@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:fittrack/services/route.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +27,9 @@ class MyApp extends StatelessWidget {
       title: 'FitTrack',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'OpenSans'),
-      home: RegisterScreen(),
+      // home: RegisterScreen(),
+      initialRoute: '/', // halaman awal
+      routes: appRoutes, // ambil dari routes.dart
     );
   }
 }
