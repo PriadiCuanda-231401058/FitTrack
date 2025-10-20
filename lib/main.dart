@@ -1,4 +1,4 @@
-import 'package:fittrack/features/auth/screens/register_screen.dart';
+// import 'package:fittrack/features/auth/screens/register_screen.dart';
 import 'package:flutter/material.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
