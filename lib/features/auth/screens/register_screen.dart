@@ -10,10 +10,10 @@ class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterState();
+  State<RegisterScreen> createState() => RegisterState();
 }
 
-class _RegisterState extends State<RegisterScreen> {
+class RegisterState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
 
   TextEditingController emailController = TextEditingController();
@@ -52,21 +52,21 @@ class _RegisterState extends State<RegisterScreen> {
     }
   }
 
-  void signInWithGoogle() async {
-    try {
-      await authController.value.signInWithGoogle();
+  // void signInWithGoogle() async {
+  //   try {
+  //     await authController.value.signInWithGoogle();
 
-      if (!mounted) return; 
+  //     if (!mounted) return; 
 
-      Navigator.pushNamed(context, '/homeScreen');
-    } on FirebaseAuthException catch (e) {
-      // showAlert(context, e.message ?? 'An error occurred');
-      setState(() {
-        showError = true;
-        errorMessage = e.message ?? 'Something went wrong.';
-      });
-    }
-  }
+  //     Navigator.pushNamed(context, '/homeScreen');
+  //   } on FirebaseAuthException catch (e) {
+  //     // showAlert(context, e.message ?? 'An error occurred');
+  //     setState(() {
+  //       showError = true;
+  //       errorMessage = e.message ?? 'Something went wrong.';
+  //     });
+  //   }
+  // }
 
   void pop() {
     Navigator.pop(context);
@@ -74,7 +74,7 @@ class _RegisterState extends State<RegisterScreen> {
 
 
 
-  Future<void> _handleGoogleSignIn() async {
+  Future<void> handleGoogleSignIn() async {
     // setState(() => _isLoading = true);
 
     try {
@@ -155,7 +155,7 @@ class _RegisterState extends State<RegisterScreen> {
 
                       ElevatedButton(
                         onPressed: () {
-                          _handleGoogleSignIn();
+                          handleGoogleSignIn();
                           // signInWithGoogle();
                         },
                         style: ButtonStyle(

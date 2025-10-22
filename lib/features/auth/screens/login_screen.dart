@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fittrack/features/auth/auth_controller.dart';
 import 'package:fittrack/features/auth/widgets/error_message.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fittrack/models/user_model.dart';
+// import 'package:fittrack/features/auth/screens/register_screen.dart';
 // import 'package:fittrack/features/home/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -47,6 +49,28 @@ class _LoginScreenState extends State<LoginScreen> {
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
+  }
+
+    Future<void> handleGoogleSignIn() async {
+    // setState(() => _isLoading = true);
+
+    try {
+      // 🔹 Panggil fungsi dari AuthController
+      UserModel? userModel = await authController.value.signInWithGoogle();
+
+      if (userModel != null && mounted) {
+        // 🔹 Jika berhasil, pindah ke HomeScreen
+        Navigator.pushNamed(context, '/homeScreen');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Gagal login dengan Google')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
   }
 
   void login() async {
@@ -121,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       ElevatedButton(
                         onPressed: () {
-                          // Implement Google Sign-In
+                          handleGoogleSignIn();
                         },
                         style: ButtonStyle(
                           backgroundColor:
