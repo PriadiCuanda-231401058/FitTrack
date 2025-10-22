@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fittrack/features/auth/auth_controller.dart';
 // import 'package:fittrack/features/auth/screens/login_screen.dart';
 import 'package:fittrack/features/auth/widgets/error_message.dart';
+// import 'package:fittrack/features/home/home_screen.dart';
+import 'package:fittrack/models/user_model.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -50,8 +52,48 @@ class _RegisterState extends State<RegisterScreen> {
     }
   }
 
+  void signInWithGoogle() async {
+    try {
+      await authController.value.signInWithGoogle();
+
+      if (!mounted) return; 
+
+      Navigator.pushNamed(context, '/homeScreen');
+    } on FirebaseAuthException catch (e) {
+      // showAlert(context, e.message ?? 'An error occurred');
+      setState(() {
+        showError = true;
+        errorMessage = e.message ?? 'Something went wrong.';
+      });
+    }
+  }
+
   void pop() {
     Navigator.pop(context);
+  }
+
+
+
+  Future<void> _handleGoogleSignIn() async {
+    // setState(() => _isLoading = true);
+
+    try {
+      // 🔹 Panggil fungsi dari AuthController
+      UserModel? userModel = await authController.value.signInWithGoogle();
+
+      if (userModel != null && mounted) {
+        // 🔹 Jika berhasil, pindah ke HomeScreen
+        Navigator.pushNamed(context, '/homeScreen');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Gagal login dengan Google')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
   }
 
   // void showAlert(BuildContext context, String message) {
@@ -113,7 +155,8 @@ class _RegisterState extends State<RegisterScreen> {
 
                       ElevatedButton(
                         onPressed: () {
-                          // Implement Google Sign-In
+                          _handleGoogleSignIn();
+                          // signInWithGoogle();
                         },
                         style: ButtonStyle(
                           backgroundColor:

@@ -33,8 +33,7 @@ class UserModel {
       // photo: map['photo'],
     );
   }
-
-  // 🔸 Ubah ke Map (untuk disimpan ke Firestore)
+  // 🔸 Konversi ke Map (untuk simpan ke Firestore)
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,
