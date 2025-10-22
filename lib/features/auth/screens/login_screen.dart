@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fittrack/features/auth/auth_controller.dart';
 import 'package:fittrack/features/auth/widgets/error_message.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:fittrack/features/home/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -13,12 +14,31 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
+  bool rememberMe = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRememberMe();
+  }
+
+  Future<void> _loadRememberMe() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      rememberMe = prefs.getBool('remember_me') ?? false;
+      if (rememberMe) {
+        emailController.text = prefs.getString('email') ?? '';
+        passwordController.text = prefs.getString('password') ?? '';
+      }
+    });
+  }
+
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   // String email = "", password = "";
 
-  bool isChecked = false;
+  // bool rememberMe = false;
   bool showError = false;
   String errorMessage = "";
 
@@ -36,13 +56,20 @@ class _LoginScreenState extends State<LoginScreen> {
         passwordController.text,
       );
 
+      final prefs = await SharedPreferences.getInstance();
+
+      if (rememberMe) {
+        await prefs.setBool('remember_me', true);
+        await prefs.setString('email', emailController.text);
+        await prefs.setString('password', passwordController.text);
+      } else {
+        await prefs.clear(); // hapus semua data login
+      }
+
       if (!mounted) return; // untuk memastikan context masih aktif
 
       Navigator.pushNamed(context, '/homeScreen');
-      // Navigator.push(
-      //                 context,
-      //                 MaterialPageRoute(builder: (context) => const HomeScreen()),
-      //               );
+
     } on FirebaseAuthException catch (e) {
       setState(() {
         showError = true;
@@ -332,7 +359,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       child: Transform.scale(
                                         scale: 1.2,
                                         child: Checkbox(
-                                          value: isChecked,
+                                          value: rememberMe,
                                           checkColor: Color(0xFF1E90FF),
                                           fillColor:
                                               WidgetStateProperty.resolveWith<
@@ -351,7 +378,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           ),
                                           onChanged: (bool? value) {
                                             setState(() {
-                                              isChecked = value!;
+                                              rememberMe = value!;
                                             });
                                           },
                                         ),
