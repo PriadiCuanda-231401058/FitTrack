@@ -63,12 +63,33 @@ class AuthController {
     
   }
 
-  Future<User?> login(String email, String password) async {
-      UserCredential userCredential = await auth.signInWithEmailAndPassword(
+  Future<UserModel?> login(String email, String password) async {
+      UserCredential credential = await auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      return userCredential.user;
+
+      // Ambil data user dari hasil login
+      final User? user = credential.user;
+
+      if (user != null) {
+        // Buat objek UserModel dari data user
+        UserModel userModel = UserModel(
+          uid: user.uid,
+          name: user.displayName ?? '',
+          email: user.email ?? '',
+        );
+
+        // Simpan ke Firestore (jika belum ada)
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .set(userModel.toMap(), SetOptions(merge: true));
+
+        // Kembalikan objek userModel
+        return userModel;
+      }
+      return null;
   }
 
   Future<void> logout() async {
