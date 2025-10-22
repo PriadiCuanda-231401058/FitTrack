@@ -1,32 +1,57 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fittrack/models/user_model.dart';
 // import 'package:flutter/material.dart';
 
 ValueNotifier<AuthController> authController = ValueNotifier(AuthController());
 
 class AuthController {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  Stream<User?> get authStateChanges => _auth.authStateChanges();
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  Stream<User?> get authStateChanges => auth.authStateChanges();
 
-  Future<UserCredential> signInWithGoogle() async {
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+  Future<UserModel?> signInWithGoogle() async {
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  // final GoogleAuthProvider googleProvider = GoogleAuthProvider();
+  final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+  final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
 
+  final AuthCredential googleProvider = GoogleAuthProvider.credential(
+    accessToken: googleAuth?.accessToken,
+    idToken: googleAuth?.idToken,
+  );
 
-    final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+  // Login dengan Google
+  final UserCredential credential = await auth.signInWithCredential(googleProvider);
 
-    final AuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
+  // Ambil data user dari hasil login
+  final User? user = credential.user;
+
+  if (user != null) {
+    // Buat objek UserModel dari data user
+    UserModel userModel = UserModel(
+      uid: user.uid,
+      name: user.displayName ?? '',
+      email: user.email ?? '',
     );
 
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+    // Simpan ke Firestore (jika belum ada)
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .set(userModel.toMap(), SetOptions(merge: true));
+
+    // Kembalikan objek userModel
+    return userModel;
   }
 
+    return null;
+  }
 
   Future<User?> register(String email, String password, String username) async {
 
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      UserCredential userCredential = await auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -38,17 +63,39 @@ class AuthController {
     
   }
 
-  Future<User?> login(String email, String password) async {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+  Future<UserModel?> login(String email, String password) async {
+      UserCredential credential = await auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      return userCredential.user;
+
+      // Ambil data user dari hasil login
+      final User? user = credential.user;
+
+      if (user != null) {
+        // Buat objek UserModel dari data user
+        UserModel userModel = UserModel(
+          uid: user.uid,
+          name: user.displayName ?? '',
+          email: user.email ?? '',
+        );
+
+        // Simpan ke Firestore (jika belum ada)
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .set(userModel.toMap(), SetOptions(merge: true));
+
+        // Kembalikan objek userModel
+        return userModel;
+      }
+      return null;
   }
 
   Future<void> logout() async {
-    await _auth.signOut();
+    await auth.signOut();
+    await GoogleSignIn().signOut();
   }
 
-  User? get currentUser => _auth.currentUser;
+  User? get currentUser => auth.currentUser;
 }
