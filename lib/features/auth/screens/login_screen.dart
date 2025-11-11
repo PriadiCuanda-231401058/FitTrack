@@ -35,7 +35,6 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   // String email = "", password = "";
@@ -51,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-    Future<void> handleGoogleSignIn() async {
+  Future<void> handleGoogleSignIn() async {
     // setState(() => _isLoading = true);
 
     try {
@@ -67,9 +66,9 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
 
@@ -93,7 +92,6 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return; // untuk memastikan context masih aktif
 
       Navigator.pushNamed(context, '/homeScreen');
-
     } on FirebaseAuthException catch (e) {
       setState(() {
         showError = true;
@@ -493,7 +491,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
                                 TextButton(
                                   onPressed: () {
-                                    Navigator.pushNamed(context, '/');
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/registerScreen',
+                                    );
                                   },
                                   style: TextButton.styleFrom(
                                     padding: EdgeInsets.zero,
