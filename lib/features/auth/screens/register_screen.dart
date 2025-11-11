@@ -22,6 +22,7 @@ class RegisterState extends State<RegisterScreen> {
   // String username = "", password = "", email = "";
   // final _formKey = GlobalKey<FormState>();
   bool showError = false;
+  bool successRegister = false;
   String errorMessage = '';
 
   @override
@@ -42,7 +43,14 @@ class RegisterState extends State<RegisterScreen> {
 
       if (!mounted) return; // untuk memastikan context masih aktif
 
-      Navigator.pushNamed(context, '/loginScreen');
+      setState(() {
+        successRegister = !successRegister;
+      });
+
+      Future.delayed(Duration(seconds: 3), () {
+        if (!mounted) return;
+        Navigator.pushNamed(context, '/loginScreen');
+      });
     } on FirebaseAuthException catch (e) {
       // showAlert(context, e.message ?? 'An error occurred');
       setState(() {
@@ -56,7 +64,7 @@ class RegisterState extends State<RegisterScreen> {
   //   try {
   //     await authController.value.signInWithGoogle();
 
-  //     if (!mounted) return; 
+  //     if (!mounted) return;
 
   //     Navigator.pushNamed(context, '/homeScreen');
   //   } on FirebaseAuthException catch (e) {
@@ -72,8 +80,6 @@ class RegisterState extends State<RegisterScreen> {
     Navigator.pop(context);
   }
 
-
-
   Future<void> handleGoogleSignIn() async {
     // setState(() => _isLoading = true);
 
@@ -81,7 +87,9 @@ class RegisterState extends State<RegisterScreen> {
       // 🔹 Panggil fungsi dari AuthController
       UserModel? userModel = await authController.value.signInWithGoogle();
 
-      if (userModel != null && mounted) {
+      if (!mounted) return;
+
+      if (userModel != null) {
         // 🔹 Jika berhasil, pindah ke HomeScreen
         Navigator.pushNamed(context, '/homeScreen');
       } else {
@@ -90,9 +98,9 @@ class RegisterState extends State<RegisterScreen> {
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
 
@@ -125,437 +133,512 @@ class RegisterState extends State<RegisterScreen> {
       body: SafeArea(
         child: Container(
           color: Colors.black,
-          child: Stack(
-            children: [
-              SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.all(screenWidth * 0.05),
-                  child: Column(
-                    children: [
-                      SizedBox(height: screenHeight * 0.03),
-
-                      Image.asset(
-                        'assets/images/fittrack_logo.png',
-                        width: screenWidth * 0.2,
-                      ),
-
-                      SizedBox(height: screenHeight * 0.01),
-
-                      Text(
-                        'FitTrack',
-                        style: TextStyle(
-                          fontFamily: 'LeagueSpartan',
-                          fontSize: screenWidth * 0.09,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-
-                      SizedBox(height: screenHeight * 0.02),
-
-                      ElevatedButton(
-                        onPressed: () {
-                          handleGoogleSignIn();
-                          // signInWithGoogle();
-                        },
-                        style: ButtonStyle(
-                          backgroundColor:
-                              WidgetStateProperty.resolveWith<Color>((states) {
-                                if (states.contains(WidgetState.pressed)) {
-                                  return Colors.white;
-                                }
-                                return Colors.transparent;
-                              }),
-                          foregroundColor:
-                              WidgetStateProperty.resolveWith<Color>((states) {
-                                if (states.contains(WidgetState.pressed)) {
-                                  return Colors.black;
-                                }
-                                return Color(0xFF9999A1);
-                              }),
-                          side: WidgetStateProperty.resolveWith<BorderSide>((
-                            states,
-                          ) {
-                            if (states.contains(WidgetState.pressed)) {
-                              return BorderSide(
-                                width: 0,
-                                color: Colors.transparent,
-                              );
-                            }
-                            return BorderSide(
-                              width: 1,
-                              color: Color(0xFF9999A1),
-                            );
-                          }),
-                          padding: WidgetStateProperty.all(
-                            EdgeInsets.symmetric(
-                              horizontal: screenWidth * 0.05,
-                              vertical: screenHeight * 0.02,
-                            ),
-                          ),
-                        ),
-                        child: Row(
+          child: !successRegister
+              ? Stack(
+                  children: [
+                    SingleChildScrollView(
+                      child: Padding(
+                        padding: EdgeInsets.all(screenWidth * 0.05),
+                        child: Column(
                           children: [
-                            Image.asset('assets/images/google_icon.png'),
+                            SizedBox(height: screenHeight * 0.03),
 
-                            SizedBox(width: screenWidth * 0.125),
+                            Image.asset(
+                              'assets/images/fittrack_logo.png',
+                              width: screenWidth * 0.2,
+                            ),
+
+                            SizedBox(height: screenHeight * 0.01),
 
                             Text(
-                              'Continue with Google',
-                              style: TextStyle(fontSize: screenWidth * 0.035),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      SizedBox(height: screenHeight * 0.04),
-
-                      Form(
-                        key: _formKey,
-                        autovalidateMode: AutovalidateMode.disabled,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Column(
-                              children: [
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    'Username',
-                                    style: TextStyle(
-                                      fontFamily: 'LeagueSpartan',
-                                      fontSize: screenWidth * 0.07,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-
-                                SizedBox(height: screenHeight * 0.01),
-
-                                TextFormField(
-                                  cursorColor: Colors.white,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter your Username';
-                                    }
-                                    return null;
-                                  },
-                                  controller: usernameController,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: screenWidth * 0.035,
-                                  ),
-                                  decoration: InputDecoration(
-                                    hintText: 'Enter Your Username',
-                                    hintStyle: TextStyle(
-                                      color: Color(0xFF9999A1),
-                                      fontSize: screenWidth * 0.035,
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        width: screenWidth * 0.0027,
-                                        color: Color(0xFF9999A1),
-                                        // color: Colors.blue,
-                                      ),
-                                      borderRadius: BorderRadius.circular(1000),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        width: screenWidth * 0.0027,
-                                        color: Colors.white,
-                                        // color: Colors.blue,
-                                      ),
-                                      borderRadius: BorderRadius.circular(1000),
-                                    ),
-                                    errorBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        width: screenWidth * 0.0027,
-                                        color: Colors.red,
-                                      ),
-                                      borderRadius: BorderRadius.circular(1000),
-                                    ),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        width: screenWidth * 0.0027,
-                                        color: Colors.white,
-                                        // color: Colors.blue,
-                                      ),
-                                      borderRadius: BorderRadius.circular(1000),
-                                    ),
-                                    contentPadding: EdgeInsets.symmetric(
-                                      horizontal: screenWidth * 0.04,
-                                      vertical: screenHeight * 0.022,
-                                    ),
-                                  ),
-                                  // onChanged: (value) {
-                                  //   setState(() {
-                                  //     username = value;
-                                  //   });
-                                  // },
-                                ),
-                              ],
+                              'FitTrack',
+                              style: TextStyle(
+                                fontFamily: 'LeagueSpartan',
+                                fontSize: screenWidth * 0.09,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
 
                             SizedBox(height: screenHeight * 0.02),
 
-                            Column(
-                              children: [
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    'Email',
-                                    style: TextStyle(
-                                      fontFamily: 'LeagueSpartan',
-                                      fontSize: screenWidth * 0.07,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
+                            ElevatedButton(
+                              onPressed: () {
+                                handleGoogleSignIn();
+                                // signInWithGoogle();
+                              },
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    WidgetStateProperty.resolveWith<Color>((
+                                      states,
+                                    ) {
+                                      if (states.contains(
+                                        WidgetState.pressed,
+                                      )) {
+                                        return Colors.white;
+                                      }
+                                      return Colors.transparent;
+                                    }),
+                                foregroundColor:
+                                    WidgetStateProperty.resolveWith<Color>((
+                                      states,
+                                    ) {
+                                      if (states.contains(
+                                        WidgetState.pressed,
+                                      )) {
+                                        return Colors.black;
+                                      }
+                                      return Color(0xFF9999A1);
+                                    }),
+                                side:
+                                    WidgetStateProperty.resolveWith<BorderSide>(
+                                      (states) {
+                                        if (states.contains(
+                                          WidgetState.pressed,
+                                        )) {
+                                          return BorderSide(
+                                            width: 0,
+                                            color: Colors.transparent,
+                                          );
+                                        }
+                                        return BorderSide(
+                                          width: 1,
+                                          color: Color(0xFF9999A1),
+                                        );
+                                      },
                                     ),
+                                padding: WidgetStateProperty.all(
+                                  EdgeInsets.symmetric(
+                                    horizontal: screenWidth * 0.05,
+                                    vertical: screenHeight * 0.02,
                                   ),
                                 ),
+                              ),
+                              child: Row(
+                                children: [
+                                  Image.asset('assets/images/google_icon.png'),
 
-                                SizedBox(height: screenHeight * 0.01),
+                                  SizedBox(width: screenWidth * 0.125),
 
-                                TextFormField(
-                                  keyboardType: TextInputType.emailAddress,
-                                  cursorColor: Colors.white,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter your Email';
-                                    }
-                                    return null;
-                                  },
-                                  controller: emailController,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: screenWidth * 0.035,
-                                  ),
-                                  decoration: InputDecoration(
-                                    hintText: 'Enter Your Email',
-                                    hintStyle: TextStyle(
-                                      color: Color(0xFF9999A1),
+                                  Text(
+                                    'Continue with Google',
+                                    style: TextStyle(
                                       fontSize: screenWidth * 0.035,
                                     ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        width: screenWidth * 0.0027,
-                                        color: Color(0xFF9999A1),
-                                        // color: Colors.blue,
-                                      ),
-                                      borderRadius: BorderRadius.circular(1000),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        width: screenWidth * 0.0027,
-                                        color: Colors.white,
-                                        // color: Colors.blue,
-                                      ),
-                                      borderRadius: BorderRadius.circular(1000),
-                                    ),
-                                    errorBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        width: screenWidth * 0.0027,
-                                        color: Colors.red,
-                                      ),
-                                      borderRadius: BorderRadius.circular(1000),
-                                    ),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        width: screenWidth * 0.0027,
-                                        color: Colors.white,
-                                        // color: Colors.blue,
-                                      ),
-                                      borderRadius: BorderRadius.circular(1000),
-                                    ),
-                                    contentPadding: EdgeInsets.symmetric(
-                                      horizontal: screenWidth * 0.04,
-                                      vertical: screenHeight * 0.022,
-                                    ),
                                   ),
-                                  // onChanged: (value) {
-                                  //   setState(() {
-                                  //     email = value;
-                                  //   });
-                                  // },
-                                ),
-                              ],
-                            ),
-
-                            SizedBox(height: screenHeight * 0.02),
-
-                            Column(
-                              children: [
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    'Password',
-                                    style: TextStyle(
-                                      fontFamily: 'LeagueSpartan',
-                                      fontSize: screenWidth * 0.07,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-
-                                SizedBox(height: screenHeight * 0.01),
-
-                                TextFormField(
-                                  cursorColor: Colors.white,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter your Password';
-                                    }
-                                    return null;
-                                  },
-                                  controller: passwordController,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: screenWidth * 0.035,
-                                  ),
-                                  obscureText: true,
-                                  decoration: InputDecoration(
-                                    hintText: 'Enter Your Password',
-                                    hintStyle: TextStyle(
-                                      color: Color(0xFF9999A1),
-                                      fontSize: screenWidth * 0.035,
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        width: screenWidth * 0.0027,
-                                        color: Color(0xFF9999A1),
-                                        // color: Colors.blue,
-                                      ),
-                                      borderRadius: BorderRadius.circular(1000),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        width: screenWidth * 0.0027,
-                                        color: Colors.white,
-                                        // color: Colors.blue,
-                                      ),
-                                      borderRadius: BorderRadius.circular(1000),
-                                    ),
-                                    errorBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        width: screenWidth * 0.0027,
-                                        color: Colors.red,
-                                      ),
-                                      borderRadius: BorderRadius.circular(1000),
-                                    ),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        width: screenWidth * 0.0027,
-                                        color: Colors.white,
-                                        // color: Colors.blue,
-                                      ),
-                                      borderRadius: BorderRadius.circular(1000),
-                                    ),
-                                    contentPadding: EdgeInsets.symmetric(
-                                      horizontal: screenWidth * 0.04,
-                                      vertical: screenHeight * 0.022,
-                                    ),
-                                  ),
-                                  // onChanged: (value) {
-                                  //   setState(() {
-                                  //     password = value;
-                                  //   });
-                                  // },
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
 
                             SizedBox(height: screenHeight * 0.04),
 
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  if (_formKey.currentState!.validate()) {
-                                    register();
-                                  }
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
+                            Form(
+                              key: _formKey,
+                              autovalidateMode: AutovalidateMode.disabled,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Column(
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          'Username',
+                                          style: TextStyle(
+                                            fontFamily: 'LeagueSpartan',
+                                            fontSize: screenWidth * 0.07,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
 
-                                  padding: EdgeInsets.symmetric(
-                                    vertical: screenHeight * 0.01,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(1000),
-                                  ),
-                                ),
-                                child: Text(
-                                  'Register',
-                                  style: TextStyle(
-                                    fontFamily: 'LeagueSpartan',
-                                    fontSize: screenWidth * 0.07,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ),
-                            ),
+                                      SizedBox(height: screenHeight * 0.01),
 
-                            SizedBox(height: screenHeight * 0.035),
-
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Already Have an Account?',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: screenWidth * 0.035,
+                                      TextFormField(
+                                        cursorColor: Colors.white,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Please enter your Username';
+                                          }
+                                          return null;
+                                        },
+                                        controller: usernameController,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: screenWidth * 0.035,
+                                        ),
+                                        decoration: InputDecoration(
+                                          hintText: 'Enter Your Username',
+                                          hintStyle: TextStyle(
+                                            color: Color(0xFF9999A1),
+                                            fontSize: screenWidth * 0.035,
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              width: screenWidth * 0.0027,
+                                              color: Color(0xFF9999A1),
+                                              // color: Colors.blue,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              1000,
+                                            ),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              width: screenWidth * 0.0027,
+                                              color: Colors.white,
+                                              // color: Colors.blue,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              1000,
+                                            ),
+                                          ),
+                                          errorBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              width: screenWidth * 0.0027,
+                                              color: Colors.red,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              1000,
+                                            ),
+                                          ),
+                                          focusedErrorBorder:
+                                              OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  width: screenWidth * 0.0027,
+                                                  color: Colors.white,
+                                                  // color: Colors.blue,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(1000),
+                                              ),
+                                          contentPadding: EdgeInsets.symmetric(
+                                            horizontal: screenWidth * 0.04,
+                                            vertical: screenHeight * 0.022,
+                                          ),
+                                        ),
+                                        // onChanged: (value) {
+                                        //   setState(() {
+                                        //     username = value;
+                                        //   });
+                                        // },
+                                      ),
+                                    ],
                                   ),
-                                ),
 
-                                SizedBox(width: screenWidth * 0.015),
+                                  SizedBox(height: screenHeight * 0.02),
 
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pushNamed(
-                                      context,
-                                      '/loginScreen',
-                                    );
-                                  },
-                                  style: TextButton.styleFrom(
-                                    padding: EdgeInsets.zero,
-                                    minimumSize: Size(0, 0),
-                                    tapTargetSize:
-                                        MaterialTapTargetSize.shrinkWrap,
+                                  Column(
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          'Email',
+                                          style: TextStyle(
+                                            fontFamily: 'LeagueSpartan',
+                                            fontSize: screenWidth * 0.07,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+
+                                      SizedBox(height: screenHeight * 0.01),
+
+                                      TextFormField(
+                                        keyboardType:
+                                            TextInputType.emailAddress,
+                                        cursorColor: Colors.white,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Please enter your Email';
+                                          }
+                                          return null;
+                                        },
+                                        controller: emailController,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: screenWidth * 0.035,
+                                        ),
+                                        decoration: InputDecoration(
+                                          hintText: 'Enter Your Email',
+                                          hintStyle: TextStyle(
+                                            color: Color(0xFF9999A1),
+                                            fontSize: screenWidth * 0.035,
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              width: screenWidth * 0.0027,
+                                              color: Color(0xFF9999A1),
+                                              // color: Colors.blue,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              1000,
+                                            ),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              width: screenWidth * 0.0027,
+                                              color: Colors.white,
+                                              // color: Colors.blue,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              1000,
+                                            ),
+                                          ),
+                                          errorBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              width: screenWidth * 0.0027,
+                                              color: Colors.red,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              1000,
+                                            ),
+                                          ),
+                                          focusedErrorBorder:
+                                              OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  width: screenWidth * 0.0027,
+                                                  color: Colors.white,
+                                                  // color: Colors.blue,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(1000),
+                                              ),
+                                          contentPadding: EdgeInsets.symmetric(
+                                            horizontal: screenWidth * 0.04,
+                                            vertical: screenHeight * 0.022,
+                                          ),
+                                        ),
+                                        // onChanged: (value) {
+                                        //   setState(() {
+                                        //     email = value;
+                                        //   });
+                                        // },
+                                      ),
+                                    ],
                                   ),
-                                  child: Text(
-                                    'Login',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: screenWidth * 0.04,
-                                      fontWeight: FontWeight.w700,
+
+                                  SizedBox(height: screenHeight * 0.02),
+
+                                  Column(
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          'Password',
+                                          style: TextStyle(
+                                            fontFamily: 'LeagueSpartan',
+                                            fontSize: screenWidth * 0.07,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+
+                                      SizedBox(height: screenHeight * 0.01),
+
+                                      TextFormField(
+                                        cursorColor: Colors.white,
+                                        validator: (value) {
+                                          if (value == null || value.isEmpty) {
+                                            return 'Please enter your Password';
+                                          }
+                                          return null;
+                                        },
+                                        controller: passwordController,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: screenWidth * 0.035,
+                                        ),
+                                        obscureText: true,
+                                        decoration: InputDecoration(
+                                          hintText: 'Enter Your Password',
+                                          hintStyle: TextStyle(
+                                            color: Color(0xFF9999A1),
+                                            fontSize: screenWidth * 0.035,
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              width: screenWidth * 0.0027,
+                                              color: Color(0xFF9999A1),
+                                              // color: Colors.blue,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              1000,
+                                            ),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              width: screenWidth * 0.0027,
+                                              color: Colors.white,
+                                              // color: Colors.blue,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              1000,
+                                            ),
+                                          ),
+                                          errorBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              width: screenWidth * 0.0027,
+                                              color: Colors.red,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              1000,
+                                            ),
+                                          ),
+                                          focusedErrorBorder:
+                                              OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  width: screenWidth * 0.0027,
+                                                  color: Colors.white,
+                                                  // color: Colors.blue,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(1000),
+                                              ),
+                                          contentPadding: EdgeInsets.symmetric(
+                                            horizontal: screenWidth * 0.04,
+                                            vertical: screenHeight * 0.022,
+                                          ),
+                                        ),
+                                        // onChanged: (value) {
+                                        //   setState(() {
+                                        //     password = value;
+                                        //   });
+                                        // },
+                                      ),
+                                    ],
+                                  ),
+
+                                  SizedBox(height: screenHeight * 0.04),
+
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        if (_formKey.currentState!.validate()) {
+                                          register();
+                                        }
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.white,
+
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: screenHeight * 0.01,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            1000,
+                                          ),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        'Register',
+                                        style: TextStyle(
+                                          fontFamily: 'LeagueSpartan',
+                                          fontSize: screenWidth * 0.07,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
 
-                            SizedBox(height: screenHeight * 0.03),
+                                  SizedBox(height: screenHeight * 0.035),
+
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Already Have an Account?',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: screenWidth * 0.035,
+                                        ),
+                                      ),
+
+                                      SizedBox(width: screenWidth * 0.015),
+
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pushNamed(
+                                            context,
+                                            '/loginScreen',
+                                          );
+                                        },
+                                        style: TextButton.styleFrom(
+                                          padding: EdgeInsets.zero,
+                                          minimumSize: Size(0, 0),
+                                          tapTargetSize:
+                                              MaterialTapTargetSize.shrinkWrap,
+                                        ),
+                                        child: Text(
+                                          'Login',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: screenWidth * 0.04,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  SizedBox(height: screenHeight * 0.03),
+                                ],
+                              ),
+                            ),
                           ],
+                        ),
+                      ),
+                    ),
+
+                    if (showError)
+                      Padding(
+                        padding: EdgeInsets.all(screenWidth * 0.05),
+                        child: ErrorMessage(
+                          message: errorMessage,
+                          onDismiss: () => setState(() => showError = false),
+                        ),
+                      ),
+                  ],
+                )
+              : SizedBox(
+                  width: screenWidth,
+                  height: screenHeight,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/images/register_success.png',
+                        width: screenWidth * 0.4,
+                      ),
+
+                      SizedBox(height: screenHeight * 0.015),
+
+                      Text(
+                        'Success!',
+                        style: TextStyle(
+                          fontFamily: 'LeagueSpartan',
+                          color: Colors.white,
+                          fontSize: screenWidth * 0.085,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+
+                      Text(
+                        textAlign: TextAlign.center,
+                        'Your account has been created successfully',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: screenWidth * 0.045,
                         ),
                       ),
                     ],
                   ),
                 ),
-              ),
-
-              if (showError)
-                Padding(
-                  padding: EdgeInsets.all(screenWidth * 0.05),
-                  child: ErrorMessage(
-                    message: errorMessage,
-                    onDismiss: () => setState(() => showError = false),
-                  ),
-                ),
-            ],
-          ),
         ),
       ),
     );
