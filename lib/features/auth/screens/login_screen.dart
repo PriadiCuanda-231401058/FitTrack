@@ -422,7 +422,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
                                 TextButton(
                                   onPressed: () {
-                                    // pindah ke halaman verifikasi kode
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/resetPasswordScreen',
+                                    );
                                   },
                                   style: TextButton.styleFrom(
                                     padding: EdgeInsets.zero,
