@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fittrack/shared/widgets/error_message.dart';
 import 'package:fittrack/shared/widgets/success_message.dart';
+import 'package:fittrack/features/auth/auth_controller.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({super.key});
@@ -15,6 +16,36 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   bool? successSendEmail;
 
   TextEditingController emailController = TextEditingController();
+
+  Future<void> handleResetPassword(BuildContext context, String email) async {
+  // Tampilkan loading
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) => const Center(child: CircularProgressIndicator()),
+  );
+
+  // Jalankan fungsi utama dari controller
+  bool success = await authController.value.resetPassword(email);
+
+  // Tutup loading
+  if (!mounted) return;
+  Navigator.of(context).pop();
+
+  // Tampilkan hasil ke pengguna
+  if (success) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Password reset link has been sent to $email')),
+    );
+  } else {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Failed to send password reset link')),
+    );
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -153,9 +184,16 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
-                              onPressed: () {
+                              onPressed: () async{
                                 if (_formKey.currentState!.validate()) {
-                                  // fungsi untuk send link reset password
+                                  final email = emailController.text.trim();
+                                    if (email.isEmpty) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Please enter your email')),
+                                      );
+                                      return;
+                                    }
+                                  await handleResetPassword(context, email);
                                 }
                               },
                               style: ElevatedButton.styleFrom(

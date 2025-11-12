@@ -92,6 +92,16 @@ class AuthController {
       return null;
   }
 
+Future<bool> resetPassword(String email) async {
+  try {
+    await auth.sendPasswordResetEmail(email: email);
+    return true; // success
+  } on FirebaseAuthException catch (e) {
+    debugPrint('Failed to send reset email: ${e.message}');
+    return false; // failed
+  }
+}
+
   Future<void> logout() async {
     await auth.signOut();
     await GoogleSignIn().signOut();
