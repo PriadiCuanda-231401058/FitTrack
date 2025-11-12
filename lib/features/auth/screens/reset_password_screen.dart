@@ -7,13 +7,12 @@ class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({super.key});
 
   @override
-  State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
+  State<ResetPasswordScreen> createState() => ResetPasswordScreenState();
 }
 
-class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
-  final _formKey = GlobalKey<FormState>();
-
+class ResetPasswordScreenState extends State<ResetPasswordScreen> {
   bool? successSendEmail;
+  final _formKey = GlobalKey<FormState>();
 
   TextEditingController emailController = TextEditingController();
 
@@ -26,24 +25,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   );
 
   // Jalankan fungsi utama dari controller
-  bool success = await authController.value.resetPassword(email);
+  successSendEmail = await authController.value.resetPassword(email);
 
   // Tutup loading
   if (!mounted) return;
   Navigator.of(context).pop();
-
-  // Tampilkan hasil ke pengguna
-  if (success) {
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Password reset link has been sent to $email')),
-    );
-  } else {
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Failed to send password reset link')),
-    );
-  }
 }
 
 
