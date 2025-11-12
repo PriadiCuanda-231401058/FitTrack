@@ -59,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (userModel != null && mounted) {
         // 🔹 Jika berhasil, pindah ke HomeScreen
-        Navigator.pushNamed(context, '/homeScreen');
+        Navigator.pushNamed(context, '/settingsScreen');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Gagal login dengan Google')),
