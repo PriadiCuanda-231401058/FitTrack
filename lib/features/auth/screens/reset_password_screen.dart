@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fittrack/features/auth/widgets/error_message.dart';
-import 'package:fittrack/features/auth/widgets/success_message.dart';
+import 'package:fittrack/shared/widgets/error_message.dart';
+import 'package:fittrack/shared/widgets/success_message.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({super.key});
