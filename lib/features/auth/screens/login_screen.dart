@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fittrack/features/auth/auth_controller.dart';
-import 'package:fittrack/features/auth/widgets/error_message.dart';
+import 'package:fittrack/shared/widgets/error_message.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fittrack/models/user_model.dart';
 // import 'package:fittrack/features/auth/screens/register_screen.dart';
