@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../widgets/setting_menu_button.dart';
+import 'package:fittrack/features/settings/screens/edit_profile_screen.dart';
+import '../widgets/custom_popup.dart';
+import 'package:fittrack/features/settings/screens/account_settings_screen.dart';
+import 'package:fittrack/features/settings/screens/delete_account_screen.dart';
+import 'package:fittrack/features/settings/screens/premium_features_screen.dart';
+
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -57,6 +63,7 @@ class SettingsScreen extends StatelessWidget {
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 20,
+                fontWeight: FontWeight.w300,
               ),
             ),
             const SizedBox(height: 32),
@@ -72,28 +79,85 @@ class SettingsScreen extends StatelessWidget {
                 children: [
                   SettingsMenuButton(
                     text: 'Edit Profile',
-                    icon: Image.asset('assets/images/edit_profile.png', width: 20, height: 20),
-                    onTap: () {},
+                    icon: Image.asset(
+                      'assets/images/edit_profile.png',
+                      width: 20,
+                      height: 20,
+                    ),
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        barrierColor: Colors.black.withOpacity(0.7),
+                        builder: (context) {
+                          return CustomPopup(
+                            child: EditProfileScreen(
+                              currentName: "",
+                              currentPhotoUrl: null,
+                            ),
+                          );
+                        },
+                      );
+                    },
                   ),
                   SettingsMenuButton(
                     text: 'Account Settings',
                     icon: Image.asset('assets/images/account_settings.png', width: 20, height: 20),
-                    onTap: () {},
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        barrierColor: Colors.black.withOpacity(0.7),
+                        barrierDismissible: true,
+                        builder: (context) {
+                          return Dialog(
+                            backgroundColor: Colors.transparent,
+                            insetPadding: EdgeInsets.zero,
+                            child: CustomPopup(
+                              child: AccountSettingsScreen(),
+                            ),
+                          );
+                        },
+                      );
+                    },
                   ),
                   SettingsMenuButton(
                     text: 'Premium Features',
                     icon: Image.asset('assets/images/premium_features.png', width: 20, height: 20),
-                    onTap: () {},
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (_) => CustomPopup(
+                          child: PremiumFeaturesScreen(),
+                        ),
+                      );
+                    },
                   ),
                   SettingsMenuButton(
                     text: 'Delete Account',
                     icon: Image.asset('assets/images/delete_account.png', width: 20, height: 20),
-                    onTap: () {},
+                      onTap: () {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        barrierColor: Colors.black.withOpacity(0.7),
+                        builder: (context) {
+                          return Dialog(
+                            backgroundColor: Colors.transparent,
+                            insetPadding: EdgeInsets.zero,
+                            child: CustomPopup(
+                              child: DeleteAccountScreen(),   // << INI YANG KAMU MAKSUD
+                            ),
+                          );
+                        },
+                      );
+                    },
                   ),
                   SettingsMenuButton(
                     text: 'Log Out',
                     icon: Image.asset('assets/images/log_out.png', width: 20, height: 20),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(context, '/loginScreen');
+                    },
                   ),
                 ],
               ),
