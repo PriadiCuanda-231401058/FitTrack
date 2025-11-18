@@ -79,14 +79,20 @@ flutter:
   fonts:
     - family: LeagueSpartan
       fonts:
+        - asset: assets/fonts/League_Spartan/LeagueSpartan-Light.ttf
+          weight: 300
         - asset: assets/fonts/League_Spartan/LeagueSpartan-Regular.ttf
           weight: 400
+        - asset: assets/fonts/League_Spartan/LeagueSpartan-Medium.ttf
+          weight: 500
         - asset: assets/fonts/League_Spartan/LeagueSpartan-SemiBold.ttf
           weight: 600
         - asset: assets/fonts/League_Spartan/LeagueSpartan-Bold.ttf
           weight: 700
+        - asset: assets/fonts/League_Spartan/LeagueSpartan-ExtraBold.ttf
+          weight: 800
     - family: OpenSans
-      fonts:
+      fonts:  
         - asset: assets/fonts/Open_Sans/OpenSans-Regular.ttf
           weight: 400
         - asset: assets/fonts/Open_Sans/OpenSans-SemiBold.ttf
