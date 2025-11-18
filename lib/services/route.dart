@@ -1,3 +1,4 @@
+import 'package:fittrack/features/settings/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:fittrack/features/splash/splash_screen.dart';
 import 'package:fittrack/features/auth/screens/login_screen.dart';
@@ -11,4 +12,5 @@ final Map<String, WidgetBuilder> appRoutes = {
   '/registerScreen': (context) => const RegisterScreen(),
   '/resetPasswordScreen': (context) => const ResetPasswordScreen(),
   '/homeScreen': (context) => const HomeScreen(),
+  '/settingsScreen': (context) => const SettingsScreen(),
 };
