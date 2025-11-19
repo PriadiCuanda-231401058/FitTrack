@@ -636,81 +636,92 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                                   .map((workout) {
                                     return Column(
                                       children: [
-                                        SizedBox(
-                                          width: double.infinity,
-                                          height: screenHeight * 0.1,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Container(
-                                                width: screenHeight * 0.1,
-                                                height: screenHeight * 0.1,
+                                        GestureDetector(
+                                          onTap: () {
+                                            // pindah ke exercise list
+                                          },
+                                          child: SizedBox(
+                                            width: double.infinity,
+                                            height: screenHeight * 0.1,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Container(
+                                                  width: screenHeight * 0.1,
+                                                  height: screenHeight * 0.1,
 
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                    image: AssetImage(
-                                                      workout['imageURL'],
-                                                    ),
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                        screenWidth * 0.04,
+                                                  decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                      image: AssetImage(
+                                                        workout['imageURL'],
                                                       ),
-                                                ),
-                                              ),
-
-                                              SizedBox(
-                                                width: screenWidth * 0.025,
-                                              ),
-
-                                              Expanded(
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      workout['title'],
-                                                      style: TextStyle(
-                                                        fontSize:
-                                                            screenWidth * 0.035,
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                      ),
+                                                      fit: BoxFit.cover,
                                                     ),
-
-                                                    SizedBox(
-                                                      height:
-                                                          screenHeight * 0.005,
-                                                    ),
-
-                                                    Text(
-                                                      '${workout['duration']} minutes, ${workout['exerciseCount']} exercises',
-                                                      style: TextStyle(
-                                                        fontSize:
-                                                            screenWidth * 0.035,
-                                                        color: Color(
-                                                          0xFF9999A1,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          screenWidth * 0.04,
                                                         ),
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                    ),
-                                                  ],
+                                                  ),
                                                 ),
-                                              ),
 
-                                              if (workout['isPremium'])
-                                                Image.asset(
-                                                  'assets/images/lock.png',
-                                                  width: screenWidth * 0.085,
-                                                  height: screenWidth * 0.085,
+                                                SizedBox(
+                                                  width: screenWidth * 0.025,
                                                 ),
-                                            ],
+
+                                                Expanded(
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        workout['title'],
+                                                        style: TextStyle(
+                                                          fontSize:
+                                                              screenWidth *
+                                                              0.035,
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.w700,
+                                                        ),
+                                                      ),
+
+                                                      SizedBox(
+                                                        height:
+                                                            screenHeight *
+                                                            0.005,
+                                                      ),
+
+                                                      Text(
+                                                        '${workout['duration']} minutes, ${workout['exerciseCount']} exercises',
+                                                        style: TextStyle(
+                                                          fontSize:
+                                                              screenWidth *
+                                                              0.035,
+                                                          color: Color(
+                                                            0xFF9999A1,
+                                                          ),
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+
+                                                if (workout['isPremium'])
+                                                  Image.asset(
+                                                    'assets/images/lock.png',
+                                                    width: screenWidth * 0.085,
+                                                    height: screenWidth * 0.085,
+                                                  ),
+                                              ],
+                                            ),
                                           ),
                                         ),
 
@@ -797,81 +808,92 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                                   .map((workout) {
                                     return Column(
                                       children: [
-                                        SizedBox(
-                                          width: double.infinity,
-                                          height: screenHeight * 0.1,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Container(
-                                                width: screenHeight * 0.1,
-                                                height: screenHeight * 0.1,
+                                        GestureDetector(
+                                          onTap: () {
+                                            // pindah ke exercise list
+                                          },
+                                          child: SizedBox(
+                                            width: double.infinity,
+                                            height: screenHeight * 0.1,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Container(
+                                                  width: screenHeight * 0.1,
+                                                  height: screenHeight * 0.1,
 
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                    image: AssetImage(
-                                                      workout['imageURL'],
-                                                    ),
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                        screenWidth * 0.04,
+                                                  decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                      image: AssetImage(
+                                                        workout['imageURL'],
                                                       ),
-                                                ),
-                                              ),
-
-                                              SizedBox(
-                                                width: screenWidth * 0.025,
-                                              ),
-
-                                              Expanded(
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      workout['title'],
-                                                      style: TextStyle(
-                                                        fontSize:
-                                                            screenWidth * 0.035,
-                                                        color: Colors.white,
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                      ),
+                                                      fit: BoxFit.cover,
                                                     ),
-
-                                                    SizedBox(
-                                                      height:
-                                                          screenHeight * 0.005,
-                                                    ),
-
-                                                    Text(
-                                                      '${workout['duration']} minutes, ${workout['exerciseCount']} exercises',
-                                                      style: TextStyle(
-                                                        fontSize:
-                                                            screenWidth * 0.035,
-                                                        color: Color(
-                                                          0xFF9999A1,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          screenWidth * 0.04,
                                                         ),
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                    ),
-                                                  ],
+                                                  ),
                                                 ),
-                                              ),
 
-                                              if (workout['isPremium'])
-                                                Image.asset(
-                                                  'assets/images/lock.png',
-                                                  width: screenWidth * 0.085,
-                                                  height: screenWidth * 0.085,
+                                                SizedBox(
+                                                  width: screenWidth * 0.025,
                                                 ),
-                                            ],
+
+                                                Expanded(
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        workout['title'],
+                                                        style: TextStyle(
+                                                          fontSize:
+                                                              screenWidth *
+                                                              0.035,
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.w700,
+                                                        ),
+                                                      ),
+
+                                                      SizedBox(
+                                                        height:
+                                                            screenHeight *
+                                                            0.005,
+                                                      ),
+
+                                                      Text(
+                                                        '${workout['duration']} minutes, ${workout['exerciseCount']} exercises',
+                                                        style: TextStyle(
+                                                          fontSize:
+                                                              screenWidth *
+                                                              0.035,
+                                                          color: Color(
+                                                            0xFF9999A1,
+                                                          ),
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+
+                                                if (workout['isPremium'])
+                                                  Image.asset(
+                                                    'assets/images/lock.png',
+                                                    width: screenWidth * 0.085,
+                                                    height: screenWidth * 0.085,
+                                                  ),
+                                              ],
+                                            ),
                                           ),
                                         ),
 
@@ -902,71 +924,76 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                           children: popularWorkouts.map((workout) {
                             return Column(
                               children: [
-                                SizedBox(
-                                  width: double.infinity,
-                                  height: screenHeight * 0.1,
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Container(
-                                        width: screenHeight * 0.1,
-                                        height: screenHeight * 0.1,
+                                GestureDetector(
+                                  onTap: () {
+                                    // pindah ke exercise list
+                                  },
+                                  child: SizedBox(
+                                    width: double.infinity,
+                                    height: screenHeight * 0.1,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(
+                                          width: screenHeight * 0.1,
+                                          height: screenHeight * 0.1,
 
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                            image: AssetImage(
-                                              workout['imageURL'],
-                                            ),
-                                            fit: BoxFit.cover,
-                                          ),
-                                          borderRadius: BorderRadius.circular(
-                                            screenWidth * 0.04,
-                                          ),
-                                        ),
-                                      ),
-
-                                      SizedBox(width: screenWidth * 0.025),
-
-                                      Expanded(
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              workout['title'],
-                                              style: TextStyle(
-                                                fontSize: screenWidth * 0.035,
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w700,
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              image: AssetImage(
+                                                workout['imageURL'],
                                               ),
+                                              fit: BoxFit.cover,
                                             ),
-
-                                            SizedBox(
-                                              height: screenHeight * 0.005,
+                                            borderRadius: BorderRadius.circular(
+                                              screenWidth * 0.04,
                                             ),
+                                          ),
+                                        ),
 
-                                            Text(
-                                              '${workout['duration']} minutes, ${workout['exerciseCount']} exercises',
-                                              style: TextStyle(
-                                                fontSize: screenWidth * 0.035,
-                                                color: Color(0xFF9999A1),
-                                                fontWeight: FontWeight.w600,
+                                        SizedBox(width: screenWidth * 0.025),
+
+                                        Expanded(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                workout['title'],
+                                                style: TextStyle(
+                                                  fontSize: screenWidth * 0.035,
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
 
-                                      if (workout['isPremium'])
-                                        Image.asset(
-                                          'assets/images/lock.png',
-                                          width: screenWidth * 0.085,
-                                          height: screenWidth * 0.085,
+                                              SizedBox(
+                                                height: screenHeight * 0.005,
+                                              ),
+
+                                              Text(
+                                                '${workout['duration']} minutes, ${workout['exerciseCount']} exercises',
+                                                style: TextStyle(
+                                                  fontSize: screenWidth * 0.035,
+                                                  color: Color(0xFF9999A1),
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                    ],
+
+                                        if (workout['isPremium'])
+                                          Image.asset(
+                                            'assets/images/lock.png',
+                                            width: screenWidth * 0.085,
+                                            height: screenWidth * 0.085,
+                                          ),
+                                      ],
+                                    ),
                                   ),
                                 ),
 
