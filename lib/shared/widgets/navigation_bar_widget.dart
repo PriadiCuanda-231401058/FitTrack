@@ -16,7 +16,7 @@ class _NavigationBarWidgetState extends State<NavigationBarWidget> {
 
     return Container(
       color: Colors.black,
-      height: screenHeight * 0.075,
+      height: screenHeight * 0.05,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
