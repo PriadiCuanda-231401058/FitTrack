@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fittrack/features/settings/settings_controller.dart';
 
 class DeleteAccountScreen extends StatelessWidget {
   const DeleteAccountScreen({super.key});
@@ -72,7 +73,17 @@ class DeleteAccountScreen extends StatelessWidget {
         const SizedBox(height: 35),
 
         GestureDetector(
-          onTap: () {},
+          onTap: () => SettingsController().deleteAccount().then((success) {
+            if (success) {
+              Navigator.pushReplacementNamed(context, '/loginScreen');
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Failed to delete account. Please try again.'),
+                ),
+              );
+            }
+          }),
           child: Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 16),

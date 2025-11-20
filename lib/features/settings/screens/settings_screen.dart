@@ -6,7 +6,8 @@ import '../widgets/custom_popup.dart';
 import 'package:fittrack/features/settings/screens/account_settings_screen.dart';
 import 'package:fittrack/features/settings/screens/delete_account_screen.dart';
 import 'package:fittrack/features/settings/screens/premium_features_screen.dart';
-
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:fittrack/features/settings/settings_controller.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -41,9 +42,11 @@ class SettingsScreen extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: width * 0.18,
-              backgroundImage: user?.photoURL != null && user!.photoURL!.isNotEmpty
+              backgroundImage:
+                  user?.photoURL != null && user!.photoURL!.isNotEmpty
                   ? NetworkImage(user.photoURL!)
-                  : const AssetImage('assets/images/default_pp.png') as ImageProvider,
+                  : const AssetImage('assets/images/default_pp.png')
+                        as ImageProvider,
             ),
             const SizedBox(height: 24),
 
@@ -102,7 +105,11 @@ class SettingsScreen extends StatelessWidget {
                   ),
                   SettingsMenuButton(
                     text: 'Account Settings',
-                    icon: Image.asset('assets/images/account_settings.png', width: 20, height: 20),
+                    icon: Image.asset(
+                      'assets/images/account_settings.png',
+                      width: 20,
+                      height: 20,
+                    ),
                     onTap: () {
                       showDialog(
                         context: context,
@@ -112,9 +119,7 @@ class SettingsScreen extends StatelessWidget {
                           return Dialog(
                             backgroundColor: Colors.transparent,
                             insetPadding: EdgeInsets.zero,
-                            child: CustomPopup(
-                              child: AccountSettingsScreen(),
-                            ),
+                            child: CustomPopup(child: AccountSettingsScreen()),
                           );
                         },
                       );
@@ -122,20 +127,27 @@ class SettingsScreen extends StatelessWidget {
                   ),
                   SettingsMenuButton(
                     text: 'Premium Features',
-                    icon: Image.asset('assets/images/premium_features.png', width: 20, height: 20),
+                    icon: Image.asset(
+                      'assets/images/premium_features.png',
+                      width: 20,
+                      height: 20,
+                    ),
                     onTap: () {
                       showDialog(
                         context: context,
-                        builder: (_) => CustomPopup(
-                          child: PremiumFeaturesScreen(),
-                        ),
+                        builder: (_) =>
+                            CustomPopup(child: PremiumFeaturesScreen()),
                       );
                     },
                   ),
                   SettingsMenuButton(
                     text: 'Delete Account',
-                    icon: Image.asset('assets/images/delete_account.png', width: 20, height: 20),
-                      onTap: () {
+                    icon: Image.asset(
+                      'assets/images/delete_account.png',
+                      width: 20,
+                      height: 20,
+                    ),
+                    onTap: () {
                       showDialog(
                         context: context,
                         barrierDismissible: true,
@@ -145,7 +157,8 @@ class SettingsScreen extends StatelessWidget {
                             backgroundColor: Colors.transparent,
                             insetPadding: EdgeInsets.zero,
                             child: CustomPopup(
-                              child: DeleteAccountScreen(),   // << INI YANG KAMU MAKSUD
+                              child:
+                                  DeleteAccountScreen(), // << INI YANG KAMU MAKSUD
                             ),
                           );
                         },
@@ -154,9 +167,18 @@ class SettingsScreen extends StatelessWidget {
                   ),
                   SettingsMenuButton(
                     text: 'Log Out',
-                    icon: Image.asset('assets/images/log_out.png', width: 20, height: 20),
-                    onTap: () {
-                      Navigator.pushNamed(context, '/loginScreen');
+                    icon: Image.asset(
+                      'assets/images/log_out.png',
+                      width: 20,
+                      height: 20,
+                    ),
+                    onTap: () async {
+                      await GoogleSignIn().signOut();
+                      await FirebaseAuth.instance.signOut();
+
+                      if (context.mounted) {
+                        Navigator.pushReplacementNamed(context, '/loginScreen');
+                      }
                     },
                   ),
                 ],
