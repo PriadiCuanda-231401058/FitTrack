@@ -110,7 +110,7 @@ class EditProfileScreen extends StatelessWidget {
                   Image.asset(
                     'assets/images/upload_icon.png',
                     width: 20,
-                    height: 20,
+                    height: 20, 
                   ),
                 ],
               ),
