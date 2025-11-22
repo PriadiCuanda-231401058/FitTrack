@@ -1,3 +1,4 @@
+import 'package:fittrack/features/achievement/Screen/achievement_screen.dart';
 import 'package:fittrack/features/settings/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:fittrack/features/splash/splash_screen.dart';
@@ -13,4 +14,5 @@ final Map<String, WidgetBuilder> appRoutes = {
   '/resetPasswordScreen': (context) => const ResetPasswordScreen(),
   '/homeScreen': (context) => const HomeScreen(),
   '/settingsScreen': (context) => const SettingsScreen(),
+  '/achievementScreen': (context) => const AchievementScreen(),
 };
