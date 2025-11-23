@@ -6,35 +6,46 @@ class DeleteAccountScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
 
-        Row(
+        Stack(
+          alignment: Alignment.center,
           children: [
-            const Spacer(),
-            const Text(
-              "Delete Account",
-              style: TextStyle(
-                color: Color(0xffD10F0F),
-                fontSize: 24,
-                fontWeight: FontWeight.w900,
+            Center(
+              child: Text(
+                "Delete Account",
+                style: TextStyle(
+                  fontSize: screenWidth * 0.07,
+                  color: const Color(0xffC50000),
+                  fontWeight: FontWeight.w900,
+                ),
               ),
             ),
-            const Spacer(),
-            GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: const Icon(Icons.close, color: Colors.white, size: 30),
+
+            Positioned(
+              right: 0,
+              child: GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Icon(
+                  Icons.close,
+                  color: Colors.white,
+                  size: screenWidth * 0.07,
+                ),
+              ),
             ),
           ],
         ),
 
-        const SizedBox(height: 24),
+        SizedBox(height: screenHeight * 0.025),
 
         Text.rich(
           TextSpan(
             style: TextStyle(
-              fontSize: 22,
+              fontSize: screenWidth * 0.06,
               height: 1.4,
               fontFamily: "LeagueSpartan",
             ),
@@ -70,7 +81,7 @@ class DeleteAccountScreen extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
 
-        const SizedBox(height: 35),
+        SizedBox(height: screenHeight * 0.03),
 
         GestureDetector(
           onTap: () => SettingsController().deleteAccount().then((success) {
@@ -86,17 +97,17 @@ class DeleteAccountScreen extends StatelessWidget {
           }),
           child: Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 16),
+            padding: EdgeInsets.symmetric(vertical: screenHeight * 0.018),
             decoration: BoxDecoration(
               color: const Color(0xffD9D9D9),
               borderRadius: BorderRadius.circular(28),
             ),
-            child: const Center(
+            child: Center(
               child: Text(
                 "Yes, I’m Sure",
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 18,
+                  fontSize: screenWidth * 0.05,
                   fontWeight: FontWeight.w700,
                 ),
               ),
