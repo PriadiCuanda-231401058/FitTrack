@@ -7,7 +7,7 @@ import 'package:fittrack/features/settings/screens/account_settings_screen.dart'
 import 'package:fittrack/features/settings/screens/delete_account_screen.dart';
 import 'package:fittrack/features/settings/screens/premium_features_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:fittrack/features/settings/settings_controller.dart';
+// import 'package:fittrack/features/settings/settings_controller.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -15,7 +15,8 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
-    final width = MediaQuery.of(context).size.width;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -26,52 +27,52 @@ class SettingsScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title: Text(
           "Settings",
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w700,
-            fontSize: 20,
+            fontSize: screenWidth  * 0.05,
           ),
         ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 30),
+        padding: EdgeInsets.symmetric(horizontal: screenHeight * 0.03, vertical: screenWidth * 0.06),
         child: Column(
           children: [
             CircleAvatar(
-              radius: width * 0.18,
+              radius: screenWidth * 0.18,
               backgroundImage:
                   user?.photoURL != null && user!.photoURL!.isNotEmpty
                   ? NetworkImage(user.photoURL!)
-                  : const AssetImage('assets/images/default_pp.png')
+                  : const AssetImage('assets/images/profile_icon.png')
                         as ImageProvider,
             ),
-            const SizedBox(height: 24),
+
+            SizedBox(height: screenHeight * 0.02),
 
             Text(
               "Hello ${user?.displayName ?? 'User'},",
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.white,
-                fontSize: 24,
+                fontSize: screenWidth * 0.06,
                 fontWeight: FontWeight.w700,
               ),
             ),
-            const SizedBox(height: 6),
-            const Text(
+            SizedBox(height: screenHeight * 0.001),
+            Text(
               "Welcome back",
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 20,
+                fontSize: screenWidth * 0.05,
                 fontWeight: FontWeight.w300,
               ),
             ),
-            const SizedBox(height: 32),
+            SizedBox(height: screenHeight * 0.02),
 
-            // Menu
             Container(
               decoration: BoxDecoration(
                 color: const Color(0xFFF4F4F6).withOpacity(0.7),
@@ -84,8 +85,8 @@ class SettingsScreen extends StatelessWidget {
                     text: 'Edit Profile',
                     icon: Image.asset(
                       'assets/images/edit_profile.png',
-                      width: 20,
-                      height: 20,
+                      width: screenWidth * 0.05,
+                      height: screenHeight * 0.05,
                     ),
                     onTap: () {
                       showDialog(
@@ -107,8 +108,8 @@ class SettingsScreen extends StatelessWidget {
                     text: 'Account Settings',
                     icon: Image.asset(
                       'assets/images/account_settings.png',
-                      width: 20,
-                      height: 20,
+                      width: screenWidth * 0.05,
+                      height: screenHeight * 0.05,
                     ),
                     onTap: () {
                       showDialog(
@@ -129,8 +130,8 @@ class SettingsScreen extends StatelessWidget {
                     text: 'Premium Features',
                     icon: Image.asset(
                       'assets/images/premium_features.png',
-                      width: 20,
-                      height: 20,
+                      width: screenWidth * 0.05,
+                      height: screenHeight * 0.05,
                     ),
                     onTap: () {
                       showDialog(
@@ -144,8 +145,8 @@ class SettingsScreen extends StatelessWidget {
                     text: 'Delete Account',
                     icon: Image.asset(
                       'assets/images/delete_account.png',
-                      width: 20,
-                      height: 20,
+                      width: screenWidth * 0.05,
+                      height: screenHeight * 0.05,
                     ),
                     onTap: () {
                       showDialog(
@@ -158,7 +159,7 @@ class SettingsScreen extends StatelessWidget {
                             insetPadding: EdgeInsets.zero,
                             child: CustomPopup(
                               child:
-                                  DeleteAccountScreen(), // << INI YANG KAMU MAKSUD
+                                  DeleteAccountScreen(), 
                             ),
                           );
                         },
@@ -169,8 +170,8 @@ class SettingsScreen extends StatelessWidget {
                     text: 'Log Out',
                     icon: Image.asset(
                       'assets/images/log_out.png',
-                      width: 20,
-                      height: 20,
+                      width: screenWidth * 0.05,
+                      height: screenHeight * 0.05,
                     ),
                     onTap: () async {
                       await GoogleSignIn().signOut();

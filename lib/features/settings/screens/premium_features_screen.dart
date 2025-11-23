@@ -5,72 +5,84 @@ class PremiumFeaturesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        /// ------------------ TITLE ------------------
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        Stack(
+          alignment: Alignment.center,
           children: [
-            const Text(
-              "Premium Features",
-              style: TextStyle(
-                fontSize: 26,
-                color: Color(0xffA55EFF),
-                fontWeight: FontWeight.w900,
+            Center(
+              child: Text(
+                "Premium Features",
+                style: TextStyle(
+                  fontSize: screenWidth * 0.06,
+                  color: const Color(0xffA55EFF),
+                  fontWeight: FontWeight.w900,
+                ),
               ),
             ),
-            const SizedBox(width: 10),
-            GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: const Icon(Icons.close, color: Colors.white, size: 30),
+
+            Positioned(
+              right: 0,
+              child: GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Icon(
+                  Icons.close,
+                  color: Colors.white,
+                  size: screenWidth * 0.07,
+                ),
+              ),
             ),
           ],
         ),
 
-        const SizedBox(height: 24),
+        SizedBox(height: screenHeight * 0.02),
 
-        /// ------------------ LIST PLANS ------------------
         _plan(
+          context: context,
           title: "Basic",
           price: "Rp49.000",
           duration: "/ month",
           description: "Ideal for beginners starting their fitness journey.",
-          icon: Image.asset('assets/images/blue_crown.png', width: 26),
+          icon: Image.asset('assets/images/blue_crown.png', width: screenWidth * 0.02),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: screenHeight * 0.02),
 
         _plan(
+          context: context,
           title: "Standard",
           price: "Rp99.000",
           duration: "/ 3 months",
           description: "Stay consistent and see real progress.",
-          icon: Image.asset('assets/images/green_crown.png', width: 26),
+          icon: Image.asset('assets/images/green_crown.png', width: screenWidth * 0.02),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: screenHeight * 0.02),
 
         _plan(
+          context: context,
           title: "Pro",
           price: "Rp229.000",
           duration: "/ 6 months",
           description: "Get advanced workouts and detailed progress tracking.",
-          icon: Image.asset('assets/images/yellow_crown.png', width: 26),
+          icon: Image.asset('assets/images/yellow_crown.png', width: screenWidth * 0.02),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: screenHeight * 0.02),
 
         _plan(
+          context: context,
           title: "Ultimate",
           price: "Rp399.000",
           duration: "/ year",
           description: "Full access to all features and premium programs.",
-          icon: Image.asset('assets/images/red_crown.png', width: 26),
+          icon: Image.asset('assets/images/red_crown.png', width: screenWidth * 0.02),
         ),
 
-        const SizedBox(height: 30),
+        SizedBox(height: screenHeight * 0.05),
 
-        /// ------------------ GET ACCESS BUTTON ------------------
         Container(
-          padding: const EdgeInsets.symmetric(vertical: 10),
+          padding: EdgeInsets.symmetric(vertical: screenHeight  * 0.008),
           decoration: BoxDecoration(
             color: const Color(0xffD9D9D9),
             borderRadius: BorderRadius.circular(30),
@@ -78,16 +90,16 @@ class PremiumFeaturesScreen extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
+              Text(
                 "Get Access",
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 20,
+                  fontSize: screenWidth * 0.05,
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              const SizedBox(width: 12),
-              Image.asset('assets/images/get_access.png', width: 26),
+              SizedBox(width: screenWidth * 0.04),
+              Image.asset('assets/images/get_access.png', width: screenWidth * 0.1),
             ],
           ),
         ),
@@ -95,25 +107,28 @@ class PremiumFeaturesScreen extends StatelessWidget {
     );
   }
 
-  /// -------------------------------------------------------
-  ///                 PLAN COMPONENT (FIXED ALIGNMENT)
-  /// -------------------------------------------------------
   Widget _plan({
+    required BuildContext context,
     required String title,
     required String price,
     required String duration,
     required String description,
     required Widget icon,
   }) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7),
+      padding: EdgeInsets.symmetric(
+        horizontal: screenWidth * 0.04,
+        vertical: screenHeight * 0.01,
+      ),
       decoration: BoxDecoration(
         color: const Color(0xffD9D9D9),
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(screenWidth * 0.04),
       ),
       child: Row(
         children: [
-          /// LEFT: Title + Description
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -122,31 +137,30 @@ class PremiumFeaturesScreen extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(
-                        fontSize: 18,
+                      style: TextStyle(
+                        fontSize: screenWidth * 0.045,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
 
                     const Spacer(),
 
-                    /// ---- FIXED WIDTH PRICE COLUMN ----
                     SizedBox(
-                      width: 70, // <--- ini yg membuat harga sejajar semua
+                      width: screenWidth * 0.18,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
                             price,
-                            style: const TextStyle(
-                              fontSize: 10,
+                            style: TextStyle(
+                              fontSize: screenWidth * 0.03,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
                           Text(
                             duration,
-                            style: const TextStyle(
-                              fontSize: 10,
+                            style: TextStyle(
+                              fontSize: screenWidth * 0.028,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -156,27 +170,24 @@ class PremiumFeaturesScreen extends StatelessWidget {
                   ],
                 ),
 
-                const SizedBox(height: 6),
+                SizedBox(height: screenHeight * 0.006),
 
                 Text(
                   description,
-                  style: const TextStyle(
-                    fontSize: 7,
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.020,
                     color: Colors.black54,
-                    fontWeight: FontWeight.w400,
                   ),
                 ),
               ],
             ),
           ),
 
-          const SizedBox(width: 16),
+          SizedBox(width: screenWidth * 0.03),
 
-          /// ICON
-          Center(child: icon),
+          SizedBox(width: screenWidth * 0.06, child: icon),
         ],
       ),
     );
   }
-
-}
+    }
