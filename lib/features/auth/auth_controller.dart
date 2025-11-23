@@ -12,95 +12,96 @@ class AuthController {
   Stream<User?> get authStateChanges => auth.authStateChanges();
 
   Future<UserModel?> signInWithGoogle() async {
-  final FirebaseAuth auth = FirebaseAuth.instance;
-  // final GoogleAuthProvider googleProvider = GoogleAuthProvider();
-  final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-  final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    // final GoogleAuthProvider googleProvider = GoogleAuthProvider();
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
 
-  final AuthCredential googleProvider = GoogleAuthProvider.credential(
-    accessToken: googleAuth?.accessToken,
-    idToken: googleAuth?.idToken,
-  );
-
-  // Login dengan Google
-  final UserCredential credential = await auth.signInWithCredential(googleProvider);
-
-  // Ambil data user dari hasil login
-  final User? user = credential.user;
-
-  if (user != null) {
-    // Buat objek UserModel dari data user
-    UserModel userModel = UserModel(
-      uid: user.uid,
-      name: user.displayName ?? '',
-      email: user.email ?? '',
+    final AuthCredential googleProvider = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
     );
 
-    // Simpan ke Firestore (jika belum ada)
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(user.uid)
-        .set(userModel.toMap(), SetOptions(merge: true));
+    // Login dengan Google
+    final UserCredential credential = await auth.signInWithCredential(
+      googleProvider,
+    );
 
-    // Kembalikan objek userModel
-    return userModel;
-  }
+    // Ambil data user dari hasil login
+    final User? user = credential.user;
+
+    if (user != null) {
+      // Buat objek UserModel dari data user
+      UserModel userModel = UserModel(
+        uid: user.uid,
+        name: user.displayName ?? '',
+        email: user.email ?? '',
+      );
+
+      // Simpan ke Firestore (jika belum ada)
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .set(userModel.toMap(), SetOptions(merge: true));
+
+      // Kembalikan objek userModel
+      return userModel;
+    }
 
     return null;
   }
 
   Future<User?> register(String email, String password, String username) async {
-
-      UserCredential userCredential = await auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      User? user = userCredential.user;
-      if (user != null) {
-        await user.updateDisplayName(username);
-      }
-      return user;
-    
+    UserCredential userCredential = await auth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+    User? user = userCredential.user;
+    if (user != null) {
+      await user.updateDisplayName(username);
+    }
+    return user;
   }
 
   Future<UserModel?> login(String email, String password) async {
-      UserCredential credential = await auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
+    UserCredential credential = await auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+
+    // Ambil data user dari hasil login
+    final User? user = credential.user;
+
+    if (user != null) {
+      // Buat objek UserModel dari data user
+      UserModel userModel = UserModel(
+        uid: user.uid,
+        name: user.displayName ?? '',
+        email: user.email ?? '',
       );
 
-      // Ambil data user dari hasil login
-      final User? user = credential.user;
+      // Simpan ke Firestore (jika belum ada)
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .set(userModel.toMap(), SetOptions(merge: true));
 
-      if (user != null) {
-        // Buat objek UserModel dari data user
-        UserModel userModel = UserModel(
-          uid: user.uid,
-          name: user.displayName ?? '',
-          email: user.email ?? '',
-        );
-
-        // Simpan ke Firestore (jika belum ada)
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .set(userModel.toMap(), SetOptions(merge: true));
-
-        // Kembalikan objek userModel
-        return userModel;
-      }
-      return null;
+      // Kembalikan objek userModel
+      return userModel;
+    }
+    return null;
   }
 
-Future<bool> resetPassword(String email) async {
-  try {
-    await auth.sendPasswordResetEmail(email: email);
-    return true; // success
-  } on FirebaseAuthException catch (e) {
-    debugPrint('Failed to send reset email: ${e.message}');
-    return false; // failed
+  Future<bool> resetPassword(String email) async {
+    try {
+      await auth.sendPasswordResetEmail(email: email);
+      return true; // success
+    } on FirebaseAuthException catch (e) {
+      debugPrint('Failed to send reset email: ${e.message}');
+      return false; // failed
+    }
   }
-}
 
   Future<void> logout() async {
     await auth.signOut();
@@ -109,3 +110,4 @@ Future<bool> resetPassword(String email) async {
 
   User? get currentUser => auth.currentUser;
 }
+
