@@ -27,6 +27,8 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
         "description":
             "Ignites your core with intense moves to burn fat and carve strong, defined abs.",
         "bgColor": Color(0x800000FF),
+        "duration": 7,
+        "exerciseCount": 3,
         "imageURL": "assets/workouts/Challenges/Abs Attack.jfif",
       },
       {
@@ -35,6 +37,8 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
         "description":
             "Builds explosive strength and power in your arms with muscle-pumping workouts.",
         "bgColor": Color(0x80FF6A00),
+        "duration": 8,
+        "exerciseCount": 4,
         "imageURL": "assets/workouts/Challenges/Arm Blaster.jfif",
       },
     ];
@@ -517,6 +521,20 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                                               child: ElevatedButton(
                                                 onPressed: () {
                                                   // pindah ke halaman exercise list
+                                                  Navigator.pushNamed(
+                                                    context,
+                                                    '/exerciseListScreen',
+                                                    arguments: {
+                                                      'challengeID':
+                                                          challenge['id'],
+                                                      'title':
+                                                          challenge['title'],
+                                                      'duration':
+                                                          challenge['duration'],
+                                                      'exerciseCount':
+                                                          challenge['exerciseCount'],
+                                                    },
+                                                  );
                                                 },
                                                 style: ElevatedButton.styleFrom(
                                                   backgroundColor: Colors.white,
@@ -1008,11 +1026,6 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                 ),
               ),
               NavigationBarWidget(location: '/workoutScreen'),
-              // Container(
-              //   color: Colors.white,
-              //   height: screenHeight * 0.075,
-              //   child: Row(children: [Text('Ini navigation')]),
-              // ),
             ],
           ),
         ),
