@@ -7,7 +7,8 @@ import 'package:fittrack/features/settings/screens/account_settings_screen.dart'
 import 'package:fittrack/features/settings/screens/delete_account_screen.dart';
 import 'package:fittrack/features/settings/screens/premium_features_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:fittrack/features/settings/settings_controller.dart';
+import 'package:fittrack/shared/widgets/navigation_bar_widget.dart';
+// import 'package:fittrack/features/settings/settings_controller.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -181,6 +182,7 @@ class SettingsScreen extends StatelessWidget {
                       }
                     },
                   ),
+                  NavigationBarWidget(location: '/settingsScreen'),
                 ],
               ),
             ),

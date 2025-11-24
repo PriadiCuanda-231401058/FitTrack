@@ -10,6 +10,20 @@ class NavigationBarWidget extends StatefulWidget {
 }
 
 class _NavigationBarWidgetState extends State<NavigationBarWidget> {
+  Widget buildNavItem(String route, String iconPath) {
+    return GestureDetector(
+      onTap: () {
+        if (widget.location != route) {
+          Navigator.pushReplacementNamed(context, route);
+        }
+      },
+      child: Image.asset(
+        iconPath,
+        color: widget.location == route ? Colors.blue : Colors.white,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -18,38 +32,25 @@ class _NavigationBarWidgetState extends State<NavigationBarWidget> {
       color: Colors.black,
       height: screenHeight * 0.05,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Image.asset(
-            'assets/images/workout_icon.png',
-            color: widget.location == '/workoutScreen'
-                ? Colors.blue
-                : Colors.white,
-          ),
-          Image.asset(
+          buildNavItem(
+            '/workoutScreen', 
+            'assets/images/workout_icon.png'),
+          buildNavItem(
+            '/achievementScreen',
             'assets/images/achievement_icon.png',
-            color: widget.location == '/achievementScreen'
-                ? Colors.blue
-                : Colors.white,
           ),
-          Image.asset(
+          buildNavItem(
+            '/leaderboardScreen',
             'assets/images/leaderboard_icon.png',
-            color: widget.location == '/leaderboardScreen'
-                ? Colors.blue
-                : Colors.white,
           ),
-          Image.asset(
-            'assets/images/report_icon.png',
-            color: widget.location == '/reportScreen'
-                ? Colors.blue
-                : Colors.white,
-          ),
-          Image.asset(
-            'assets/images/setting_icon.png',
-            color: widget.location == '/settingsScreen'
-                ? Colors.blue
-                : Colors.white,
-          ),
+          buildNavItem(
+            '/reportScreen', 
+            'assets/images/report_icon.png'),
+          buildNavItem(
+            '/settingsScreen', 
+            'assets/images/setting_icon.png'),
         ],
       ),
     );
