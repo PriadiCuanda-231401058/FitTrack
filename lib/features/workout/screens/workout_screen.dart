@@ -14,44 +14,44 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   String focusArea = "ABS";
   String goalType = "Strength";
 
-  // final WorkoutController _workoutController = WorkoutController();
-  // List<Workout> _challenges = [];
-  // List<Workout> _workoutByFocusArea = [];
-  // List<Workout> _workoutByGoalType = [];
-  // List<Workout> _popularWorkouts = [];
-  // bool _isLoading = true;
+  final WorkoutController _workoutController = WorkoutController();
+  List<Workout> _challenges = [];
+  List<Workout> _workoutByFocusArea = [];
+  List<Workout> _workoutByGoalType = [];
+  List<Workout> _popularWorkouts = [];
+  bool _isLoading = true;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _loadWorkoutData();
-  // }
+  @override
+  void initState() {
+    super.initState();
+    _loadWorkoutData();
+  }
 
-  // Future<void> _loadWorkoutData() async {
-  //   setState(() => _isLoading = true);
+  Future<void> _loadWorkoutData() async {
+    setState(() => _isLoading = true);
 
-  //   try {
-  //     final challenges = await _workoutController.getChallenges();
-  //     final focusWorkouts = await _workoutController.getWorkoutsByBodyFocus(
-  //       focusArea,
-  //     );
-  //     final targetWorkouts = await _workoutController.getWorkoutsByTarget(
-  //       goalType,
-  //     );
-  //     final popular = await _workoutController.getPopularWorkouts();
+    try {
+      final challenges = await _workoutController.getChallenges();
+      final focusWorkouts = await _workoutController.getWorkoutsByBodyFocus(
+        focusArea,
+      );
+      final targetWorkouts = await _workoutController.getWorkoutsByTarget(
+        goalType,
+      );
+      final popular = await _workoutController.getPopularWorkouts();
 
-  //     setState(() {
-  //       _challenges = challenges;
-  //       _workoutByFocusArea = focusWorkouts;
-  //       _workoutByGoalType = targetWorkouts;
-  //       _popularWorkouts = popular;
-  //     });
-  //   } catch (e) {
-  //     print('Error loading workout data: $e');
-  //   } finally {
-  //     setState(() => _isLoading = false);
-  //   }
-  // }
+      setState(() {
+        _challenges = challenges;
+        _workoutByFocusArea = focusWorkouts;
+        _workoutByGoalType = targetWorkouts;
+        _popularWorkouts = popular;
+      });
+    } catch (e) {
+      print('Error loading workout data: $e');
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
