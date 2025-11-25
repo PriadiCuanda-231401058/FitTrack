@@ -1034,6 +1034,31 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                                 GestureDetector(
                                   onTap: () {
                                     // Tentukan tipe workout berdasarkan data yang ada
+                                    final Map<String, dynamic> arguments = {
+                                      'title': workout.title,
+                                      'duration': workout.duration,
+                                      'exerciseCount': workout.exerciseCount,
+                                      'isPremium': workout.isPremium,
+                                    };
+
+                                    // Tambahkan parameter berdasarkan tipe workout
+                                    if (workout.focusArea != null) {
+                                      arguments['workoutType'] = 'bodyFocus';
+                                      arguments['focusArea'] =
+                                          workout.focusArea;
+                                      arguments['level'] = workout.title;
+                                    } else if (workout.goalType != null) {
+                                      arguments['workoutType'] = 'target';
+                                      arguments['target'] = workout.goalType;
+                                      arguments['durationLevel'] =
+                                          parseDurationFromTitle(workout.title);
+                                    }
+
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/exerciseListScreen',
+                                      arguments: arguments,
+                                    );
                                   },
                                   child: SizedBox(
                                     width: double.infinity,
