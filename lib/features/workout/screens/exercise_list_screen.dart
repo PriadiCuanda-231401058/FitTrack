@@ -118,8 +118,9 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
       });
     } catch (e) {
       print('Error loading exercises: $e');
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Failed to load exercises')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to load exercises')));
     } finally {
       setState(() => _isLoading = false);
     }
@@ -134,17 +135,19 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
     final duration = args?['duration'] ?? 0;
     final int exerciseCount = args?['exerciseCount'] ?? 0;
 
-//
+    //     print("DEBUG ARGS: $args");
 
+    // print("workoutType: ${args?['workoutType']} (${args?['workoutType'].runtimeType})");
+    // print("focusArea:   ${args?['focusArea']}   (${args?['focusArea'].runtimeType})");
+    // print("level:       ${args?['level']}       (${args?['level'].runtimeType})");
+    // print("target:      ${args?['target']}      (${args?['target'].runtimeType})");
+    // print("duration:    ${args?['duration']}    (${args?['duration'].runtimeType})");
+    // print("isPremium:   ${args?['isPremium']}   (${args?['isPremium'].runtimeType})");
 
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     if (_isLoading) {
-      return Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     // ini nanti select exercise yang challengeID-nya sama dengan challengeID
@@ -175,7 +178,7 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
     //     "videoURL": "",
     //   },
     // ];
-    
+
     // _loadExercises();
 
     return Scaffold(
