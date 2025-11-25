@@ -1,51 +1,185 @@
 import 'package:fittrack/shared/widgets/navigation_bar_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:fittrack/models/workout_model.dart';
+import 'package:fittrack/features/workout/workout_controller.dart';
 
-class ExerciseListScreen extends StatelessWidget {
+class ExerciseListScreen extends StatefulWidget {
   const ExerciseListScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+  State<ExerciseListScreen> createState() => _ExerciseListScreenState();
+}
 
+class _ExerciseListScreenState extends State<ExerciseListScreen> {
+  final WorkoutController _workoutController = WorkoutController();
+
+  List<Map<String, dynamic>> _exerciseList = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // memastikan ModalRoute sudah siap
+    Future.delayed(Duration.zero, () {
+      _loadExercises();
+    });
+  }
+
+  void _showPremiumDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Premium Workout'),
+        content: Text(
+          'This workout is available for premium users only. Upgrade to access all features.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text('Upgrade'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _loadExercises() async {
+    setState(() => _isLoading = true);
+
+    try {
+      final args =
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
+
+      final String? workoutType = args?['workoutType'];
+      final String title = args?['title'] ?? '';
+      final String? focusArea = args?['focusArea'];
+      final String? level = args?['level'];
+      final String? target = args?['target'];
+      final bool? isPremium = args?['isPremium'];
+
+      if (isPremium == true) {
+        _showPremiumDialog();
+        setState(() => _isLoading = false);
+        return;
+      }
+
+      List<Exercise> exercises = [];
+
+      if (workoutType == 'bodyFocus' && focusArea != null && level != null) {
+        exercises = await _workoutController.getExercisesForWorkout(
+          focusArea: focusArea,
+          level: level,
+        );
+      } else if (workoutType == 'target' && target != null) {
+        // final duration = args?['duration'];
+        exercises = await _workoutController.getExercisesForWorkout(
+          target: target,
+          duration: title,
+        );
+      }
+
+      // Convert ke map yang digunakan UI
+      final List<Map<String, dynamic>> exerciseList = exercises.map((exercise) {
+        int? minutes;
+        int? seconds;
+        int? repetition;
+
+        if (exercise.type.contains('time')) {
+          minutes = exercise.value ~/ 60;
+          seconds = exercise.value % 60;
+          repetition = null;
+        } else {
+          minutes = null;
+          seconds = null;
+          repetition = exercise.value;
+        }
+
+        return {
+          "id": exercise.id.hashCode,
+          "name": exercise.name,
+          "minutes": minutes,
+          "seconds": seconds,
+          "repetition": repetition,
+          "videoURL": exercise.media,
+          "rest": exercise.rest,
+          "type": exercise.type,
+        };
+      }).toList();
+
+      setState(() {
+        _exerciseList = exerciseList;
+      });
+    } catch (e) {
+      print('Error loading exercises: $e');
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to load exercises')));
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final args =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
 
-    final int? challengeID = args?['challengeID'];
-    final String? title = args?['title'];
-    final int? duration = args?['duration'];
-    final int? exerciseCount = args?['exerciseCount'];
+    final String title = args?['title'] ?? 'Workout';
+    final duration = args?['duration'] ?? 0;
+    final int exerciseCount = args?['exerciseCount'] ?? 0;
 
-    final int? workoutID = null;
+    //     print("DEBUG ARGS: $args");
+
+    // print("workoutType: ${args?['workoutType']} (${args?['workoutType'].runtimeType})");
+    // print("focusArea:   ${args?['focusArea']}   (${args?['focusArea'].runtimeType})");
+    // print("level:       ${args?['level']}       (${args?['level'].runtimeType})");
+    // print("target:      ${args?['target']}      (${args?['target'].runtimeType})");
+    // print("duration:    ${args?['duration']}    (${args?['duration'].runtimeType})");
+    // print("isPremium:   ${args?['isPremium']}   (${args?['isPremium'].runtimeType})");
+
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    if (_isLoading) {
+      return Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
     // ini nanti select exercise yang challengeID-nya sama dengan challengeID
     // kalau challengeID null, select berdasarkan workoutID
-    final List<Map<String, dynamic>> exerciseList = [
-      {
-        "id": 1,
-        "name": "Crunches",
-        "minutes": null,
-        "seconds": null,
-        "repetition": 15,
-        "videoURL": "",
-      },
-      {
-        "id": 2,
-        "name": "Russian Twists",
-        "minutes": null,
-        "seconds": null,
-        "repetition": 20,
-        "videoURL": "",
-      },
-      {
-        "id": 1,
-        "name": "Plank",
-        "minutes": null,
-        "seconds": 15,
-        "repetition": null,
-        "videoURL": "",
-      },
-    ];
+    // final List<Map<String, dynamic>> exerciseList = [
+    //   {
+    //     "id": 1,
+    //     "name": "Crunches",
+    //     "minutes": null,
+    //     "seconds": null,
+    //     "repetition": 15,
+    //     "videoURL": "",
+    //   },
+    //   {
+    //     "id": 2,
+    //     "name": "Russian Twists",
+    //     "minutes": null,
+    //     "seconds": null,
+    //     "repetition": 20,
+    //     "videoURL": "",
+    //   },
+    //   {
+    //     "id": 1,
+    //     "name": "Plank",
+    //     "minutes": null,
+    //     "seconds": 15,
+    //     "repetition": null,
+    //     "videoURL": "",
+    //   },
+    // ];
+
+    // _loadExercises();
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -197,7 +331,7 @@ class ExerciseListScreen extends StatelessWidget {
 
                         SizedBox(height: screenHeight * 0.01),
 
-                        ...exerciseList.map((exercise) {
+                        ..._exerciseList.map((exercise) {
                           return Container(
                             padding: EdgeInsets.symmetric(
                               vertical: screenHeight * 0.025,

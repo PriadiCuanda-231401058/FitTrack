@@ -128,7 +128,7 @@ class WorkoutController {
           
           final workout = Workout(
             id: '${target}_${doc.id}',
-            title: _getTargetWorkoutTitle(target, doc.id),
+            title: doc.id,
             goalType: target,
             exerciseCount: exercisesSnapshot.docs.length,
             duration: _parseDurationFromLevel(doc.id),
@@ -294,16 +294,16 @@ class WorkoutController {
     return 'assets/workouts/$focusArea/images/$level.jfif';
   }
 
-  String _getTargetWorkoutTitle(String target, String duration) {
-    // Map duration to proper title
-    final durationMap = {
-      '5 Menit': '5-Min ${_getTargetSuffix(target)}',
-      '7 Menit': '7-Min ${_getTargetSuffix(target)}',
-      '10 Menit': '10-Min ${_getTargetSuffix(target)}',
-    };
+  // String _getTargetWorkoutTitle(String target, String duration) {
+  //   // Map duration to proper title
+  //   final durationMap = {
+  //     '5 Menit': '5-Min ${_getTargetSuffix(target)}',
+  //     '7 Menit': '7-Min ${_getTargetSuffix(target)}',
+  //     '10 Menit': '10-Min ${_getTargetSuffix(target)}',
+  //   };
     
-    return durationMap[duration] ?? '$duration $target';
-  }
+  //   return durationMap[duration] ?? '$duration $target';
+  // }
 
   String _getTargetSuffix(String target) {
     switch (target) {
@@ -320,10 +320,10 @@ class WorkoutController {
 
   String _getTargetWorkoutImageURL(String target, String duration) {
     // Map to your actual image paths
-    final title = _getTargetWorkoutTitle(target, duration)
-        .replaceAll(' ', '')
-        .replaceAll('-', ' ');
-    return 'assets/workouts/$target/images/$title.jfif';
+    // final title = _getTargetWorkoutTitle(target, duration)
+    //     .replaceAll(' ', '')
+    //     .replaceAll('-', ' ');
+    return 'assets/workouts/$target/images/$duration.jfif';
   }
 
   int _parseDurationFromLevel(String level) {
