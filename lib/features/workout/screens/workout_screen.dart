@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fittrack/shared/widgets/navigation_bar_widget.dart';
+import 'package:fittrack/features/workout/workout_controller.dart';
+import 'package:fittrack/models/workout_model.dart';
 
 class WorkoutScreen extends StatefulWidget {
   const WorkoutScreen({super.key});
@@ -9,8 +11,47 @@ class WorkoutScreen extends StatefulWidget {
 }
 
 class _WorkoutScreenState extends State<WorkoutScreen> {
-  String focusArea = "Abs";
+  String focusArea = "ABS";
   String goalType = "Strength";
+
+  final WorkoutController _workoutController = WorkoutController();
+  List<Workout> _challenges = [];
+  List<Workout> _workoutByFocusArea = [];
+  List<Workout> _workoutByGoalType = [];
+  List<Workout> _popularWorkouts = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadWorkoutData();
+  }
+
+  Future<void> _loadWorkoutData() async {
+    setState(() => _isLoading = true);
+
+    try {
+      final challenges = await _workoutController.getChallenges();
+      final focusWorkouts = await _workoutController.getWorkoutsByBodyFocus(
+        focusArea,
+      );
+      final targetWorkouts = await _workoutController.getWorkoutsByTarget(
+        goalType,
+      );
+      final popular = await _workoutController.getPopularWorkouts();
+
+      setState(() {
+        _challenges = challenges;
+        _workoutByFocusArea = focusWorkouts;
+        _workoutByGoalType = targetWorkouts;
+        _popularWorkouts = popular;
+      });
+    } catch (e) {
+      print('Error loading workout data: $e');
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,313 +61,313 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     final bool isStreak = true;
 
     // ini nanti ganti dengan data dari provider
-    final List<Map<String, dynamic>> challenges = [
-      {
-        "id": 1,
-        "title": "Abs Attack",
-        "description":
-            "Ignites your core with intense moves to burn fat and carve strong, defined abs.",
-        "bgColor": Color(0x800000FF),
-        "duration": 7,
-        "exerciseCount": 3,
-        "imageURL": "assets/workouts/Challenges/Abs Attack.jfif",
-      },
-      {
-        "id": 2,
-        "title": "Arm Blaster",
-        "description":
-            "Builds explosive strength and power in your arms with muscle-pumping workouts.",
-        "bgColor": Color(0x80FF6A00),
-        "duration": 8,
-        "exerciseCount": 4,
-        "imageURL": "assets/workouts/Challenges/Arm Blaster.jfif",
-      },
-    ];
+    // final List<Map<String, dynamic>> challenges = [
+    //   {
+    //     "id": 1,
+    //     "title": "Abs Attack",
+    //     "description":
+    //         "Ignites your core with intense moves to burn fat and carve strong, defined abs.",
+    //     "bgColor": Color(0x800000FF),
+    //     "duration": 7,
+    //     "exerciseCount": 3,
+    //     "imageURL": "assets/workouts/Challenges/Abs Attack.jfif",
+    //   },
+    //   {
+    //     "id": 2,
+    //     "title": "Arm Blaster",
+    //     "description":
+    //         "Builds explosive strength and power in your arms with muscle-pumping workouts.",
+    //     "bgColor": Color(0x80FF6A00),
+    //     "duration": 8,
+    //     "exerciseCount": 4,
+    //     "imageURL": "assets/workouts/Challenges/Arm Blaster.jfif",
+    //   },
+    // ];
 
-    // ini nanti ganti dengan data dari provider
-    final List<Map<String, dynamic>> workoutByFocusArea = [
-      {
-        "id": 1,
-        "title": "Beginner",
-        "focusArea": "Abs",
-        "exerciseCount": 4,
-        "duration": 10,
-        "isPremium": false,
-        "imageURL": "assets/workouts/Abs/images/Beginner.jfif",
-      },
-      {
-        "id": 2,
-        "title": "Intermediate",
-        "focusArea": "Abs",
-        "exerciseCount": 5,
-        "duration": 15,
-        "isPremium": false,
-        "imageURL": "assets/workouts/Abs/images/Intermediate.jfif",
-      },
-      {
-        "id": 3,
-        "title": "Advanced",
-        "focusArea": "Abs",
-        "exerciseCount": 7,
-        "duration": 25,
-        "isPremium": true,
-        "imageURL": "assets/workouts/Abs/images/Advanced.jfif",
-      },
-      {
-        "id": 4,
-        "title": "Beginner",
-        "focusArea": "Arms",
-        "exerciseCount": 4,
-        "duration": 10,
-        "isPremium": false,
-        "imageURL": "assets/workouts/Arms/images/Beginner.jfif",
-      },
-      {
-        "id": 5,
-        "title": "Intermediate",
-        "focusArea": "Arms",
-        "exerciseCount": 7,
-        "duration": 15,
-        "isPremium": false,
-        "imageURL": "assets/workouts/Arms/images/Intermediate.jfif",
-      },
-      {
-        "id": 6,
-        "title": "Advanced",
-        "focusArea": "Arms",
-        "exerciseCount": 9,
-        "duration": 23,
-        "isPremium": true,
-        "imageURL": "assets/workouts/Arms/images/Advanced.jfif",
-      },
-      {
-        "id": 7,
-        "title": "Beginner",
-        "focusArea": "Chest",
-        "exerciseCount": 4,
-        "duration": 9,
-        "isPremium": false,
-        "imageURL": "assets/workouts/Chest/images/Beginner.jfif",
-      },
-      {
-        "id": 8,
-        "title": "Intermediate",
-        "focusArea": "Chest",
-        "exerciseCount": 5,
-        "duration": 13,
-        "isPremium": false,
-        "imageURL": "assets/workouts/Chest/images/Intermediate.jfif",
-      },
-      {
-        "id": 9,
-        "title": "Advanced",
-        "focusArea": "Chest",
-        "exerciseCount": 7,
-        "duration": 21,
-        "isPremium": true,
-        "imageURL": "assets/workouts/Chest/images/Advanced.jfif",
-      },
-      {
-        "id": 10,
-        "title": "Beginner",
-        "focusArea": "Legs",
-        "exerciseCount": 5,
-        "duration": 10,
-        "isPremium": false,
-        "imageURL": "assets/workouts/Legs/images/Beginner.jfif",
-      },
-      {
-        "id": 11,
-        "title": "Intermediate",
-        "focusArea": "Legs",
-        "exerciseCount": 6,
-        "duration": 12,
-        "isPremium": false,
-        "imageURL": "assets/workouts/Legs/images/Intermediate.jfif",
-      },
-      {
-        "id": 12,
-        "title": "Advanced",
-        "focusArea": "Legs",
-        "exerciseCount": 6,
-        "duration": 18,
-        "isPremium": true,
-        "imageURL": "assets/workouts/Legs/images/Advanced.jfif",
-      },
-      {
-        "id": 13,
-        "title": "Beginner",
-        "focusArea": "Shoulders",
-        "exerciseCount": 6,
-        "duration": 12,
-        "isPremium": false,
-        "imageURL": "assets/workouts/Shoulders/images/Beginner.jfif",
-      },
-      {
-        "id": 14,
-        "title": "Intermediate",
-        "focusArea": "Shoulders",
-        "exerciseCount": 7,
-        "duration": 15,
-        "isPremium": false,
-        "imageURL": "assets/workouts/Shoulders/images/Intermediate.jfif",
-      },
-      {
-        "id": 15,
-        "title": "Advanced",
-        "focusArea": "Shoulders",
-        "exerciseCount": 10,
-        "duration": 25,
-        "isPremium": true,
-        "imageURL": "assets/workouts/Shoulders/images/Advanced.jfif",
-      },
-      {
-        "id": 16,
-        "title": "Beginner",
-        "focusArea": "Back",
-        "exerciseCount": 5,
-        "duration": 10,
-        "isPremium": false,
-        "imageURL": "assets/workouts/Back/images/Beginner.jfif",
-      },
-      {
-        "id": 17,
-        "title": "Intermediate",
-        "focusArea": "Back",
-        "exerciseCount": 5,
-        "duration": 15,
-        "isPremium": false,
-        "imageURL": "assets/workouts/Back/images/Intermediate.jfif",
-      },
-      {
-        "id": 18,
-        "title": "Advanced",
-        "focusArea": "Back",
-        "exerciseCount": 7,
-        "duration": 21,
-        "isPremium": true,
-        "imageURL": "assets/workouts/Back/images/Advanced.jfif",
-      },
-    ];
+    // // ini nanti ganti dengan data dari provider
+    // final List<Map<String, dynamic>> workoutByFocusArea = [
+    //   {
+    //     "id": 1,
+    //     "title": "Beginner",
+    //     "focusArea": "Abs",
+    //     "exerciseCount": 4,
+    //     "duration": 10,
+    //     "isPremium": false,
+    //     "imageURL": "assets/workouts/Abs/images/Beginner.jfif",
+    //   },
+    //   {
+    //     "id": 2,
+    //     "title": "Intermediate",
+    //     "focusArea": "Abs",
+    //     "exerciseCount": 5,
+    //     "duration": 15,
+    //     "isPremium": false,
+    //     "imageURL": "assets/workouts/Abs/images/Intermediate.jfif",
+    //   },
+    //   {
+    //     "id": 3,
+    //     "title": "Advanced",
+    //     "focusArea": "Abs",
+    //     "exerciseCount": 7,
+    //     "duration": 25,
+    //     "isPremium": true,
+    //     "imageURL": "assets/workouts/Abs/images/Advanced.jfif",
+    //   },
+    //   {
+    //     "id": 4,
+    //     "title": "Beginner",
+    //     "focusArea": "Arms",
+    //     "exerciseCount": 4,
+    //     "duration": 10,
+    //     "isPremium": false,
+    //     "imageURL": "assets/workouts/Arms/images/Beginner.jfif",
+    //   },
+    //   {
+    //     "id": 5,
+    //     "title": "Intermediate",
+    //     "focusArea": "Arms",
+    //     "exerciseCount": 7,
+    //     "duration": 15,
+    //     "isPremium": false,
+    //     "imageURL": "assets/workouts/Arms/images/Intermediate.jfif",
+    //   },
+    //   {
+    //     "id": 6,
+    //     "title": "Advanced",
+    //     "focusArea": "Arms",
+    //     "exerciseCount": 9,
+    //     "duration": 23,
+    //     "isPremium": true,
+    //     "imageURL": "assets/workouts/Arms/images/Advanced.jfif",
+    //   },
+    //   {
+    //     "id": 7,
+    //     "title": "Beginner",
+    //     "focusArea": "Chest",
+    //     "exerciseCount": 4,
+    //     "duration": 9,
+    //     "isPremium": false,
+    //     "imageURL": "assets/workouts/Chest/images/Beginner.jfif",
+    //   },
+    //   {
+    //     "id": 8,
+    //     "title": "Intermediate",
+    //     "focusArea": "Chest",
+    //     "exerciseCount": 5,
+    //     "duration": 13,
+    //     "isPremium": false,
+    //     "imageURL": "assets/workouts/Chest/images/Intermediate.jfif",
+    //   },
+    //   {
+    //     "id": 9,
+    //     "title": "Advanced",
+    //     "focusArea": "Chest",
+    //     "exerciseCount": 7,
+    //     "duration": 21,
+    //     "isPremium": true,
+    //     "imageURL": "assets/workouts/Chest/images/Advanced.jfif",
+    //   },
+    //   {
+    //     "id": 10,
+    //     "title": "Beginner",
+    //     "focusArea": "Legs",
+    //     "exerciseCount": 5,
+    //     "duration": 10,
+    //     "isPremium": false,
+    //     "imageURL": "assets/workouts/Legs/images/Beginner.jfif",
+    //   },
+    //   {
+    //     "id": 11,
+    //     "title": "Intermediate",
+    //     "focusArea": "Legs",
+    //     "exerciseCount": 6,
+    //     "duration": 12,
+    //     "isPremium": false,
+    //     "imageURL": "assets/workouts/Legs/images/Intermediate.jfif",
+    //   },
+    //   {
+    //     "id": 12,
+    //     "title": "Advanced",
+    //     "focusArea": "Legs",
+    //     "exerciseCount": 6,
+    //     "duration": 18,
+    //     "isPremium": true,
+    //     "imageURL": "assets/workouts/Legs/images/Advanced.jfif",
+    //   },
+    //   {
+    //     "id": 13,
+    //     "title": "Beginner",
+    //     "focusArea": "Shoulders",
+    //     "exerciseCount": 6,
+    //     "duration": 12,
+    //     "isPremium": false,
+    //     "imageURL": "assets/workouts/Shoulders/images/Beginner.jfif",
+    //   },
+    //   {
+    //     "id": 14,
+    //     "title": "Intermediate",
+    //     "focusArea": "Shoulders",
+    //     "exerciseCount": 7,
+    //     "duration": 15,
+    //     "isPremium": false,
+    //     "imageURL": "assets/workouts/Shoulders/images/Intermediate.jfif",
+    //   },
+    //   {
+    //     "id": 15,
+    //     "title": "Advanced",
+    //     "focusArea": "Shoulders",
+    //     "exerciseCount": 10,
+    //     "duration": 25,
+    //     "isPremium": true,
+    //     "imageURL": "assets/workouts/Shoulders/images/Advanced.jfif",
+    //   },
+    //   {
+    //     "id": 16,
+    //     "title": "Beginner",
+    //     "focusArea": "Back",
+    //     "exerciseCount": 5,
+    //     "duration": 10,
+    //     "isPremium": false,
+    //     "imageURL": "assets/workouts/Back/images/Beginner.jfif",
+    //   },
+    //   {
+    //     "id": 17,
+    //     "title": "Intermediate",
+    //     "focusArea": "Back",
+    //     "exerciseCount": 5,
+    //     "duration": 15,
+    //     "isPremium": false,
+    //     "imageURL": "assets/workouts/Back/images/Intermediate.jfif",
+    //   },
+    //   {
+    //     "id": 18,
+    //     "title": "Advanced",
+    //     "focusArea": "Back",
+    //     "exerciseCount": 7,
+    //     "duration": 21,
+    //     "isPremium": true,
+    //     "imageURL": "assets/workouts/Back/images/Advanced.jfif",
+    //   },
+    // ];
 
-    // ini nanti ganti dengan data dari provider (3 paling populer di tiap goal type)
-    final List<Map<String, dynamic>> workoutByGoalType = [
-      {
-        "id": 19,
-        "title": "5-Min Strong Arms",
-        "goalType": "Strength",
-        "exerciseCount": 2,
-        "duration": 5,
-        "isPremium": false,
-        "imageURL": "assets/workouts/Strength/images/5-Min Strong Arms.jfif",
-      },
-      {
-        "id": 20,
-        "title": "7-Min Full Power",
-        "goalType": "Strength",
-        "exerciseCount": 3,
-        "duration": 7,
-        "isPremium": false,
-        "imageURL": "assets/workouts/Strength/images/7-Min Full Power.jfif",
-      },
-      {
-        "id": 21,
-        "title": "10-Min Core Strength",
-        "goalType": "Strength",
-        "exerciseCount": 5,
-        "duration": 10,
-        "isPremium": false,
-        "imageURL": "assets/workouts/Strength/images/10-Min Core Strength.jfif",
-      },
-      {
-        "id": 22,
-        "title": "5-Min Fast Burn",
-        "goalType": "Cardio",
-        "exerciseCount": 3,
-        "duration": 5,
-        "isPremium": false,
-        "imageURL": "assets/workouts/Cardio/images/5-Min Fast Burn.jfif",
-      },
-      {
-        "id": 23,
-        "title": "7-Min Cardio Blast",
-        "goalType": "Cardio",
-        "exerciseCount": 4,
-        "duration": 7,
-        "isPremium": false,
-        "imageURL": "assets/workouts/Cardio/images/7-Min Cardio Blast.jfif",
-      },
-      {
-        "id": 24,
-        "title": "10-Min Speed Sweat",
-        "goalType": "Cardio",
-        "exerciseCount": 6,
-        "duration": 10,
-        "isPremium": true,
-        "imageURL": "assets/workouts/Cardio/images/10-Min Speed Sweat.jfif",
-      },
-      {
-        "id": 25,
-        "title": "5-Min Quick Stretch",
-        "goalType": "Flexibility",
-        "exerciseCount": 3,
-        "duration": 5,
-        "isPremium": false,
-        "imageURL":
-            "assets/workouts/Flexibility/images/5-Min Quick Stretch.jfif",
-      },
-      {
-        "id": 26,
-        "title": "7-Min Flex Flow",
-        "goalType": "Flexibility",
-        "exerciseCount": 5,
-        "duration": 7,
-        "isPremium": false,
-        "imageURL": "assets/workouts/Flexibility/images/7-Min Flex Flow.jfif",
-      },
-      {
-        "id": 27,
-        "title": "10-Min Easy Mobility",
-        "goalType": "Flexibility",
-        "exerciseCount": 7,
-        "duration": 10,
-        "isPremium": false,
-        "imageURL":
-            "assets/workouts/Flexibility/images/10-Min Easy Mobility.jfif",
-      },
-    ];
+    // // ini nanti ganti dengan data dari provider (3 paling populer di tiap goal type)
+    // final List<Map<String, dynamic>> workoutByGoalType = [
+    //   {
+    //     "id": 19,
+    //     "title": "5-Min Strong Arms",
+    //     "goalType": "Strength",
+    //     "exerciseCount": 2,
+    //     "duration": 5,
+    //     "isPremium": false,
+    //     "imageURL": "assets/workouts/Strength/images/5-Min Strong Arms.jfif",
+    //   },
+    //   {
+    //     "id": 20,
+    //     "title": "7-Min Full Power",
+    //     "goalType": "Strength",
+    //     "exerciseCount": 3,
+    //     "duration": 7,
+    //     "isPremium": false,
+    //     "imageURL": "assets/workouts/Strength/images/7-Min Full Power.jfif",
+    //   },
+    //   {
+    //     "id": 21,
+    //     "title": "10-Min Core Strength",
+    //     "goalType": "Strength",
+    //     "exerciseCount": 5,
+    //     "duration": 10,
+    //     "isPremium": false,
+    //     "imageURL": "assets/workouts/Strength/images/10-Min Core Strength.jfif",
+    //   },
+    //   {
+    //     "id": 22,
+    //     "title": "5-Min Fast Burn",
+    //     "goalType": "Cardio",
+    //     "exerciseCount": 3,
+    //     "duration": 5,
+    //     "isPremium": false,
+    //     "imageURL": "assets/workouts/Cardio/images/5-Min Fast Burn.jfif",
+    //   },
+    //   {
+    //     "id": 23,
+    //     "title": "7-Min Cardio Blast",
+    //     "goalType": "Cardio",
+    //     "exerciseCount": 4,
+    //     "duration": 7,
+    //     "isPremium": false,
+    //     "imageURL": "assets/workouts/Cardio/images/7-Min Cardio Blast.jfif",
+    //   },
+    //   {
+    //     "id": 24,
+    //     "title": "10-Min Speed Sweat",
+    //     "goalType": "Cardio",
+    //     "exerciseCount": 6,
+    //     "duration": 10,
+    //     "isPremium": true,
+    //     "imageURL": "assets/workouts/Cardio/images/10-Min Speed Sweat.jfif",
+    //   },
+    //   {
+    //     "id": 25,
+    //     "title": "5-Min Quick Stretch",
+    //     "goalType": "Flexibility",
+    //     "exerciseCount": 3,
+    //     "duration": 5,
+    //     "isPremium": false,
+    //     "imageURL":
+    //         "assets/workouts/Flexibility/images/5-Min Quick Stretch.jfif",
+    //   },
+    //   {
+    //     "id": 26,
+    //     "title": "7-Min Flex Flow",
+    //     "goalType": "Flexibility",
+    //     "exerciseCount": 5,
+    //     "duration": 7,
+    //     "isPremium": false,
+    //     "imageURL": "assets/workouts/Flexibility/images/7-Min Flex Flow.jfif",
+    //   },
+    //   {
+    //     "id": 27,
+    //     "title": "10-Min Easy Mobility",
+    //     "goalType": "Flexibility",
+    //     "exerciseCount": 7,
+    //     "duration": 10,
+    //     "isPremium": false,
+    //     "imageURL":
+    //         "assets/workouts/Flexibility/images/10-Min Easy Mobility.jfif",
+    //   },
+    // ];
 
-    // ini nanti ganti dengan data dari provider (3 workout paling populer)
-    final List<Map<String, dynamic>> popularWorkouts = [
-      {
-        "id": 1,
-        "title": "Beginner",
-        "focusArea": "Abs",
-        "exerciseCount": 4,
-        "duration": 10,
-        "isPremium": false,
-        "imageURL": "assets/workouts/Abs/images/Beginner.jfif",
-      },
-      {
-        "id": 24,
-        "title": "10-Min Speed Sweat",
-        "goalType": "Cardio",
-        "exerciseCount": 6,
-        "duration": 10,
-        "isPremium": true,
-        "imageURL": "assets/workouts/Cardio/images/10-Min Speed Sweat.jfif",
-      },
-      {
-        "id": 27,
-        "title": "10-Min Easy Mobility",
-        "goalType": "Flexibility",
-        "exerciseCount": 7,
-        "duration": 10,
-        "isPremium": false,
-        "imageURL":
-            "assets/workouts/Flexibility/images/10-Min Easy Mobility.jfif",
-      },
-    ];
+    // // ini nanti ganti dengan data dari provider (3 workout paling populer)
+    // final List<Map<String, dynamic>> popularWorkouts = [
+    //   {
+    //     "id": 1,
+    //     "title": "Beginner",
+    //     "focusArea": "Abs",
+    //     "exerciseCount": 4,
+    //     "duration": 10,
+    //     "isPremium": false,
+    //     "imageURL": "assets/workouts/Abs/images/Beginner.jfif",
+    //   },
+    //   {
+    //     "id": 24,
+    //     "title": "10-Min Speed Sweat",
+    //     "goalType": "Cardio",
+    //     "exerciseCount": 6,
+    //     "duration": 10,
+    //     "isPremium": true,
+    //     "imageURL": "assets/workouts/Cardio/images/10-Min Speed Sweat.jfif",
+    //   },
+    //   {
+    //     "id": 27,
+    //     "title": "10-Min Easy Mobility",
+    //     "goalType": "Flexibility",
+    //     "exerciseCount": 7,
+    //     "duration": 10,
+    //     "isPremium": false,
+    //     "imageURL":
+    //         "assets/workouts/Flexibility/images/10-Min Easy Mobility.jfif",
+    //   },
+    // ];
 
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
@@ -456,7 +497,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                         SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: Row(
-                            children: challenges.map((challenge) {
+                            children: _challenges.map((challenge) {
                               return Row(
                                 children: [
                                   Container(
@@ -646,7 +687,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                             SizedBox(height: screenHeight * 0.02),
 
                             Column(
-                              children: workoutByFocusArea
+                              children: _workoutByFocusArea
                                   .where(
                                     (workout) =>
                                         workout['focusArea'] == focusArea,
@@ -818,7 +859,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                             SizedBox(height: screenHeight * 0.02),
 
                             Column(
-                              children: workoutByGoalType
+                              children: _workoutByGoalType
                                   .where(
                                     (workout) =>
                                         workout['goalType'] == goalType,
@@ -939,7 +980,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                         SizedBox(height: screenHeight * 0.01),
 
                         Column(
-                          children: popularWorkouts.map((workout) {
+                          children: _popularWorkouts.map((workout) {
                             return Column(
                               children: [
                                 GestureDetector(
