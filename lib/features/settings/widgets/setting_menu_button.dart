@@ -20,8 +20,10 @@ class SettingsMenuButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: EdgeInsets.symmetric(vertical: screenHeight * 0.006),
       child: InkWell(
         borderRadius: BorderRadius.circular(14),
         onTap: onTap,
@@ -37,14 +39,14 @@ class SettingsMenuButton extends StatelessWidget {
               )
             ],
           ),
-          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+          padding: EdgeInsets.symmetric(vertical: screenHeight * 0.015, horizontal: screenWidth * 0.015),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 text,
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: screenWidth * 0.04,
                   color: textColor,
                   fontWeight: FontWeight.w600,
                 ),

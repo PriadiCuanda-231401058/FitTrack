@@ -13,56 +13,63 @@ class EditProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final nameController = TextEditingController(text: currentName ?? "");
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // TITLE + CLOSE BUTTON
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        Stack(
+          alignment: Alignment.center,
           children: [
-            const Spacer(),
-            const Text(
-              "Edit Profile",
-              style: TextStyle(
-                color: Color(0xFF1E90FF),
-                fontSize: 22,
-                fontWeight: FontWeight.w700,
+            Center(
+              child: Text(
+                "Edit Profile",
+                style: TextStyle(
+                  fontSize: screenWidth * 0.07,
+                  color: const Color(0xff1E90FF),
+                  fontWeight: FontWeight.w900,
+                ),
               ),
             ),
-            const Spacer(),
-            GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: const Icon(Icons.close, color: Colors.white, size: 28),
+
+            Positioned(
+              right: 0,
+              child: GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: Icon(
+                  Icons.close,
+                  color: Colors.white,
+                  size: screenWidth * 0.07,
+                ),
+              ),
             ),
           ],
         ),
 
-        const SizedBox(height: 25),
+        SizedBox(height: screenHeight * 0.025),
 
-        // LABEL
-        const Align(
+        Align(
           alignment: Alignment.centerLeft,
           child: Text(
             "New Username",
             style: TextStyle(
               color: Colors.white,
-              fontSize: 15,
+              fontSize: screenWidth * 0.045,
               fontWeight: FontWeight.w600,
             ),
           ),
         ),
 
-        const SizedBox(height: 8),
+        SizedBox(height: screenHeight * 0.01),
 
-        // TEXTFIELD
         Container(
           decoration: BoxDecoration(
             color: Colors.black,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
               color: Colors.white.withOpacity(0.7),
-              width: 1.2,
+              width: screenWidth * 0.001,
             ),
           ),
           child: TextField(
@@ -72,45 +79,44 @@ class EditProfileScreen extends StatelessWidget {
               hintText: "Enter New Username",
               hintStyle: TextStyle(color: Colors.white54),
               contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                EdgeInsets.symmetric(horizontal: screenWidth * 0.045, vertical: screenHeight * 0.017),
               border: InputBorder.none,
             ),
           ),
         ),
 
-        const SizedBox(height: 25),
+        SizedBox(height: screenHeight * 0.02),
 
-        // UPLOAD BUTTON
         SizedBox(
-          width: double.infinity, // sama seperti TextField
+          width: double.infinity, 
           child: GestureDetector(
             onTap: () {},
             child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 18),
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.045, vertical: screenHeight * 0.013),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
                   color: Colors.white.withOpacity(0.7),
-                  width: 1.2,
+                  width: screenWidth * 0.01,
                 ),
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center, // text + icon center
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
+                  Text(
                     "Upload New Profile",
                     style: TextStyle(
-                      fontSize: 15,
+                      fontSize: screenWidth * 0.05,
                       fontWeight: FontWeight.w600,
                       color: Colors.black,
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  SizedBox(width: screenWidth * 0.025),
                   Image.asset(
                     'assets/images/upload_icon.png',
-                    width: 20,
-                    height: 20,
+                      width: screenWidth * 0.04,
+                      height: screenHeight * 0.04, 
                   ),
                 ],
               ),
@@ -119,7 +125,7 @@ class EditProfileScreen extends StatelessWidget {
         ),
 
 
-        const SizedBox(height: 20),
+        SizedBox(height: screenHeight * 0.02),
       ],
     );
   }
