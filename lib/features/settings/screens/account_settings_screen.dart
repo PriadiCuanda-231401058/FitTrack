@@ -8,107 +8,125 @@ class AccountSettingsScreen extends StatelessWidget {
     final TextEditingController oldPass = TextEditingController();
     final TextEditingController newPass = TextEditingController();
     final TextEditingController confirmPass = TextEditingController();
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Row(
-          children: [
-            const Spacer(),
-            const Text(
-              "Account Settings",
-              style: TextStyle(
-                color: Color(0xFF1E90FF),
-                fontSize: 22,
-                fontWeight: FontWeight.w700,
+
+    return SingleChildScrollView(
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              Center(
+                child: Text(
+                  "Account Settings",
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.06,
+                    color: const Color(0xff1E90FF),
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
               ),
-            ),
-            const Spacer(),
-            GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: const Icon(Icons.close, color: Colors.white, size: 28),
-            ),
-          ],
-        ),
 
-        const SizedBox(height: 25),
+              Positioned(
+                right: 0,
+                child: GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Icon(
+                    Icons.close,
+                    color: Colors.white,
+                    size: screenWidth * 0.07,
+                  ),
+                ),
+              ),
+            ],
+          ),
 
-        _label("Current Password"),
-        _textfield(oldPass),
+          SizedBox(height: screenHeight * 0.02),
 
-        const SizedBox(height: 18),
+          _label("Current Password",context),
+          _textfield(oldPass, context),
 
-        _label("New Password"),
-        _textfield(newPass),
+          SizedBox(height: screenHeight * 0.02),
 
-        const SizedBox(height: 18),
+          _label("New Password",context),
+          _textfield(newPass, context),
 
-        _label("Confirm New Password"),
-        _textfield(confirmPass),
+          SizedBox(height: screenHeight * 0.02),
 
-        const SizedBox(height: 28),
+          _label("Confirm New Password",context),
+          _textfield(confirmPass, context),
 
-        GestureDetector(
-          onTap: () {},
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 15),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: const Center(
-              child: Text(
-                "Confirm",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
+          SizedBox(height: screenHeight * 0.04),
+
+          GestureDetector(
+            onTap: () {},
+            child: Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(vertical: screenHeight * 0.018),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: Center(
+                child: Text(
+                  "Confirm",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: screenWidth * 0.04,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ],
-    );
-  }
-
-  Widget _label(String text) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Text(
-        text,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 15,
-          fontWeight: FontWeight.w600,
-        ),
+        ],
       ),
     );
-  }
+    }
 
-  Widget _textfield(TextEditingController controller) {
-    return Container(
-      margin: const EdgeInsets.only(top: 8),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.white54, width: 1.2),
-        borderRadius: BorderRadius.circular(18),
-        color: Colors.black,
-      ),
-      child: TextField(
-        controller: controller,
-        obscureText: true,
-        style: const TextStyle(color: Colors.white),
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 18,
-            vertical: 14,
+    Widget _label(String text, context) {
+      final screenWidth = MediaQuery.of(context).size.width; 
+      return Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          text,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: screenWidth * 0.04,
+            fontWeight: FontWeight.w600,
           ),
-          border: InputBorder.none,
-          hintText: "Enter Password",
-          hintStyle: TextStyle(color: Colors.white.withOpacity(0.4)),
         ),
-      ),
-    );
-  }
+      );
+    }
+
+    Widget _textfield(TextEditingController controller, context) {
+      final screenWidth = MediaQuery.of(context).size.width; 
+      final screenHeight = MediaQuery.of(context).size.height; 
+      return Container(
+        margin: EdgeInsets.only(top: screenHeight * 0.006),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.white54, width: screenWidth * 0.001),
+          borderRadius: BorderRadius.circular(18),
+          color: Colors.black,
+        ),
+        child: TextField(
+          controller: controller,
+          obscureText: true,
+          style: const TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.045,
+              vertical: screenHeight * 0.009,
+            ),
+            border: InputBorder.none,
+            hintText: "Enter Password",
+            hintStyle: TextStyle(color: Colors.white.withOpacity(0.4)),
+          ),
+        ),
+      );   
+    }
 }
