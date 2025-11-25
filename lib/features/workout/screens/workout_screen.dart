@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fittrack/shared/widgets/navigation_bar_widget.dart';
 import 'package:fittrack/features/workout/workout_controller.dart';
 import 'package:fittrack/models/workout_model.dart';
+// import 'package:fittrack/features/workout/workout_controller.dart';
 
 class WorkoutScreen extends StatefulWidget {
   const WorkoutScreen({super.key});
@@ -11,7 +12,7 @@ class WorkoutScreen extends StatefulWidget {
 }
 
 class _WorkoutScreenState extends State<WorkoutScreen> {
-  String focusArea = "ABS";
+  String focusArea = "Arms";
   String goalType = "Strength";
 
   final WorkoutController _workoutController = WorkoutController();
@@ -25,6 +26,22 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   void initState() {
     super.initState();
     _loadWorkoutData();
+  }
+
+  String parseDurationFromTitle(String title) {
+    // Extract duration from titles like "5-Min Strength Boost" -> "5 Menit"
+    final regex = RegExp(r'(\d+)-Min');
+    final match = regex.firstMatch(title);
+    if (match != null) {
+      return '${match.group(1)} Menit';
+    }
+
+    // Fallback for other title formats
+    if (title.contains('5')) return '5 Menit';
+    if (title.contains('7')) return '7 Menit';
+    if (title.contains('10')) return '10 Menit';
+
+    return '5 Menit'; // Default
   }
 
   Future<void> _loadWorkoutData() async {
@@ -648,6 +665,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                                           ElevatedButton(
                                             onPressed: () {
                                               setState(() => focusArea = area);
+                                              _loadWorkoutData();
                                             },
                                             style: ElevatedButton.styleFrom(
                                               padding: EdgeInsets.symmetric(
@@ -697,7 +715,20 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                                       children: [
                                         GestureDetector(
                                           onTap: () {
-                                            // pindah ke exercise list
+                                            // Pindah ke exercise list dengan data body focus
+                                            Navigator.pushNamed(
+                                              context,
+                                              '/exerciseListScreen',
+                                              arguments: {
+                                                'workoutType': 'bodyFocus',
+                                                'focusArea': workout.focusArea,
+                                                'level': workout.title, // Beginner, Intermediate, Advanced
+                                                'title':'${workout.focusArea} ${workout.title}',
+                                                'duration': workout.duration,
+                                                'exerciseCount':workout.exerciseCount,
+                                                'isPremium': workout.isPremium,
+                                              },
+                                            );
                                           },
                                           child: SizedBox(
                                             width: double.infinity,
@@ -819,6 +850,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                                           ElevatedButton(
                                             onPressed: () {
                                               setState(() => goalType = goal);
+                                              _loadWorkoutData();
                                             },
                                             style: ElevatedButton.styleFrom(
                                               padding: EdgeInsets.symmetric(
@@ -869,7 +901,8 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                                       children: [
                                         GestureDetector(
                                           onTap: () {
-                                            // pindah ke exercise list
+                                            // Pindah ke exercise list dengan data target
+                                            
                                           },
                                           child: SizedBox(
                                             width: double.infinity,
@@ -985,7 +1018,8 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                               children: [
                                 GestureDetector(
                                   onTap: () {
-                                    // pindah ke exercise list
+                                    // Tentukan tipe workout berdasarkan data yang ada
+                                    
                                   },
                                   child: SizedBox(
                                     width: double.infinity,
