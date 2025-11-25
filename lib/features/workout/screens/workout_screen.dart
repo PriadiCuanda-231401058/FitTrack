@@ -722,10 +722,13 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                                               arguments: {
                                                 'workoutType': 'bodyFocus',
                                                 'focusArea': workout.focusArea,
-                                                'level': workout.title, // Beginner, Intermediate, Advanced
-                                                'title':'${workout.focusArea} ${workout.title}',
+                                                'level': workout
+                                                    .title, // Beginner, Intermediate, Advanced
+                                                'title':
+                                                    '${workout.focusArea} ${workout.title}',
                                                 'duration': workout.duration,
-                                                'exerciseCount':workout.exerciseCount,
+                                                'exerciseCount':
+                                                    workout.exerciseCount,
                                                 'isPremium': workout.isPremium,
                                               },
                                             );
@@ -902,7 +905,19 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                                         GestureDetector(
                                           onTap: () {
                                             // Pindah ke exercise list dengan data target
-                                            
+                                            Navigator.pushNamed(
+                                              context,
+                                              '/exerciseListScreen',
+                                              arguments: {
+                                                'workoutType': 'target',
+                                                'target': workout.goalType,
+                                                'duration': workout.duration,
+                                                'title': workout.title,
+                                                'exerciseCount':
+                                                    workout.exerciseCount,
+                                                'isPremium': workout.isPremium,
+                                              },
+                                            );
                                           },
                                           child: SizedBox(
                                             width: double.infinity,
@@ -1019,7 +1034,6 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                                 GestureDetector(
                                   onTap: () {
                                     // Tentukan tipe workout berdasarkan data yang ada
-                                    
                                   },
                                   child: SizedBox(
                                     width: double.infinity,
