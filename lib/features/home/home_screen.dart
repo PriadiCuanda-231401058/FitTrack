@@ -87,17 +87,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: TextStyle(fontSize: 16, color: Colors.red),
                 ),
               ),
-              TextButton(
-                onPressed: () async {
-                  if (context.mounted) {
-                    Navigator.pushReplacementNamed(context, '/settingsScreen');
-                  }
-                },
-                child: const Text(
-                  "settings",
-                  style: TextStyle(fontSize: 16, color: Colors.red),
-                ),
-              ),
+              // TextButton(
+              //   onPressed: (),
+              //   child: const Text(
+              //     "",
+              //     style: TextStyle(fontSize: 16, color: Colors.red),
+              //   ),
+              // ),
             ],
           ),
         ),
