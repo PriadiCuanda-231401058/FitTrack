@@ -77,7 +77,13 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
           focusArea: focusArea,
           level: level,
         );
-      } ///
+      } else if (workoutType == 'target' && target != null) {
+        // final duration = args?['duration'];
+        exercises = await _workoutController.getExercisesForWorkout(
+          target: target,
+          duration: title,
+        );
+      }
 
       // Convert ke map yang digunakan UI
       final List<Map<String, dynamic>> exerciseList = exercises.map((exercise) {
