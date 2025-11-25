@@ -67,9 +67,28 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               TextButton(
                 onPressed: () async {
-                  
-                  
-                  // Kembali ke halaman login
+                  if (context.mounted) {
+                    Navigator.pushReplacementNamed(context, '/settingsScreen');
+                  }
+                },
+                child: const Text(
+                  "settings",
+                  style: TextStyle(fontSize: 16, color: Colors.red),
+                ),
+              ),
+              TextButton(
+                onPressed: () async {
+                  if (context.mounted) {
+                    Navigator.pushReplacementNamed(context, '/workoutScreen');
+                  }
+                },
+                child: const Text(
+                  "workout",
+                  style: TextStyle(fontSize: 16, color: Colors.red),
+                ),
+              ),
+              TextButton(
+                onPressed: () async {
                   if (context.mounted) {
                     Navigator.pushReplacementNamed(context, '/settingsScreen');
                   }
