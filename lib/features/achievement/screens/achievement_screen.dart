@@ -1,3 +1,4 @@
+import 'package:fittrack/shared/widgets/navigation_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'detail_achievement_screen.dart';
 
@@ -19,7 +20,7 @@ class AchievementScreen extends StatelessWidget {
         "total": "100",
         "Title": "Elite Lifter",
         "desc":
-            "Diberikan kepada pengguna yang menunjukkan performa luar biasa dalam latihan kekuatan. Bukti dedikasi dan kerja keras yang konsisten!"
+            "Diberikan kepada pengguna yang menunjukkan performa luar biasa dalam latihan kekuatan. Bukti dedikasi dan kerja keras yang konsisten!",
       },
       {
         "id": 2,
@@ -30,7 +31,7 @@ class AchievementScreen extends StatelessWidget {
         "total": "100",
         "Title": "Full Body Achiever",
         "desc":
-            "Pengguna yang meraih perkembangan seimbang di berbagai aspek kebugaran—kardio, kekuatan, dan mobilitas."
+            "Pengguna yang meraih perkembangan seimbang di berbagai aspek kebugaran—kardio, kekuatan, dan mobilitas.",
       },
       {
         "id": 3,
@@ -41,7 +42,7 @@ class AchievementScreen extends StatelessWidget {
         "total": "100",
         "Title": "Power Performer",
         "desc":
-            "Penghargaan bagi pengguna yang menunjukkan ketahanan fisik kuat dan pencapaian signifikan dalam latihan intensitas menengah-tinggi."
+            "Penghargaan bagi pengguna yang menunjukkan ketahanan fisik kuat dan pencapaian signifikan dalam latihan intensitas menengah-tinggi.",
       },
       {
         "id": 4,
@@ -52,7 +53,7 @@ class AchievementScreen extends StatelessWidget {
         "total": "30",
         "Title": "Strong Mind Beginner",
         "desc":
-            "Diberikan kepada pengguna yang memulai perjalanan meningkatkan fokus, konsistensi, dan ketahanan mental. Langkah kecil, progres besar!"
+            "Diberikan kepada pengguna yang memulai perjalanan meningkatkan fokus, konsistensi, dan ketahanan mental. Langkah kecil, progres besar!",
       },
       {
         "id": 5,
@@ -63,7 +64,7 @@ class AchievementScreen extends StatelessWidget {
         "total": "15",
         "Title": "Consistency Starter",
         "desc":
-            "Penghargaan untuk pengguna yang telah menunjukkan kedisiplinan awal dalam mengikuti jadwal rutin latihan atau aktivitas."
+            "Penghargaan untuk pengguna yang telah menunjukkan kedisiplinan awal dalam mengikuti jadwal rutin latihan atau aktivitas.",
       },
     ];
 
@@ -87,7 +88,6 @@ class AchievementScreen extends StatelessWidget {
         centerTitle: true,
       ),
 
-      // BODY
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: GridView.builder(
@@ -118,7 +118,6 @@ class AchievementScreen extends StatelessWidget {
                 );
               },
 
-              // UI Item Badge
               child: Column(
                 children: [
                   Container(
@@ -138,6 +137,9 @@ class AchievementScreen extends StatelessWidget {
             );
           },
         ),
+      ),
+      bottomNavigationBar: SafeArea(
+        child: NavigationBarWidget(location: '/achievementScreen'),
       ),
     );
   }
