@@ -1,5 +1,6 @@
+import 'package:fittrack/shared/widgets/navigation_bar_widget.dart';
 import 'package:flutter/material.dart';
-import '../Widget/info_card.dart';
+import '../widgets/info_card.dart';
 
 class DetailAchievementScreen extends StatelessWidget {
   final String title;
@@ -20,6 +21,8 @@ class DetailAchievementScreen extends StatelessWidget {
     required this.dateAcquired,
     required this.image,
   });
+
+  bool get isComplete => progress == total || progress >= total;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +53,7 @@ class DetailAchievementScreen extends StatelessWidget {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: screenHeight * 0.015),
+          padding: EdgeInsets.symmetric(horizontal: screenHeight * 0.02),
           child: Column(
             children: [
               SizedBox(height: screenHeight * 0.02),
@@ -79,10 +82,7 @@ class DetailAchievementScreen extends StatelessWidget {
 
               SizedBox(height: screenHeight * 0.03),
 
-              Image.asset(
-                image,
-                width: screenWidth * 0.45,
-              ),
+              Image.asset(image, width: screenWidth * 0.45),
 
               SizedBox(height: screenHeight * 0.03),
 
@@ -90,21 +90,42 @@ class DetailAchievementScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Progress",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w700, fontSize: screenWidth * 0.05)),
+                    Text(
+                      "Progress",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: screenWidth * 0.05,
+                        color: const Color(0xff63666A),
+                      ),
+                    ),
 
                     SizedBox(height: screenHeight * 0.01),
 
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("$progress H / $total H",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w700, fontSize: screenWidth * 0.05)),
-                        Text("${percent.toStringAsFixed(0)}%",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w700, fontSize: screenWidth * 0.05)),
+                        isComplete
+                            ? Text(
+                                "$total H / $total H",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: screenWidth * 0.05,
+                                ),
+                              )
+                            : Text(
+                                "$progress H / $total H",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: screenWidth * 0.05,
+                                ),
+                              ),
+                        Text(
+                          "${percent.toStringAsFixed(0)}%",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: screenWidth * 0.05,
+                          ),
+                        ),
                       ],
                     ),
 
@@ -116,8 +137,9 @@ class DetailAchievementScreen extends StatelessWidget {
                         value: progress / total,
                         minHeight: 12,
                         backgroundColor: Colors.black,
-                        valueColor:
-                            const AlwaysStoppedAnimation<Color>(Colors.lightBlueAccent),
+                        valueColor: const AlwaysStoppedAnimation<Color>(
+                          Colors.lightBlueAccent,
+                        ),
                       ),
                     ),
                   ],
@@ -127,20 +149,48 @@ class DetailAchievementScreen extends StatelessWidget {
               SizedBox(height: screenHeight * 0.015),
 
               InfoCard(
-                child: Text(
-                  "Category : $category",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700, fontSize: screenWidth * 0.05),
+                child: Row(
+                  children: [
+                    Text(
+                      "Category : ",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: screenWidth * 0.05,
+                        color: const Color(0xff63666A),
+                      ),
+                    ),
+                    Text(
+                      category,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: screenWidth * 0.05,
+                      ),
+                    ),
+                  ],
                 ),
               ),
 
               SizedBox(height: screenHeight * 0.015),
 
               InfoCard(
-                child: Text(
-                  "Date Acquired : $dateAcquired",
-                  style: TextStyle(
-                      fontWeight: FontWeight.w700, fontSize: screenWidth * 0.05),
+                child: Row(
+                  children: [
+                    Text(
+                      "Date Acquired : ",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: screenWidth * 0.05,
+                        color: const Color(0xff63666A),
+                      ),
+                    ),
+                    Text(
+                      dateAcquired,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: screenWidth * 0.05,
+                      ),
+                    ),
+                  ],
                 ),
               ),
 
@@ -148,6 +198,9 @@ class DetailAchievementScreen extends StatelessWidget {
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: SafeArea(
+        child: NavigationBarWidget(location: '/achievementScreen'),
       ),
     );
   }

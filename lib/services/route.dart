@@ -1,4 +1,4 @@
-import 'package:fittrack/features/achievement/Screen/achievement_screen.dart';
+import 'package:fittrack/features/achievement/screens/achievement_screen.dart';
 import 'package:fittrack/features/settings/screens/settings_screen.dart';
 import 'package:fittrack/features/workout/screens/workout_detail_screen.dart';
 import 'package:flutter/material.dart';
