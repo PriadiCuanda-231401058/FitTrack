@@ -65,6 +65,7 @@ flutter:
   assets:
     - assets/images/
     - assets/workouts/
+    - assets/workouts/Videos/
     - assets/workouts/Abs/images/
     - assets/workouts/Arms/images/
     - assets/workouts/Back/images/

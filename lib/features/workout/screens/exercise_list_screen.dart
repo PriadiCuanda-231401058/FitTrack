@@ -375,6 +375,11 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
                           child: ElevatedButton(
                             onPressed: () {
                               // masuk ke exercise detail yang berisi video, dll
+                              Navigator.pushNamed(
+                                context,
+                                '/workoutDetailScreen',
+                                arguments: {'exerciseList': _exerciseList},
+                              );
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
