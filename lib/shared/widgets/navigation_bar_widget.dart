@@ -26,17 +26,16 @@ class _NavigationBarWidgetState extends State<NavigationBarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
+    // final screenHeight = MediaQuery.of(context).size.height;
 
     return Container(
-      color: Colors.black,
-      height: screenHeight * 0.05,
+      color: Color(0xFF000000).withValues(alpha: 0.9),
+      padding: EdgeInsets.symmetric(vertical: 15),
+      // height: screenHeight * 0.05,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          buildNavItem(
-            '/workoutScreen', 
-            'assets/images/workout_icon.png'),
+          buildNavItem('/workoutScreen', 'assets/images/workout_icon.png'),
           buildNavItem(
             '/achievementScreen',
             'assets/images/achievement_icon.png',
@@ -45,12 +44,8 @@ class _NavigationBarWidgetState extends State<NavigationBarWidget> {
             '/leaderboardScreen',
             'assets/images/leaderboard_icon.png',
           ),
-          buildNavItem(
-            '/reportScreen', 
-            'assets/images/report_icon.png'),
-          buildNavItem(
-            '/settingsScreen', 
-            'assets/images/setting_icon.png'),
+          buildNavItem('/reportScreen', 'assets/images/report_icon.png'),
+          buildNavItem('/settingsScreen', 'assets/images/setting_icon.png'),
         ],
       ),
     );
