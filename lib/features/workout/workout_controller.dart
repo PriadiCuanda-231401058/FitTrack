@@ -1,35 +1,81 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fittrack/models/workout_model.dart';
+import 'package:flutter/material.dart';
 
 class WorkoutController {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
+
+static int _safeCastInt(dynamic value) {
+    if (value == null) return 0;
+    if (value is int) return value;
+    if (value is double) return value.toInt();
+    if (value is String) return int.tryParse(value) ?? 0;
+    return 0;
+  }
+
+  static String _safeCastString(dynamic value) {
+    if (value == null) return '';
+    if (value is String) return value;
+    return value.toString();
+  }
   // Get Challenges
   Future<List<Workout>> getChallenges() async {
-    try {
-      final snapshot = await _db
-          .collection('workouts')
-          .doc('challenges')
-          .collection('categories')
-          .get();
+  try {
+    final snapshot = await _db
+        .collection('workouts')
+        .doc('challenges')
+        .collection('categories')
+        .get();
 
-      final challenges = <Workout>[];
-      
-      for (final doc in snapshot.docs) {
-        try {
-          final challenge = Workout.fromFirestore(doc);
-          challenges.add(challenge);
-        } catch (e) {
-          print('Error parsing challenge ${doc.id}: $e');
-        }
+    final challenges = <Workout>[];
+    
+    for (final doc in snapshot.docs) {
+      try {
+        final data = doc.data();
+        final challenge = Workout(
+          id: doc.id,
+          title: _safeCastString(data['title']),
+          description: _safeCastString(data['description']),
+          exerciseCount: _safeCastInt(data['exerciseCount']),
+          duration: _safeCastInt(data['duration']),
+          isPremium: false, // Challenges are free
+          imageURL: _safeCastString(data['imageURL']),
+          bgColor: data['bgColor'] != null ? Color(data['bgColor'] as int) : null,
+        );
+        challenges.add(challenge);
+      } catch (e) {
+        print('Error parsing challenge ${doc.id}: $e');
       }
-      
-      return challenges;
-    } catch (e) {
-      print('Error getting challenges: $e');
-      return [];
     }
+    
+    return challenges;
+  } catch (e) {
+    print('Error getting challenges: $e');
+    return [];
   }
+}
+
+Future<List<Exercise>> getChallengeExercises(String challengeId) async {
+  try {
+    final snapshot = await _db
+        .collection('workouts')
+        .doc('challenges')
+        .collection('categories')
+        .doc(challengeId)
+        .collection('exercises')
+        .orderBy('order')
+        .get();
+
+    return snapshot.docs
+        .map((doc) => Exercise.fromFirestore(doc))
+        .toList();
+  } catch (e) {
+    print('Error getting challenge exercises for $challengeId: $e');
+    return [];
+  }
+}
+
 
   // Get Body Focus Categories
   Future<List<String>> getBodyFocusCategories() async {
@@ -195,20 +241,7 @@ class WorkoutController {
     try {
       if (challengeID != null) {
         // Get exercises for challenge
-        final snapshot = await _db
-            .collection('workouts')
-            .doc('challenges')
-            .collection('categories')
-            .doc(challengeID)
-            .collection('levels')
-            .doc('default') // Assuming challenges have one level
-            .collection('exercises')
-            .orderBy('order')
-            .get();
-
-        return snapshot.docs
-            .map((doc) => Exercise.fromFirestore(doc))
-            .toList();
+        return await getChallengeExercises(challengeID);
       } else if (focusArea != null && level != null) {
         // Get exercises for body focus
         return await _getBodyFocusExercises(focusArea, level);
@@ -305,18 +338,18 @@ class WorkoutController {
   //   return durationMap[duration] ?? '$duration $target';
   // }
 
-  String _getTargetSuffix(String target) {
-    switch (target) {
-      case 'Strength':
-        return 'Strength Boost';
-      case 'Cardio':
-        return 'Cardio Burn';
-      case 'Flexibility':
-        return 'Flex Flow';
-      default:
-        return target;
-    }
-  }
+  // String _getTargetSuffix(String target) {
+  //   switch (target) {
+  //     case 'Strength':
+  //       return 'Strength Boost';
+  //     case 'Cardio':
+  //       return 'Cardio Burn';
+  //     case 'Flexibility':
+  //       return 'Flex Flow';
+  //     default:
+  //       return target;
+  //   }
+  // }
 
   String _getTargetWorkoutImageURL(String target, String duration) {
     // Map to your actual image paths

@@ -389,6 +389,10 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
+    if (_isLoading) {
+      return Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -583,6 +587,8 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                                                     context,
                                                     '/exerciseListScreen',
                                                     arguments: {
+                                                      'workoutType':
+                                                          'challenge',
                                                       'challengeID':
                                                           challenge['id'],
                                                       'title':
