@@ -1,5 +1,6 @@
 import 'package:fittrack/features/achievement/screens/achievement_screen.dart';
 import 'package:fittrack/features/report/screens/bmi_screen.dart';
+import 'package:fittrack/features/report/screens/report_screen.dart';
 import 'package:fittrack/features/settings/screens/settings_screen.dart';
 import 'package:fittrack/features/workout/screens/workout_detail_screen.dart';
 import 'package:flutter/material.dart';
@@ -22,5 +23,6 @@ final Map<String, WidgetBuilder> appRoutes = {
   '/workoutScreen': (context) => const WorkoutScreen(),
   '/exerciseListScreen': (context) => const ExerciseListScreen(),
   '/workoutDetailScreen': (context) => const WorkoutDetailScreen(),
+  '/reportScreen': (context) => const ReportScreen(),
   '/bmiScreen': (context) => const BmiScreen(),
 };
