@@ -83,14 +83,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   }
                 },
                 child: const Text(
-                  "workout",
+                  "workouts",
                   style: TextStyle(fontSize: 16, color: Colors.red),
                 ),
               ),
               // TextButton(
-              //   onPressed: (),
+              //   onPressed:,
               //   child: const Text(
-              //     "",
+              //     "s",
               //     style: TextStyle(fontSize: 16, color: Colors.red),
               //   ),
               // ),
