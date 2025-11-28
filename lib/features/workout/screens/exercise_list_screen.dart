@@ -58,7 +58,7 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
           ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
 
       final String? workoutType = args?['workoutType'];
-      final String title = args?['title'] ?? '';
+      final String? title = args?['title'] ?? '';
       final String? focusArea = args?['focusArea'];
       final String? level = args?['level'];
       final String? target = args?['target'];
@@ -82,6 +82,10 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
         exercises = await _workoutController.getExercisesForWorkout(
           target: target,
           duration: title,
+        );
+      } else if (workoutType == 'challenge' && title != null) {
+        exercises = await _workoutController.getExercisesForWorkout(
+          challengeID: title,
         );
       }
 
@@ -135,7 +139,7 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
     final duration = args?['duration'] ?? 0;
     final int exerciseCount = args?['exerciseCount'] ?? 0;
 
-    //     print("DEBUG ARGS: $args");
+        print("DEBUG ARGS: $args");
 
     // print("workoutType: ${args?['workoutType']} (${args?['workoutType'].runtimeType})");
     // print("focusArea:   ${args?['focusArea']}   (${args?['focusArea'].runtimeType})");
