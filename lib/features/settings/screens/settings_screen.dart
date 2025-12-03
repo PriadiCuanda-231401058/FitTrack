@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../widgets/setting_menu_button.dart';
@@ -8,10 +9,81 @@ import 'package:fittrack/features/settings/screens/delete_account_screen.dart';
 import 'package:fittrack/features/settings/screens/premium_features_screen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:fittrack/shared/widgets/navigation_bar_widget.dart';
-// import 'package:fittrack/features/settings/settings_controller.dart';
+import 'package:fittrack/features/settings/settings_controller.dart';
+import 'package:fittrack/models/user_model.dart';
 
-class SettingsScreen extends StatelessWidget {
+
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+
+
+    final SettingsController _settingsController = SettingsController();
+  UserModel? _userData;
+  // bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    try {
+      final data = await _settingsController.getUserData();
+      if (data != null) {
+        setState(() {
+          _userData = UserModel.fromMap(data);
+          // _isLoading = false;
+        });
+      } else {
+        setState(() {
+          // _isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('❌ Load user data error: $e');
+      setState(() {
+        // _isLoading = false;
+      });
+    }
+  }
+
+  ImageProvider getProfileImage() {
+    final user = FirebaseAuth.instance.currentUser;
+    
+    // Priority 1: Base64 dari Firestore
+    if (_userData?.photoBase64 != null && _userData!.photoBase64!.isNotEmpty) {
+      try {
+        final bytes = base64.decode(_userData!.photoBase64!);
+        return MemoryImage(bytes);
+      } catch (e) {
+        print('Error decoding Base64: $e');
+      }
+    }
+    
+    // Priority 2: Photo dari Firebase Auth (untuk social login)
+    if (user?.photoURL != null && user!.photoURL!.isNotEmpty) {
+      return NetworkImage(user.photoURL!);
+    }
+    
+    // Fallback: Default asset image
+    return const AssetImage('assets/images/profile_icon.png');
+  }
+
+  String _getDisplayName() {
+    final user = FirebaseAuth.instance.currentUser;
+    return _userData?.name ?? user?.displayName ?? 'User';
+  }
+
+  Future<void> _refreshProfile() async {
+    await _loadUserData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,17 +116,13 @@ class SettingsScreen extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: screenWidth * 0.18,
-              backgroundImage:
-                  user?.photoURL != null && user!.photoURL!.isNotEmpty
-                  ? NetworkImage(user.photoURL!)
-                  : const AssetImage('assets/images/profile_icon.png')
-                        as ImageProvider,
+              backgroundImage: getProfileImage(),
             ),
 
             SizedBox(height: screenHeight * 0.02),
 
             Text(
-              "Hello ${user?.displayName ?? 'User'},",
+              "Hello ${_getDisplayName()},",
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,
@@ -96,9 +164,9 @@ class SettingsScreen extends StatelessWidget {
                         barrierColor: Colors.black.withOpacity(0.7),
                         builder: (context) {
                           return CustomPopup(
-                            child: EditProfileScreen(
-                              currentName: "",
-                              currentPhotoUrl: null,
+                           child: EditProfileScreen(
+                              currentName: _getDisplayName(),
+                              onProfileUpdated: _refreshProfile,
                             ),
                           );
                         },

@@ -389,9 +389,17 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    if (_isLoading) {
-      return Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
+if (_isLoading) {
+  return Scaffold(
+    backgroundColor: Colors.black,
+    body: Center(
+      child: CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+        strokeWidth: 3.0,
+      ),
+    ),
+  );
+}
 
     return Scaffold(
       body: SafeArea(
