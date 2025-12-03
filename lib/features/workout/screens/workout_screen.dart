@@ -460,10 +460,10 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                         TextField(
                           readOnly: true,
                           onTap: () {
-                            // Navigator.pushNamed(
-                            //   context,
-                            //   '/searchScreen',
-                            // );
+                            Navigator.pushNamed(
+                              context,
+                              '/searchScreen',
+                            );
                           },
 
                           decoration: InputDecoration(
