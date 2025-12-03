@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fittrack/models/user_model.dart';
+// import 'package:fittrack/features/auth/auth_controller.dart';
 // import 'package:flutter/material.dart';
 
 ValueNotifier<AuthController> authController = ValueNotifier(AuthController());
@@ -13,7 +14,6 @@ class AuthController {
 
   Future<UserModel?> signInWithGoogle() async {
     final FirebaseAuth auth = FirebaseAuth.instance;
-    // final GoogleAuthProvider googleProvider = GoogleAuthProvider();
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
     final GoogleSignInAuthentication? googleAuth =
         await googleUser?.authentication;
@@ -23,45 +23,63 @@ class AuthController {
       idToken: googleAuth?.idToken,
     );
 
-    // Login dengan Google
     final UserCredential credential = await auth.signInWithCredential(
       googleProvider,
     );
 
-    // Ambil data user dari hasil login
     final User? user = credential.user;
 
     if (user != null) {
-      // Buat objek UserModel dari data user
+      // BUAT UserModel dengan data lengkap
       UserModel userModel = UserModel(
         uid: user.uid,
         name: user.displayName ?? '',
         email: user.email ?? '',
+        photoBase64: null,
       );
 
-      // Simpan ke Firestore (jika belum ada)
+      // Simpan ke Firestore dengan data lengkap
       await FirebaseFirestore.instance
           .collection('users')
           .doc(user.uid)
           .set(userModel.toMap(), SetOptions(merge: true));
 
-      // Kembalikan objek userModel
       return userModel;
     }
-
     return null;
   }
 
-  Future<User?> register(String email, String password, String username) async {
+  Future<UserModel?> register(
+    String email,
+    String password,
+    String username,
+  ) async {
     UserCredential userCredential = await auth.createUserWithEmailAndPassword(
       email: email,
       password: password,
     );
     User? user = userCredential.user;
+
     if (user != null) {
       await user.updateDisplayName(username);
+
+      // Buat UserModel untuk email/password user
+      UserModel userModel = UserModel(
+        uid: user.uid,
+        name: username,
+        email: email,
+        provider: 'email', // TANDAI sebagai email login
+      );
+
+      // Simpan ke Firestore
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .set(userModel.toMap(), SetOptions(merge: true));
+
+      return userModel;
     }
-    return user;
+    return null;
   }
 
   Future<UserModel?> login(String email, String password) async {
@@ -70,24 +88,35 @@ class AuthController {
       password: password,
     );
 
-    // Ambil data user dari hasil login
     final User? user = credential.user;
 
     if (user != null) {
-      // Buat objek UserModel dari data user
-      UserModel userModel = UserModel(
-        uid: user.uid,
-        name: user.displayName ?? '',
-        email: user.email ?? '',
-      );
-
-      // Simpan ke Firestore (jika belum ada)
-      await FirebaseFirestore.instance
+      // Ambil data dari Firestore untuk mendapatkan photoBase64
+      final userDoc = await FirebaseFirestore.instance
           .collection('users')
           .doc(user.uid)
-          .set(userModel.toMap(), SetOptions(merge: true));
+          .get();
 
-      // Kembalikan objek userModel
+      UserModel userModel;
+      if (userDoc.exists) {
+        // Gunakan data dari Firestore
+        userModel = UserModel.fromDocument(userDoc);
+      } else {
+        // Buat baru jika tidak ada
+        userModel = UserModel(
+          uid: user.uid,
+          name: user.displayName ?? '',
+          email: user.email ?? '',
+          provider: 'email',
+        );
+
+        // Simpan ke Firestore
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .set(userModel.toMap(), SetOptions(merge: true));
+      }
+
       return userModel;
     }
     return null;
@@ -110,4 +139,3 @@ class AuthController {
 
   User? get currentUser => auth.currentUser;
 }
-
