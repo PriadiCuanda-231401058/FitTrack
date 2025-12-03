@@ -71,6 +71,7 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
   }
 
   void startTimer() {
+    print(_timer);
     if (_timer != null && _timer!.isActive) return;
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -94,7 +95,6 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
   }
 
   String _determineWorkoutType() {
-
     if (_target != null) {
       return _target!.toLowerCase();
     }
@@ -281,12 +281,12 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                 onPressed:
                     ((_exerciseList[index]['type'] == 'repetition') ||
                         (_exerciseList[index]['type'] ==
-                            'repetition_per_side') ||
+                            'repetition_per_side') || // repetition_per_side ini nanti dihapus
                         (_exerciseList[index]['type'] == 'time' &&
                             seconds != null &&
-                            seconds == 0&& 
-                              minutes == 0 &&
-                              minutes != null))
+                            seconds == 0 &&
+                            minutes == 0 &&
+                            minutes != null))
                     ? () {
                         if (index == _exerciseList.length - 1) {
                           _completeWorkout();
@@ -297,6 +297,7 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                         } else {
                           setState(() {
                             index++;
+                            isStart = false;
                           });
                         }
                       }
@@ -308,7 +309,7 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                               'repetition_per_side') ||
                           (_exerciseList[index]['type'] == 'time' &&
                               seconds != null &&
-                              seconds == 0 && 
+                              seconds == 0 &&
                               minutes == 0 &&
                               minutes != null)
                       ? Colors.white
