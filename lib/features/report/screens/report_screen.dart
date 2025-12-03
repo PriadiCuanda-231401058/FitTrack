@@ -3,6 +3,13 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fittrack/shared/widgets/navigation_bar_widget.dart';
 import 'package:fittrack/features/report/widgets/three_segment_circular_progress.dart';
+import 'package:fittrack/features/report/report_controller.dart';
+import 'package:fittrack/features/auth/auth_controller.dart';
+import 'package:fittrack/models/report_model.dart';
+import 'dart:convert';
+
+import 'package:fittrack/models/user_model.dart';
+// import 'package:fittrack/features/settings/screens/settings_screen.dart';
 
 class ReportScreen extends StatefulWidget {
   const ReportScreen({super.key});
@@ -12,7 +19,7 @@ class ReportScreen extends StatefulWidget {
 }
 
 class _ReportScreenState extends State<ReportScreen> {
-  String? filterBy = "Today";
+  String filterBy = "Today";
 
   final List<String> options = [
     "Today",
@@ -22,94 +29,188 @@ class _ReportScreenState extends State<ReportScreen> {
     "3 Months",
   ];
 
+  final ReportController _reportController = ReportController();
+  final AuthController _authController =
+      AuthController(); // Assuming you have auth controller
+  UserProgress? userData;
+  double? progressw = 0.0;
+  bool _isLoading = true;
+
   @override
+  @override
+  void initState() {
+    super.initState();
+    _loadUserProgress();
+  }
+
+    ImageProvider getProfileImage() {
+    final user = _authController.currentUser;
+
+    // Priority 1: Base64 dari Firestore
+    if (userData?.photoBase64 != null && userData!.photoBase64!.isNotEmpty) {
+      try {
+        final bytes = base64.decode(userData!.photoBase64!);
+        return MemoryImage(bytes);
+      } catch (e) {
+        print('Error decoding Base64: $e');
+      }
+    }
+    
+    // Priority 2: Photo dari Firebase Auth (untuk social login)
+    if (user?.photoURL != null && user!.photoURL!.isNotEmpty) {
+      return NetworkImage(user.photoURL!);
+    }
+    
+    // Fallback: Default asset image
+    return const AssetImage('assets/images/profile_icon.png');
+  }
+
+  Future<void> _loadUserProgress() async {
+    setState(() => _isLoading = true);
+
+    try {
+      final user = _authController.currentUser; // Get current user
+      if (user != null) {
+        final progress = await _reportController.getUserProgress(user.uid);
+        setState(() {
+          userData = progress;
+          progressw = (userData?.achievements.length.toDouble() ?? 0) / 15.0; // ganti 15 dengan total achievement yang ada
+          print ('progressw: $progressw');
+        });
+        print ('User Progressw: $progressw');
+        print('User ID: ${user.uid}');
+        print('UserProgress: $progress');
+        print('User Progress Data: ${userData?.toFirestore()}');
+        if (progress != null) {
+          print('Progress Map: ${progress.progress}');
+        }
+      }
+    } catch (e) {
+      print('Error loading user progress: $e');
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  // Map<String, dynamic> _getCurrentProgress() {
+  //   if (userData == null) return {};
+  //   final filterKey = filterBy.toLowerCase().replaceAll(' ', '_') ?? 'today';
+  //   return userData!.progress[filterKey] ?? {};
+  // }
+
   Widget build(BuildContext context) {
-    // ini data progress yang harus dicapai (jangan dihapus)
-    final Map<String, dynamic> target = {
-      "today": {
-        "cardio": 45,
-        "flexibility": 35,
-        "strength": 30,
-        "total_training": 5,
-        "total_time": 110,
-      },
-      "1 week": {
-        "cardio": 315,
-        "flexibility": 245,
-        "strength": 210,
-        "total_training": 10,
-        "total_time": 770,
-      },
-      "2 weeks": {
-        "cardio": 630,
-        "flexibility": 490,
-        "strength": 420,
-        "total_training": 20,
-        "total_time": 1540,
-      },
-      "1 month": {
-        "cardio": 1350,
-        "flexibility": 1050,
-        "strength": 900,
-        "total_training": 40,
-        "total_time": 3300,
-      },
-      "3 months": {
-        "cardio": 4050,
-        "flexibility": 3150,
-        "strength": 2700,
-        "total_training": 120,
-        "total_time": 9900,
-      },
-    };
+    // ini data progress yang harus dicapai (jangan dihapus), ku tarok ke controller aj
+
+    final target = _reportController.getTargetData();
+    // final Map<String, dynamic> target = {
+    //   "today": {
+    //     "cardio": 45,
+    //     "flexibility": 35,
+    //     "strength": 30,
+    //     "total_training": 5,
+    //     "total_time": 110,
+    //   },
+    //   "1 week": {
+    //     "cardio": 315,
+    //     "flexibility": 245,
+    //     "strength": 210,
+    //     "total_training": 10,
+    //     "total_time": 770,
+    //   },
+    //   "2 weeks": {
+    //     "cardio": 630,
+    //     "flexibility": 490,
+    //     "strength": 420,
+    //     "total_training": 20,
+    //     "total_time": 1540,
+    //   },
+    //   "1 month": {
+    //     "cardio": 1350,
+    //     "flexibility": 1050,
+    //     "strength": 900,
+    //     "total_training": 40,
+    //     "total_time": 3300,
+    //   },
+    //   "3 months": {
+    //     "cardio": 4050,
+    //     "flexibility": 3150,
+    //     "strength": 2700,
+    //     "total_training": 120,
+    //     "total_time": 9900,
+    //   },
+    // };
 
     // dummy data
-    final Map<String, dynamic> userData = {
-      "username": "Andre Lim",
-      "email": "andre@gmail.com",
-      "profilePhoto":
-          "assets/profiles/andre.jfif", // harusnya nnti bisa upload png aja
-      "streak": 10,
-      "isStreak": true,
-      "today": {
-        "cardio": 20,
-        "flexibility": 30,
-        "strength": 10,
-        "total_training": 4,
-      },
-      "1 week": {
-        "cardio": 50,
-        "flexibility": 50,
-        "strength": 50,
-        "total_training": 7,
-      },
-      "2 weeks": {
-        "cardio": 100,
-        "flexibility": 100,
-        "strength": 100,
-        "total_training": 10,
-      },
-      "1 month": {
-        "cardio": 200,
-        "flexibility": 200,
-        "strength": 200,
-        "total_training": 20,
-      },
-      "3 months": {
-        "cardio": 4200,
-        "flexibility": 4300,
-        "strength": 4300,
-        "total_training": 424,
-      },
-      "achievement": ["Arms Master", "Abs Monster", "Chest Bro"],
-    };
+    // final Map<String, dynamic> userData = {
+    //   "username": "Andre Lim",
+    //   "email": "andre@gmail.com",
+    //   "profilePhoto":
+    //       "assets/profiles/andre.jfif", // harusnya nnti bisa upload png aja
+    //   "streak": 10,
+    //   "isStreak": true,
+    //   "today": {
+    //     "cardio": 20,
+    //     "flexibility": 30,
+    //     "strength": 10,
+    //     "total_training": 4,
+    //   },
+    //   "1 week": {
+    //     "cardio": 50,
+    //     "flexibility": 50,
+    //     "strength": 50,
+    //     "total_training": 7,
+    //   },
+    //   "2 weeks": {
+    //     "cardio": 100,
+    //     "flexibility": 100,
+    //     "strength": 100,
+    //     "total_training": 10,
+    //   },
+    //   "1 month": {
+    //     "cardio": 200,
+    //     "flexibility": 200,
+    //     "strength": 200,
+    //     "total_training": 20,
+    //   },
+    //   "3 months": {
+    //     "cardio": 4200,
+    //     "flexibility": 4300,
+    //     "strength": 4300,
+    //     "total_training": 424,
+    //   },
+    //   "achievement": ["Arms Master", "Abs Monster", "Chest Bro"],
+    // };
 
-    final double progress =
-        userData['achievement'].length /
-        15; // ganti 15 dengan total achievement yang ada
+
+
+    // print("progressw :${userData?.achievements.length.toDouble()}");
+    // print("progressw :${progressw}");
+
+
+print('_isLoading: $_isLoading');
+print('userData is null: ${userData == null}');
+print('userData: $userData');
+if (userData != null) {
+  print('userData.name: ${userData!.name}');
+  print('userData.achievements: ${userData!.achievements}');
+  print('userData.achievements.length: ${userData!.achievements.length}');
+}
+print('progressw: $progressw');
 
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+
+if (_isLoading) {
+  return Scaffold(
+    backgroundColor: Colors.black,
+    body: Center(
+      child: CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+        strokeWidth: 3.0,
+      ),
+    ),
+  );
+}
 
     return Scaffold(
       appBar: AppBar(
@@ -176,7 +277,8 @@ class _ReportScreenState extends State<ReportScreen> {
                           decoration: BoxDecoration(
                             color: Colors.white,
                             image: DecorationImage(
-                              image: AssetImage(userData['profilePhoto']),
+                              // image: AssetImage(userData?['profilePhoto']),
+                              image: getProfileImage(),
                               fit: BoxFit.cover,
                             ),
                             borderRadius: BorderRadius.circular(1000),
@@ -191,7 +293,7 @@ class _ReportScreenState extends State<ReportScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Hello ${userData['username'].split(' ')[0]},',
+                                'Hello ${userData?.name.split(' ')[0]},',
                                 style: TextStyle(
                                   fontFamily: 'LeagueSpartan',
                                   fontSize: screenWidth * 0.04,
@@ -244,11 +346,11 @@ class _ReportScreenState extends State<ReportScreen> {
                                 strokeWidth: screenWidth * 0.016,
                                 backgroundColor: Colors.white,
                                 color: Color(0xFF0400FF),
-                                value: progress,
+                                value: progressw,
                               ),
 
                               Text(
-                                '${(progress * 100).round()}%',
+                                '${min((progressw! * 100).round(), 100)}%',
                                 style: TextStyle(
                                   fontFamily: 'LeagueSpartan',
                                   fontSize: screenWidth * 0.035,
@@ -265,13 +367,13 @@ class _ReportScreenState extends State<ReportScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  progress == 100
+                                  progressw == 100
                                       ? 'Mission accomplished!'
-                                      : progress > 90
+                                      : progressw! > 90
                                       ? 'Amazing work!'
-                                      : progress > 60
+                                      : progressw! > 60
                                       ? 'Great job!'
-                                      : progress > 30
+                                      : progressw! > 30
                                       ? 'Nice progress!'
                                       : 'Keep going!',
                                   style: TextStyle(
@@ -283,13 +385,13 @@ class _ReportScreenState extends State<ReportScreen> {
 
                                 SizedBox(
                                   child: Text(
-                                    progress == 100
+                                    progressw == 100
                                         ? "You've reached your goal! Take pride in your dedication and effort."
-                                        : progress > 90
+                                        : progressw! > 90
                                         ? "You've nearly achieved it! Celebrate your success, you've earned it."
-                                        : progress > 60
+                                        : progressw! > 60
                                         ? "You're more than halfway there. Keep pushing, you're doing amazing!"
-                                        : progress > 30
+                                        : progressw! > 30
                                         ? "You're gaining momentum—stay consistent and the results will follow"
                                         : "You've just started your journey. Every step brings you closer!",
                                     style: TextStyle(
@@ -316,7 +418,7 @@ class _ReportScreenState extends State<ReportScreen> {
                           width: screenWidth * 0.42,
                           onSelected: (value) {
                             setState(() {
-                              filterBy = value;
+                              filterBy = value!;
                             });
                           },
                           inputDecorationTheme: InputDecorationTheme(
@@ -426,7 +528,7 @@ class _ReportScreenState extends State<ReportScreen> {
                               'assets/images/streak.png',
                               width: screenWidth * 0.05,
                               height: screenHeight * 0.05,
-                              color: userData['isStreak']
+                              color: userData?.isStreak ?? false
                                   ? Color(0xFFFF7518)
                                   : Color(0xFF66666E),
                             ),
@@ -434,12 +536,12 @@ class _ReportScreenState extends State<ReportScreen> {
                             SizedBox(width: screenWidth * 0.015),
 
                             Text(
-                              '${userData['streak']}',
+                              '${userData?.streak}',
                               style: TextStyle(
                                 fontFamily: 'LeagueSpartan',
                                 fontSize: screenWidth * 0.045,
                                 fontWeight: FontWeight.bold,
-                                color: userData['isStreak']
+                                color: userData?.isStreak ?? false
                                     ? Colors.white
                                     : Color(0xFF66666E),
                               ),
@@ -464,14 +566,14 @@ class _ReportScreenState extends State<ReportScreen> {
                             padding: EdgeInsets.only(left: screenWidth * 0.07),
                             child: ThreeSegmentCircularProgress(
                               cardio:
-                                  userData[filterBy?.toLowerCase()]['cardio'],
+                                  userData?[filterBy.toLowerCase()]['cardio'],
                               flexibility:
-                                  userData[filterBy
-                                      ?.toLowerCase()]['flexibility'],
+                                  userData?[filterBy
+                                      .toLowerCase()]['flexibility'],
                               strength:
-                                  userData[filterBy?.toLowerCase()]['strength'],
+                                  userData?[filterBy.toLowerCase()]['strength'],
                               target:
-                                  target[filterBy?.toLowerCase()]['total_time'],
+                                  target[filterBy.toLowerCase()]['total_time'],
                               strokeWidth: screenWidth * 0.036,
                             ),
                           ),
@@ -595,10 +697,10 @@ class _ReportScreenState extends State<ReportScreen> {
                                     width: screenWidth * 0.4,
                                     child: LinearProgressIndicator(
                                       value:
-                                          userData[filterBy
-                                              ?.toLowerCase()]['cardio'] /
+                                          userData?[filterBy
+                                              .toLowerCase()]['cardio'] /
                                           target[filterBy
-                                              ?.toLowerCase()]['cardio'],
+                                              .toLowerCase()]['cardio'],
                                       backgroundColor: Colors.grey[300],
                                       color: Color(0xFF0034C3),
                                       minHeight: screenHeight * 0.025,
@@ -611,7 +713,7 @@ class _ReportScreenState extends State<ReportScreen> {
                               ),
 
                               Text(
-                                '${min(userData[filterBy?.toLowerCase()]['cardio'], target[filterBy?.toLowerCase()]['cardio'])} / ${target[filterBy?.toLowerCase()]['cardio']} Min',
+                                '${min(userData?[filterBy.toLowerCase()]['cardio'], target[filterBy.toLowerCase()]['cardio'])} / ${target[filterBy.toLowerCase()]['cardio']} Min',
                                 style: TextStyle(
                                   fontFamily: 'LeagueSpartan',
                                   fontSize: screenWidth * 0.032,
@@ -639,10 +741,10 @@ class _ReportScreenState extends State<ReportScreen> {
                                     width: screenWidth * 0.4,
                                     child: LinearProgressIndicator(
                                       value:
-                                          userData[filterBy
-                                              ?.toLowerCase()]['flexibility'] /
+                                          userData?[filterBy
+                                              .toLowerCase()]['flexibility'] /
                                           target[filterBy
-                                              ?.toLowerCase()]['flexibility'],
+                                              .toLowerCase()]['flexibility'],
                                       backgroundColor: Colors.grey[300],
                                       color: Color(0xFF09D933),
                                       minHeight: screenHeight * 0.025,
@@ -655,7 +757,7 @@ class _ReportScreenState extends State<ReportScreen> {
                               ),
 
                               Text(
-                                '${min(userData[filterBy?.toLowerCase()]['flexibility'], target[filterBy?.toLowerCase()]['flexibility'])} / ${target[filterBy?.toLowerCase()]['flexibility']} Min',
+                                '${min(userData?[filterBy.toLowerCase()]['flexibility'], target[filterBy.toLowerCase()]['flexibility'])} / ${target[filterBy.toLowerCase()]['flexibility']} Min',
                                 style: TextStyle(
                                   fontFamily: 'LeagueSpartan',
                                   fontSize: screenWidth * 0.032,
@@ -683,10 +785,10 @@ class _ReportScreenState extends State<ReportScreen> {
                                     width: screenWidth * 0.4,
                                     child: LinearProgressIndicator(
                                       value:
-                                          userData[filterBy
-                                              ?.toLowerCase()]['strength'] /
+                                          userData?[filterBy
+                                              .toLowerCase()]['strength'] /
                                           target[filterBy
-                                              ?.toLowerCase()]['strength'],
+                                              .toLowerCase()]['strength'],
                                       backgroundColor: Colors.grey[300],
                                       color: Color(0xFFFD1818),
                                       minHeight: screenHeight * 0.025,
@@ -699,7 +801,7 @@ class _ReportScreenState extends State<ReportScreen> {
                               ),
 
                               Text(
-                                '${min(userData[filterBy?.toLowerCase()]['strength'], target[filterBy?.toLowerCase()]['strength'])} / ${target[filterBy?.toLowerCase()]['strength']} Min',
+                                '${min(userData?[filterBy.toLowerCase()]['strength'], target[filterBy.toLowerCase()]['strength'])} / ${target[filterBy.toLowerCase()]['strength']} Min',
                                 style: TextStyle(
                                   fontFamily: 'LeagueSpartan',
                                   fontSize: screenWidth * 0.032,
@@ -738,10 +840,10 @@ class _ReportScreenState extends State<ReportScreen> {
                                     width: screenWidth * 0.4,
                                     child: LinearProgressIndicator(
                                       value:
-                                          userData[filterBy
-                                              ?.toLowerCase()]['total_training'] /
+                                          userData?[filterBy
+                                              .toLowerCase()]['total_training'] /
                                           target[filterBy
-                                              ?.toLowerCase()]['total_training'],
+                                              .toLowerCase()]['total_training'],
                                       backgroundColor: Colors.grey[300],
                                       color: Color(0xFF9999A1),
                                       minHeight: screenHeight * 0.025,
@@ -754,7 +856,7 @@ class _ReportScreenState extends State<ReportScreen> {
                               ),
 
                               Text(
-                                '${min(userData[filterBy?.toLowerCase()]['total_training'], target[filterBy?.toLowerCase()]['total_training'])} / ${target[filterBy?.toLowerCase()]['total_training']} Min',
+                                '${min(userData?[filterBy.toLowerCase()]['total_training'], target[filterBy.toLowerCase()]['total_training'])} / ${target[filterBy.toLowerCase()]['total_training']} Workouts',
                                 style: TextStyle(
                                   fontFamily: 'LeagueSpartan',
                                   fontSize: screenWidth * 0.032,

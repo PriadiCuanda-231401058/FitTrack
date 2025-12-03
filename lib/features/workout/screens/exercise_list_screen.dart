@@ -139,7 +139,7 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
     final duration = args?['duration'] ?? 0;
     final int exerciseCount = args?['exerciseCount'] ?? 0;
 
-        print("DEBUG ARGS: $args");
+    print("DEBUG ARGS: $args");
 
     // print("workoutType: ${args?['workoutType']} (${args?['workoutType'].runtimeType})");
     // print("focusArea:   ${args?['focusArea']}   (${args?['focusArea'].runtimeType})");
@@ -378,11 +378,22 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
                           width: double.infinity,
                           child: ElevatedButton(
                             onPressed: () {
-                              // masuk ke exercise detail yang berisi video, dll
                               Navigator.pushNamed(
                                 context,
                                 '/workoutDetailScreen',
-                                arguments: {'exerciseList': _exerciseList},
+                                arguments: {
+                                  'exerciseList': _exerciseList,
+                                  'workoutType':
+                                      args?['workoutType'], // 'bodyFocus' atau 'target'
+                                  'focusArea':
+                                      args?['focusArea'], // 'ABS', 'ARMS', dll
+                                  'level':
+                                      args?['level'], // 'Beginner', 'Intermediate', 'Advanced'
+                                  'target':
+                                      args?['target'], // 'Strength', 'Cardio', 'Flexibility'
+                                  'title': args?['title'],
+                                  'duration': duration,
+                                },
                               );
                             },
                             style: ElevatedButton.styleFrom(

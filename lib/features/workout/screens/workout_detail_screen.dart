@@ -1,6 +1,7 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:fittrack/features/report/report_controller.dart';
+import 'package:fittrack/features/auth/auth_controller.dart';
 
 class WorkoutDetailScreen extends StatefulWidget {
   const WorkoutDetailScreen({super.key});
@@ -10,40 +11,63 @@ class WorkoutDetailScreen extends StatefulWidget {
 }
 
 class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
-  final _exerciseList = [
-    {
-      'id': 200198227,
-      'name': 'Wall Push-up',
-      'minutes': null,
-      'seconds': null,
-      'repetition': 12,
-      'videoURL': 'assets/workouts/Videos/Wall Push-up.gif',
-      'rest': 25,
-      'type': 'repetition',
-    },
-    {
-      'id': 200198227,
-      'name': 'Push-up',
-      'minutes': 1,
-      'seconds': 30,
-      'repetition': null,
-      'videoURL': 'assets/workouts/Videos/Push-up.gif',
-      'rest': 25,
-      'type': 'duration',
-    },
-  ];
+  final ReportController _reportController = ReportController();
+  final AuthController _authController = AuthController();
 
+  List<Map<String, dynamic>> _exerciseList = [];
   Timer? _timer;
   int index = 0;
   int? minutes;
   int? seconds;
   bool isStart = false;
+  bool _isDataLoaded = false; // Tambahkan flag ini
+
+  // String? _workoutType;
+  String? _focusArea;
+  String? _level;
+  String? _target;
+  int? _duration;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeWorkoutData();
+    });
+  }
+
+  void _initializeWorkoutData() {
+    final args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
+    // print(" ARG HASH: ${args.hashCode}");
+
+    if (args != null && !_isDataLoaded) {
+      setState(() {
+        _exerciseList = List<Map<String, dynamic>>.from(
+          args['exerciseList'] ?? [],
+        );
+        // _workoutType = args['workoutType'];
+        _focusArea = args['focusArea'];
+        _level = args['level'];
+        _target = args['target'];
+        _duration = args['duration'];
+        _isDataLoaded = true;
+      });
+
+      // print(' Data initialized:');
+      // print('  Exercise Count: ${_exerciseList.length}');
+      // print('  Workout Type: $_workoutType');
+      // print('  Focus Area: $_focusArea');
+    }
+  }
 
   void initDuration() {
-    setState(() {
-      minutes = _exerciseList[index]['minutes'] as int?;
-      seconds = _exerciseList[index]['seconds'] as int?;
-    });
+    if (_exerciseList.isNotEmpty && index < _exerciseList.length) {
+      setState(() {
+        minutes = _exerciseList[index]['minutes'] as int?;
+        seconds = _exerciseList[index]['seconds'] as int?;
+      });
+    }
   }
 
   void startTimer() {
@@ -69,7 +93,76 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
     });
   }
 
-  // List<Map<String, dynamic>> _exerciseList = null;
+  String _determineWorkoutType() {
+
+    if (_target != null) {
+      return _target!.toLowerCase();
+    }
+
+    switch (_focusArea?.toUpperCase()) {
+      case 'ABS':
+      case 'ARMS':
+      case 'CHEST':
+      case 'SHOULDERS':
+      case 'BACK':
+        return 'strength';
+      case 'LEGS':
+        return 'cardio';
+      default:
+        return 'flexibility';
+    }
+  }
+
+  Future<void> _completeWorkout() async {
+    try {
+      final user = _authController.currentUser;
+      if (user == null) {
+        // print('User not logged in');
+        return;
+      }
+
+      final totalDuration = _duration ?? 1;
+      String workoutType = _determineWorkoutType();
+
+      // print(' Completing workout with:');
+      // print('  Duration: $totalDuration minutes');
+      // print('  Workout Type: $workoutType');
+
+      await _reportController.updateUserProgress(
+        userId: user.uid,
+        workoutType: workoutType,
+        duration: totalDuration,
+        focusArea: _focusArea ?? 'General',
+        level: _level ?? 'Beginner',
+      );
+
+      await _reportController.logWorkoutSession(
+        userId: user.uid,
+        workoutId:
+            '${_focusArea}_${_level}_${DateTime.now().millisecondsSinceEpoch}',
+        workoutType: workoutType,
+        focusArea: _focusArea ?? 'General',
+        level: _level ?? 'Beginner',
+        duration: totalDuration,
+      );
+
+      // print(' Workout completed successfully');
+    } catch (e) {
+      // print(' Error completing workout: $e');
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     content: Text('Error updating progress: $e'),
+      //     backgroundColor: Colors.red,
+      //   ),
+      // );
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -187,12 +280,20 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
               child: ElevatedButton(
                 onPressed:
                     ((_exerciseList[index]['type'] == 'repetition') ||
-                        (_exerciseList[index]['type'] == 'duration' &&
+                        (_exerciseList[index]['type'] ==
+                            'repetition_per_side') ||
+                        (_exerciseList[index]['type'] == 'time' &&
                             seconds != null &&
-                            seconds == 0))
+                            seconds == 0&& 
+                              minutes == 0 &&
+                              minutes != null))
                     ? () {
                         if (index == _exerciseList.length - 1) {
-                          // kembali ke workout screen, dan nambah progress
+                          _completeWorkout();
+                          Navigator.pushReplacementNamed(
+                            context,
+                            '/workoutScreen',
+                          );
                         } else {
                           setState(() {
                             index++;
@@ -203,9 +304,13 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor:
                       (_exerciseList[index]['type'] == 'repetition') ||
-                          (_exerciseList[index]['type'] == 'duration' &&
+                          (_exerciseList[index]['type'] ==
+                              'repetition_per_side') ||
+                          (_exerciseList[index]['type'] == 'time' &&
                               seconds != null &&
-                              seconds == 0)
+                              seconds == 0 && 
+                              minutes == 0 &&
+                              minutes != null)
                       ? Colors.white
                       : Colors.white30,
 
@@ -231,3 +336,5 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
     );
   }
 }
+
+// }
