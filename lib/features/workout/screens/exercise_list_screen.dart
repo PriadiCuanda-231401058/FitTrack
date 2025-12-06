@@ -111,7 +111,8 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
           "minutes": minutes,
           "seconds": seconds,
           "repetition": repetition,
-          "videoURL": exercise.media,
+          // "videoURL": exercise.media,
+          "videoURL": 'assets/workouts/Videos/${exercise.name}.gif',
           "rest": exercise.rest,
           "type": exercise.type,
         };
