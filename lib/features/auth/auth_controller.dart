@@ -41,18 +41,23 @@ class AuthController {
         photoBase64: null,
       );
 
-      final userRef = FirebaseFirestore.instance.collection('users').doc(user.uid);
+      final userRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid);
       final userDoc = await userRef.get();
-      
+
       if (!userDoc.exists) {
         await report.initializeUserProgress(user.uid, userRef);
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .set(userModel.toMap(), SetOptions(merge: true));
       }
       // Simpan ke Firestore dengan data lengkap
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .set(userModel.toMap(), SetOptions(merge: true));
-
+      // await FirebaseFirestore.instance
+      //     .collection('users')
+      //     .doc(user.uid)
+      //     .set(userModel.toMap(), SetOptions(merge: true));
 
       return userModel;
     }
@@ -81,18 +86,20 @@ class AuthController {
         provider: 'email', // TANDAI sebagai email login
       );
 
-      final userRef = FirebaseFirestore.instance.collection('users').doc(user.uid);
+      final userRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid);
       final userDoc = await userRef.get();
-      
+
       if (!userDoc.exists) {
         await report.initializeUserProgress(user.uid, userRef);
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .set(userModel.toMap(), SetOptions(merge: true));
       }
-      
+
       // Simpan ke Firestore
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .set(userModel.toMap(), SetOptions(merge: true));
 
       return userModel;
     }

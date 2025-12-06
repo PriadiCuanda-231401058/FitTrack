@@ -6,7 +6,7 @@ class UserModel {
   final String email;
   final String? photoBase64;
   final String? provider;
-  final int streak;
+  final int? streak;
   final DateTime? lastWorkoutDate; 
   // final int totalWorkouts;
   
@@ -17,7 +17,7 @@ class UserModel {
     required this.email,
     this.photoBase64,
     this.provider,
-        this.streak = 0,
+        this.streak,
     this.lastWorkoutDate,
     // this.totalWorkouts = 0,
   });
@@ -31,7 +31,7 @@ class UserModel {
       email: data['email'] ?? '',
       photoBase64: data['photoBase64'],
       provider: data['provider'],
-            streak: data['streak'] ?? 0,
+            // streak: data['streak'] ?? '',
       lastWorkoutDate: data['lastWorkoutDate'] != null 
           ? (data['lastWorkoutDate'] as Timestamp).toDate() 
           : null,
@@ -47,7 +47,7 @@ class UserModel {
       email: map['email'] ?? '',
       photoBase64: map['photoBase64'],
       // photo: map['photo'],
-            streak: map['streak'] ?? 0,
+            // streak: map['streak'] ?? 0,
       lastWorkoutDate: map['lastWorkoutDate'] != null
           ? DateTime.parse(map['lastWorkoutDate'])
           : null,
@@ -62,7 +62,7 @@ class UserModel {
       'email': email,
       'photoBase64': photoBase64,
       'provider': provider,
-            'streak': streak,
+            // 'streak': streak,
       'lastWorkoutDate': lastWorkoutDate?.toIso8601String(),
       // 'totalWorkouts': totalWorkouts,
     };
