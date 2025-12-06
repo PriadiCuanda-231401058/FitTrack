@@ -136,15 +136,15 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
         level: _level ?? 'Beginner',
       );
 
-      await _reportController.logWorkoutSession(
-        userId: user.uid,
-        workoutId:
-            '${_focusArea}_${_level}_${DateTime.now().millisecondsSinceEpoch}',
-        workoutType: workoutType,
-        focusArea: _focusArea ?? 'General',
-        level: _level ?? 'Beginner',
-        duration: totalDuration,
-      );
+      // await _reportController.logWorkoutSession(
+      //   userId: user.uid,
+      //   workoutId:
+      //       '${_focusArea}_${_level}_${DateTime.now().millisecondsSinceEpoch}',
+      //   workoutType: workoutType,
+      //   focusArea: _focusArea ?? 'General',
+      //   level: _level ?? 'Beginner',
+      //   duration: totalDuration,
+      // );
 
       // print(' Workout completed successfully');
     } catch (e) {

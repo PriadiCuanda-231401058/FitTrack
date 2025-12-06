@@ -8,12 +8,12 @@ import 'dart:io';
 import 'package:image/image.dart' as img;
 import 'dart:convert';
 import 'dart:async';
+import 'package:google_sign_in/google_sign_in.dart';
 
 
 final authController = AuthController();
 
 class SettingsController extends ChangeNotifier {
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final ImagePicker _picker = ImagePicker();
@@ -24,23 +24,23 @@ class SettingsController extends ChangeNotifier {
       // Baca file asli
       final originalBytes = await file.readAsBytes();
       final originalImage = img.decodeImage(originalBytes);
-      
+
       if (originalImage == null) return null;
-      
+
       // Resize ke ukuran maksimum
       final resizedImage = img.copyResize(
         originalImage,
         width: maxSize,
         height: maxSize,
       );
-      
+
       // Encode ke JPEG dengan kualitas 70%
       final compressedBytes = img.encodeJpg(resizedImage, quality: 70);
-      
+
       // Buat file temporary
       final tempFile = File('${file.path}_compressed.jpg');
       await tempFile.writeAsBytes(compressedBytes);
-      
+
       return tempFile;
     } catch (e) {
       // print('Image compression error: $e');
@@ -54,14 +54,14 @@ class SettingsController extends ChangeNotifier {
       // Compress dulu
       final compressedFile = await _compressImage(imageFile, maxSize: 150);
       if (compressedFile == null) return null;
-      
+
       // Convert ke Base64
       final bytes = await compressedFile.readAsBytes();
       final base64String = base64Encode(bytes);
-      
+
       // Hapus file temporary
       await compressedFile.delete();
-      
+
       return base64String;
     } catch (e) {
       // print('❌ Base64 conversion error: $e');
@@ -77,13 +77,13 @@ class SettingsController extends ChangeNotifier {
 
       // Update di Firebase Auth
       await user.updateDisplayName(newUsername);
-      
+
       // Update di Firestore
       await _firestore.collection('users').doc(user.uid).update({
         'name': newUsername,
         'updatedAt': FieldValue.serverTimestamp(),
       });
-      
+
       return true;
     } catch (e) {
       print('❌ Update username error: $e');
@@ -166,7 +166,7 @@ class SettingsController extends ChangeNotifier {
 
       // Update Firebase Auth
       await user.updatePhotoURL(null);
-      
+
       return true;
     } catch (e) {
       print('Delete profile photo error: $e');
@@ -175,7 +175,10 @@ class SettingsController extends ChangeNotifier {
   }
 
   // 8. Change Password
-  Future<bool> changePassword(String currentPassword, String newPassword) async {
+  Future<bool> changePassword(
+    String currentPassword,
+    String newPassword,
+  ) async {
     try {
       final user = _auth.currentUser;
       if (user == null) return false;
@@ -190,10 +193,10 @@ class SettingsController extends ChangeNotifier {
       );
 
       await user.reauthenticateWithCredential(credential);
-      
+
       // Update password
       await user.updatePassword(newPassword);
-      
+
       return true;
     } catch (e) {
       print('❌ Change password error: $e');
@@ -219,13 +222,15 @@ class SettingsController extends ChangeNotifier {
       // );
 
       // await user.reauthenticateWithCredential(credential);
-      
+
       // Delete user data dari Firestore
       await _firestore.collection('users').doc(user.uid).delete();
-      
+
       // Delete user dari Firebase Auth
       await user.delete();
-      
+      await GoogleSignIn().signOut();
+      await FirebaseAuth.instance.signOut();
+
       return true;
     } catch (e) {
       print('❌ Delete account error: $e');

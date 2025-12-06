@@ -12,6 +12,7 @@ import 'package:fittrack/features/auth/screens/reset_password_screen.dart';
 import 'package:fittrack/features/home/home_screen.dart';
 import 'package:fittrack/features/workout/screens/workout_screen.dart';
 import 'package:fittrack/features/workout/screens/exercise_list_screen.dart';
+import 'package:fittrack/features/leaderboard/screens/leaderboard_screen.dart';
 
 final Map<String, WidgetBuilder> appRoutes = {
   '/': (context) => const SplashScreen(),
@@ -26,5 +27,6 @@ final Map<String, WidgetBuilder> appRoutes = {
   '/workoutDetailScreen': (context) => const WorkoutDetailScreen(),
   '/reportScreen': (context) => const ReportScreen(),
   '/bmiScreen': (context) => const BmiScreen(),
-  '/searchScreen' : (context) => const SearchScreen(),
+  '/searchScreen': (context) => const SearchScreen(),
+  '/leaderboardScreen': (context) => const LeaderboardScreen(),
 };
