@@ -23,19 +23,19 @@ class BmiService {
 
     if (adjustedBmi < 18.5) {
       advice = "Your BMI is below normal. Try to eat a bit more and stay consistent";
-      resultTest = "Need more nutrition!";
+      resultTest = "UnderWeight!";
       color = Colors.blue;
     } else if (adjustedBmi >= 18.5 && adjustedBmi < 25.0) {
       advice = "You’re in a healthy BMI range, keep it up!";
-      resultTest = "Awesome!!";
+      resultTest = "Normal!";
       color = Colors.green;
     } else if (adjustedBmi >= 25.0 && adjustedBmi < 30.0) {
       advice = "Your BMI is slightly above normal. Small changes = big progress!";
-      resultTest = "Focus on fitness!";
+      resultTest = "OverWeight!";
       color = Colors.orange;
     } else {
       advice = "Your BMI is much higher than normal. Don’t worry, you can start improving today!";
-      resultTest = "Consult a specialist.";
+      resultTest = "Obesity!";
       color = Colors.red;
     }
 
