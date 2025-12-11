@@ -1,5 +1,5 @@
-import 'package:fittrack/shared/widgets/navigation_bar_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:fittrack/shared/widgets/navigation_bar_widget.dart';
 import '../widgets/info_card.dart';
 
 class DetailAchievementScreen extends StatelessWidget {
@@ -7,7 +7,7 @@ class DetailAchievementScreen extends StatelessWidget {
   final String desc;
   final String category;
   final int progress;
-  final int total;
+  final int count;
   final String dateAcquired;
   final String image;
 
@@ -17,20 +17,22 @@ class DetailAchievementScreen extends StatelessWidget {
     required this.desc,
     required this.category,
     required this.progress,
-    required this.total,
+    required this.count,
     required this.dateAcquired,
     required this.image,
   });
 
-  bool get isComplete => progress == total || progress >= total;
+  bool get isComplete => progress >= count;
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    double percent = (progress / total) * 100;
-    if (percent > 100) percent = 100;
+    double progressRatio = count == 0 ? 0.0 : progress / count;
+    if (progressRatio > 1.0) progressRatio = 1.0;
+
+    double percent = progressRatio * 100;
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -51,155 +53,153 @@ class DetailAchievementScreen extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: screenHeight * 0.02),
-          child: Column(
-            children: [
-              SizedBox(height: screenHeight * 0.02),
 
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: screenWidth * 0.085,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w900,
-                ),
-                textAlign: TextAlign.center,
+      body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: screenHeight * 0.02),
+        child: Column(
+          children: [
+            SizedBox(height: screenHeight * 0.02),
+
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: screenWidth * 0.085,
+                color: Colors.white,
+                fontWeight: FontWeight.w900,
               ),
+              textAlign: TextAlign.center,
+            ),
 
-              SizedBox(height: screenHeight * 0.015),
+            SizedBox(height: screenHeight * 0.015),
 
-              Text(
-                desc,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: screenWidth * 0.04,
-                  fontWeight: FontWeight.w600,
-                ),
-                textAlign: TextAlign.center,
+            Text(
+              desc,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: screenWidth * 0.04,
+                fontWeight: FontWeight.w600,
               ),
+              textAlign: TextAlign.center,
+            ),
 
-              SizedBox(height: screenHeight * 0.03),
+            SizedBox(height: screenHeight * 0.03),
 
-              Image.asset(image, width: screenWidth * 0.45),
+            Opacity(
+              opacity: isComplete ? 1.0 : 0.5,
+              child: Image.asset(image, width: screenWidth * 0.45),
+            ),
 
-              SizedBox(height: screenHeight * 0.03),
+            SizedBox(height: screenHeight * 0.03),
 
-              InfoCard(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Progress",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: screenWidth * 0.05,
-                        color: const Color(0xff63666A),
-                      ),
+            /// --- PROGRESS CARD ---
+            InfoCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Progress",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: screenWidth * 0.05,
+                      color: const Color(0xff63666A),
                     ),
+                  ),
 
-                    SizedBox(height: screenHeight * 0.01),
+                  SizedBox(height: screenHeight * 0.01),
 
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        isComplete
-                            ? Text(
-                                "$total H / $total H",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: screenWidth * 0.05,
-                                ),
-                              )
-                            : Text(
-                                "$progress H / $total H",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: screenWidth * 0.05,
-                                ),
-                              ),
-                        Text(
-                          "${percent.toStringAsFixed(0)}%",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: screenWidth * 0.05,
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    SizedBox(height: screenHeight * 0.01),
-
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: LinearProgressIndicator(
-                        value: progress / total,
-                        minHeight: 12,
-                        backgroundColor: Colors.black,
-                        valueColor: const AlwaysStoppedAnimation<Color>(
-                          Colors.lightBlueAccent,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        isComplete ? "$count H / $count H" : "$progress H / $count H",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: screenWidth * 0.05,
                         ),
                       ),
+                      Text(
+                        "${percent.toStringAsFixed(0)}%",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: screenWidth * 0.05,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(height: screenHeight * 0.01),
+
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: LinearProgressIndicator(
+                      value: progressRatio,
+                      minHeight: 12,
+                      backgroundColor: Colors.black,
+                      valueColor: const AlwaysStoppedAnimation<Color>(
+                        Colors.lightBlueAccent,
+                      ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
+            ),
 
-              SizedBox(height: screenHeight * 0.015),
+            SizedBox(height: screenHeight * 0.015),
 
-              InfoCard(
-                child: Row(
-                  children: [
-                    Text(
-                      "Category : ",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: screenWidth * 0.05,
-                        color: const Color(0xff63666A),
-                      ),
+            /// --- CATEGORY ---
+            InfoCard(
+              child: Row(
+                children: [
+                  Text(
+                    "Category : ",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: screenWidth * 0.05,
+                      color: const Color(0xff63666A),
                     ),
-                    Text(
-                      category,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: screenWidth * 0.05,
-                      ),
+                  ),
+                  Text(
+                    category,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: screenWidth * 0.05,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
+            ),
 
-              SizedBox(height: screenHeight * 0.015),
+            SizedBox(height: screenHeight * 0.015),
 
-              InfoCard(
-                child: Row(
-                  children: [
-                    Text(
-                      "Date Acquired : ",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: screenWidth * 0.05,
-                        color: const Color(0xff63666A),
-                      ),
+            /// --- DATE ACQUIRED ---
+            InfoCard(
+              child: Row(
+                children: [
+                  Text(
+                    "Date Acquired : ",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: screenWidth * 0.05,
+                      color: const Color(0xff63666A),
                     ),
-                    Text(
-                      dateAcquired,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: screenWidth * 0.05,
-                      ),
+                  ),
+                  Text(
+                    dateAcquired,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: screenWidth * 0.05,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
+            ),
 
-              SizedBox(height: screenHeight * 0.1),
-            ],
-          ),
+            SizedBox(height: screenHeight * 0.1),
+          ],
         ),
       ),
-      bottomNavigationBar: SafeArea(
+
+      bottomNavigationBar: const SafeArea(
         child: NavigationBarWidget(location: '/achievementScreen'),
       ),
     );
