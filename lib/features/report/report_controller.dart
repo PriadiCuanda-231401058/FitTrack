@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fittrack/models/report_model.dart';
+import 'streakManager.dart';
 
 class ReportController {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+    final StreakManager _streakManager = StreakManager();
 
   Future<UserProgress?> getUserProgress(String userId) async {
     try {
@@ -44,11 +46,12 @@ class ReportController {
 
         // Update progress data
         progress = _updateProgressData(progress, workoutType, duration);
-        
+
+        await _streakManager.updateStreak(userId);
         // Update streak
-        final streakData = _updateStreak(streak, isStreak);
-        streak = streakData['streak'];
-        isStreak = streakData['isStreak'];
+        final streakData = await _streakManager.getUserStreakData(userId);
+        streak = streakData.streak;
+        isStreak = streakData.isActive;
 
         // Check achievements
         final newAchievements = await _checkAchievements(
@@ -120,7 +123,7 @@ class ReportController {
       'isStreak': false,
       'achievements': [],
       'created_at': FieldValue.serverTimestamp(),
-    });
+    }, SetOptions(merge: true));
   }
 
   // Update progress data all time periods
@@ -162,7 +165,7 @@ class ReportController {
   }
 
   // Update user streak
-  Map<String, dynamic> _updateStreak(int currentStreak, bool currentIsStreak) {
+  // Map<String, dynamic> _updateStreak(int currentStreak, bool currentIsStreak) {
     // final now = DateTime.now();
     // if (currentIsStreak) {
     //   return {
@@ -176,11 +179,11 @@ class ReportController {
     //     'isStreak': true,
     //   };
     // }
-    return {
-      'streak': currentStreak + 1,
-      'isStreak': true,
-    };
-  }
+  //   return {
+  //     'streak': currentStreak + 1,
+  //     'isStreak': true,
+  //   };
+  // }
 
   // Check and award achievements based on workout completion
   Future<List<String>> _checkAchievements({

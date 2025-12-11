@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fittrack/features/workout/workout_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fittrack/models/user_model.dart';
+import 'package:fittrack/features/report/report_controller.dart';
 // import 'package:fittrack/features/auth/auth_controller.dart';
 // import 'package:flutter/material.dart';
 
@@ -11,6 +13,7 @@ ValueNotifier<AuthController> authController = ValueNotifier(AuthController());
 class AuthController {
   final FirebaseAuth auth = FirebaseAuth.instance;
   Stream<User?> get authStateChanges => auth.authStateChanges();
+  final ReportController report = ReportController();
 
   Future<UserModel?> signInWithGoogle() async {
     final FirebaseAuth auth = FirebaseAuth.instance;
@@ -38,11 +41,18 @@ class AuthController {
         photoBase64: null,
       );
 
+      final userRef = FirebaseFirestore.instance.collection('users').doc(user.uid);
+      final userDoc = await userRef.get();
+      
+      if (!userDoc.exists) {
+        await report.initializeUserProgress(user.uid, userRef);
+      }
       // Simpan ke Firestore dengan data lengkap
       await FirebaseFirestore.instance
           .collection('users')
           .doc(user.uid)
           .set(userModel.toMap(), SetOptions(merge: true));
+
 
       return userModel;
     }
@@ -71,6 +81,13 @@ class AuthController {
         provider: 'email', // TANDAI sebagai email login
       );
 
+      final userRef = FirebaseFirestore.instance.collection('users').doc(user.uid);
+      final userDoc = await userRef.get();
+      
+      if (!userDoc.exists) {
+        await report.initializeUserProgress(user.uid, userRef);
+      }
+      
       // Simpan ke Firestore
       await FirebaseFirestore.instance
           .collection('users')
