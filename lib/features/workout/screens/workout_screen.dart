@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:fittrack/shared/widgets/navigation_bar_widget.dart';
 import 'package:fittrack/features/workout/workout_controller.dart';
 import 'package:fittrack/models/workout_model.dart';
+// import 'package:fittrack/features/auth/auth_controller.dart';
+import 'package:fittrack/features/report/streakManager.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:fittrack/features/workout/workout_controller.dart';
 
 class WorkoutScreen extends StatefulWidget {
@@ -22,11 +25,35 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   List<Workout> _workoutByGoalType = [];
   List<Workout> _popularWorkouts = [];
   bool _isLoading = true;
+  int _currentStreak = 0;
+  bool _isActive = false;
 
   @override
   void initState() {
     super.initState();
     _loadWorkoutData();
+    _loadStreak();
+  }
+
+  Future<void> _loadStreak() async {
+    // final authController = context.read<AuthController>();
+    // final user = authController.currentUser;
+    final user = FirebaseAuth.instance.currentUser;
+    
+    if (user != null) {
+      final streakManager = StreakManager();
+      final streakData = await streakManager.getUserStreakData(user.uid);
+      
+      setState(() {
+        _currentStreak = streakData.streak;
+        _isActive = streakData.isActive;
+        _isLoading = false;
+      });
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   Future<void> _loadWorkoutData() async {
@@ -58,8 +85,8 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   @override
   Widget build(BuildContext context) {
     // ini harus ambil dari data user
-    final int streak = 10;
-    final bool isStreak = true;
+    final int streak = _currentStreak;
+    final bool isStreak = _isActive;
 
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;

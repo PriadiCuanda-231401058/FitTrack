@@ -3,7 +3,7 @@ import 'package:fittrack/features/home/home_controller.dart';
 import 'package:fittrack/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-// import 'package:fittrack/features/auth/auth_controller.dart';
+// import 'seed.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

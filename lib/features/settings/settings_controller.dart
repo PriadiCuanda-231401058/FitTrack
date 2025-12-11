@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+// import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/material.dart';
 import '../auth/auth_controller.dart';
 import 'package:image_picker/image_picker.dart';
@@ -43,7 +43,7 @@ class SettingsController extends ChangeNotifier {
       
       return tempFile;
     } catch (e) {
-      print('Image compression error: $e');
+      // print('Image compression error: $e');
       return null;
     }
   }
@@ -64,7 +64,7 @@ class SettingsController extends ChangeNotifier {
       
       return base64String;
     } catch (e) {
-      print('❌ Base64 conversion error: $e');
+      // print('❌ Base64 conversion error: $e');
       return null;
     }
   }

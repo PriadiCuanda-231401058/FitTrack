@@ -30,8 +30,7 @@ class _ReportScreenState extends State<ReportScreen> {
   ];
 
   final ReportController _reportController = ReportController();
-  final AuthController _authController =
-      AuthController(); // Assuming you have auth controller
+  final AuthController _authController = AuthController(); 
   UserProgress? userData;
   double? progressw = 0.0;
   bool _isLoading = true;
@@ -43,7 +42,7 @@ class _ReportScreenState extends State<ReportScreen> {
     _loadUserProgress();
   }
 
-    ImageProvider getProfileImage() {
+  ImageProvider getProfileImage() {
     final user = _authController.currentUser;
 
     // Priority 1: Base64 dari Firestore
@@ -55,12 +54,12 @@ class _ReportScreenState extends State<ReportScreen> {
         print('Error decoding Base64: $e');
       }
     }
-    
+
     // Priority 2: Photo dari Firebase Auth (untuk social login)
     if (user?.photoURL != null && user!.photoURL!.isNotEmpty) {
       return NetworkImage(user.photoURL!);
     }
-    
+
     // Fallback: Default asset image
     return const AssetImage('assets/images/profile_icon.png');
   }
@@ -74,10 +73,12 @@ class _ReportScreenState extends State<ReportScreen> {
         final progress = await _reportController.getUserProgress(user.uid);
         setState(() {
           userData = progress;
-          progressw = (userData?.achievements.length.toDouble() ?? 0) / 15.0; // ganti 15 dengan total achievement yang ada
-          print ('progressw: $progressw');
+          progressw =
+              (userData?.achievements.length.toDouble() ?? 0) /
+              15.0; // ganti 15 dengan total achievement yang ada
+          print('progressw: $progressw');
         });
-        print ('User Progressw: $progressw');
+        print('User Progressw: $progressw');
         print('User ID: ${user.uid}');
         print('UserProgress: $progress');
         print('User Progress Data: ${userData?.toFirestore()}');
@@ -181,36 +182,33 @@ class _ReportScreenState extends State<ReportScreen> {
     //   "achievement": ["Arms Master", "Abs Monster", "Chest Bro"],
     // };
 
-
-
     // print("progressw :${userData?.achievements.length.toDouble()}");
     // print("progressw :${progressw}");
 
-
-print('_isLoading: $_isLoading');
-print('userData is null: ${userData == null}');
-print('userData: $userData');
-if (userData != null) {
-  print('userData.name: ${userData!.name}');
-  print('userData.achievements: ${userData!.achievements}');
-  print('userData.achievements.length: ${userData!.achievements.length}');
-}
-print('progressw: $progressw');
+    print('_isLoading: $_isLoading');
+    print('userData is null: ${userData == null}');
+    print('userData: $userData');
+    if (userData != null) {
+      print('userData.name: ${userData!.name}');
+      print('userData.achievements: ${userData!.achievements}');
+      print('userData.achievements.length: ${userData!.achievements.length}');
+    }
+    print('progressw: $progressw');
 
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-if (_isLoading) {
-  return Scaffold(
-    backgroundColor: Colors.black,
-    body: Center(
-      child: CircularProgressIndicator(
-        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-        strokeWidth: 3.0,
-      ),
-    ),
-  );
-}
+    if (_isLoading) {
+      return Scaffold(
+        backgroundColor: Colors.black,
+        body: Center(
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            strokeWidth: 3.0,
+          ),
+        ),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
