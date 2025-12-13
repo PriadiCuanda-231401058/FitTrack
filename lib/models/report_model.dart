@@ -68,11 +68,11 @@ class UserProgress {
   //   return 0;
   // }
 
-  static String _safeCastString(dynamic value) {
-    if (value == null) return '';
-    if (value is String) return value;
-    return value.toString();
-  }
+  // static String _safeCastString(dynamic value) {
+  //   if (value == null) return '';
+  //   if (value is String) return value;
+  //   return value.toString();
+  // }
 
   static Map<String, dynamic> _safeCastMap(dynamic value) {
     if (value == null) return {};

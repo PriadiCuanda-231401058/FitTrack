@@ -10,7 +10,7 @@ class LeaderboardScreen extends StatefulWidget {
 }
 
 class _LeaderboardScreenState extends State<LeaderboardScreen> {
-  bool isWeekly = false;
+  bool isWeekly = true;
   bool isLoading = false;
   // contoh data dummy, tinggal diganti dengan data dari database
   // final List<Map<String, dynamic>> weeklyLeaderboard = [
@@ -44,7 +44,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
   // ];
 
   final LeaderboardController _leaderboardController = LeaderboardController();
-  
+
   // Data dari controller akan menggantikan data dummy
   List<Map<String, dynamic>> weeklyLeaderboard = [];
   List<Map<String, dynamic>> monthlyLeaderboard = [];
@@ -59,7 +59,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
     if (mounted) {
       setState(() => isLoading = true);
     }
-    
+
     try {
       final data = await _leaderboardController.getWeeklyLeaderboard();
       if (mounted) {
@@ -80,7 +80,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
     if (mounted) {
       setState(() => isLoading = true);
     }
-    
+
     try {
       final data = await _leaderboardController.getMonthlyLeaderboard();
       if (mounted) {
@@ -103,6 +103,18 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     final leaderboardData = isWeekly ? weeklyLeaderboard : monthlyLeaderboard;
+
+    if (isLoading) {
+      return Scaffold(
+        backgroundColor: Colors.black,
+        body: Center(
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            strokeWidth: 3.0,
+          ),
+        ),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
