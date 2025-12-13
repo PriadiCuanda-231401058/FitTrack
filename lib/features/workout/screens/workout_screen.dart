@@ -6,6 +6,7 @@ import 'package:fittrack/models/workout_model.dart';
 // import 'package:fittrack/features/auth/auth_controller.dart';
 import 'package:fittrack/features/report/streakManager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fittrack/services/payment_services.dart';
 // import 'package:fittrack/features/workout/workout_controller.dart';
 
 class WorkoutScreen extends StatefulWidget {
@@ -33,7 +34,15 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     super.initState();
     _loadWorkoutData();
     _loadStreak();
+    checkAndUpdatePremiumStatus();
   }
+
+Future<void> checkAndUpdatePremiumStatus() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+  if (currentUser != null) {
+    final paymentService = PaymentService();
+    await paymentService.checkPremiumStatus();
+  }}
 
   Future<void> _loadStreak() async {
     // final authController = context.read<AuthController>();
