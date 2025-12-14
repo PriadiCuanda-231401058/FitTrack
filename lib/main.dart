@@ -4,13 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:fittrack/services/route.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+// import 'package:fittrack';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  Stripe.publishableKey =
+      'pk_test_51Sdwjf3GIBspwluAxewkCa99A2h4ZK5xYcdq3MFtDD8eq4WQtxXqM5GNOAXVxzYLC4vWFZ6Hb3qBc9J0Sp5NRquc00ryIiSCnn';
+  await Stripe.instance.applySettings();
+  // await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
