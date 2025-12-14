@@ -58,8 +58,12 @@ class _LoginScreenState extends State<LoginScreen> {
       UserModel? userModel = await authController.value.signInWithGoogle();
 
       if (userModel != null && mounted) {
-        // 🔹 Jika berhasil, pindah ke HomeScreen
-        Navigator.pushNamed(context, '/homeScreen');
+        // 🔹 Jika berhasil, pindah ke WorkoutScreen
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/workoutScreen',
+          (route) => false,
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Gagal login dengan Google')),
@@ -91,7 +95,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (!mounted) return; // untuk memastikan context masih aktif
 
-      Navigator.pushNamed(context, '/homeScreen');
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        '/workoutScreen',
+        (route) => false,
+      );
     } on FirebaseAuthException catch (e) {
       setState(() {
         showError = true;
@@ -106,13 +114,13 @@ class _LoginScreenState extends State<LoginScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      body: SafeArea(
-        child: Container(
-          color: Colors.black,
-          constraints: BoxConstraints(
-            minWidth: screenWidth,
-            minHeight: screenHeight,
-          ),
+      body: Container(
+        color: Colors.black,
+        constraints: BoxConstraints(
+          minWidth: screenWidth,
+          minHeight: screenHeight,
+        ),
+        child: Center(
           child: Stack(
             children: [
               SingleChildScrollView(

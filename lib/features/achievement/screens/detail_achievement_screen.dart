@@ -111,7 +111,9 @@ class DetailAchievementScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        isComplete ? "$count H / $count H" : "$progress H / $count H",
+                        isComplete
+                            ? "$count H / $count H"
+                            : "$progress H / $count H",
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: screenWidth * 0.05,
@@ -199,9 +201,7 @@ class DetailAchievementScreen extends StatelessWidget {
         ),
       ),
 
-      bottomNavigationBar: const SafeArea(
-        child: NavigationBarWidget(location: '/achievementScreen'),
-      ),
+      bottomNavigationBar: NavigationBarWidget(location: '/achievementScreen'),
     );
   }
 }

@@ -30,7 +30,7 @@ class _ReportScreenState extends State<ReportScreen> {
   ];
 
   final ReportController _reportController = ReportController();
-  final AuthController _authController = AuthController(); 
+  final AuthController _authController = AuthController();
   UserProgress? userData;
   double? progressw = 0.0;
   bool _isLoading = true;
@@ -65,7 +65,7 @@ class _ReportScreenState extends State<ReportScreen> {
     setState(() => _isLoading = true);
 
     try {
-      final user = _authController.currentUser; 
+      final user = _authController.currentUser;
       if (user != null) {
         final progress = await _reportController.getUserProgress(user.uid);
         setState(() {
@@ -215,6 +215,7 @@ class _ReportScreenState extends State<ReportScreen> {
           child: ElevatedButton(
             onPressed: () {
               // tambahi fungsi untuk back ke halaman sebelumnya
+              Navigator.pop(context);
             },
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.zero,

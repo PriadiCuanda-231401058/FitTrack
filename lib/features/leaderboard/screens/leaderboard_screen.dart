@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:fittrack/features/leaderboard/leaderboard_controller.dart';
+import 'package:fittrack/shared/widgets/navigation_bar_widget.dart';
 import 'package:flutter/material.dart';
 
 class LeaderboardScreen extends StatefulWidget {
@@ -123,12 +124,13 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
           child: ElevatedButton(
             onPressed: () {
               // tambahi fungsi untuk back ke halaman sebelumnya
+              Navigator.pop(context);
             },
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.zero,
               backgroundColor: Colors.transparent,
             ),
-            child: Image.asset('assets/images/arrow_back.png'),
+            child: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
           ),
         ),
         title: Text(
@@ -250,15 +252,10 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                 ),
               ),
             ),
-
-            Container(
-              color: Colors.white,
-              height: screenHeight * 0.075,
-              child: Row(children: [Text('Ini navigation')]),
-            ),
           ],
         ),
       ),
+      bottomNavigationBar: NavigationBarWidget(location: '/leaderboardScreen'),
     );
   }
 }
