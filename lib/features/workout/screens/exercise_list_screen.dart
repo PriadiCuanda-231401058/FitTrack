@@ -62,7 +62,11 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
           print('Premium data: $data["isPremium"]');
           if (data != null && data['isPremium'] != true) {
             setState(() => _isLoading = false);
-            Navigator.pushReplacementNamed(context, '/workoutScreen');
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              '/workoutScreen',
+              (route) => false,
+            );
             _showPremiumDialog();
             // Navigator.pop(context);
             return;
@@ -198,12 +202,13 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
           child: ElevatedButton(
             onPressed: () {
               // tambahi fungsi untuk back ke halaman sebelumnya
+              Navigator.pop(context);
             },
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.zero,
               backgroundColor: Colors.transparent,
             ),
-            child: Image.asset('assets/images/arrow_back.png'),
+            child: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
           ),
         ),
       ),
@@ -227,7 +232,7 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
                     left: screenWidth * 0.05,
                     right: screenWidth * 0.05,
                     top: screenHeight * 0.02,
-                    bottom: screenHeight * 0.02,
+                    // bottom: screenHeight * 0.02,
                   ),
                   decoration: BoxDecoration(
                     color: Colors.black,
@@ -427,11 +432,10 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
                 ),
               ),
             ),
-
-            NavigationBarWidget(location: '/workoutScreen'),
           ],
         ),
       ),
+      bottomNavigationBar: NavigationBarWidget(location: '/workoutScreen'),
     );
   }
 }

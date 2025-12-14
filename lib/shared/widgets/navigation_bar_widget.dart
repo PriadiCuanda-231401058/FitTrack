@@ -14,7 +14,7 @@ class _NavigationBarWidgetState extends State<NavigationBarWidget> {
     return GestureDetector(
       onTap: () {
         if (widget.location != route) {
-          Navigator.pushReplacementNamed(context, route);
+          Navigator.pushNamed(context, route);
         }
       },
       child: Image.asset(
@@ -29,7 +29,7 @@ class _NavigationBarWidgetState extends State<NavigationBarWidget> {
     // final screenHeight = MediaQuery.of(context).size.height;
 
     return Container(
-      color: Color(0xFF000000).withValues(alpha: 0.9),
+      color: Color(0xFF1F1F1F),
       padding: EdgeInsets.symmetric(vertical: 15),
       // height: screenHeight * 0.05,
       child: Row(

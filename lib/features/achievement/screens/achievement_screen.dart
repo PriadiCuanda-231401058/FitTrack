@@ -15,32 +15,28 @@ const List<Map<String, dynamic>> _achievementsInfo = [
     "image": "assets/images/badge_shoulder_specialist.png",
     "category": "General Fitness",
     "Title": "Shoulder Specialist",
-    "desc":
-        "Perkembangan seimbang di berbagai aspek kebugaran.",
+    "desc": "Perkembangan seimbang di berbagai aspek kebugaran.",
     "count": 8,
   },
   {
     "image": "assets/images/badge_arms_master.png",
     "category": "Strength",
     "Title": "Arms Master",
-    "desc":
-        "Ketahanan fisik kuat dalam latihan intensitas tinggi.",
+    "desc": "Ketahanan fisik kuat dalam latihan intensitas tinggi.",
     "count": 10,
   },
   {
     "image": "assets/images/badge_flexibility_guru.png",
     "category": "Mindfulness",
     "Title": "Flexibility Guru",
-    "desc":
-        "Fokus pada mobilitas dan keseimbangan tubuh.",
+    "desc": "Fokus pada mobilitas dan keseimbangan tubuh.",
     "count": 30,
   },
   {
     "image": "assets/images/badge_consistency_king.png",
     "category": "Discipline",
     "Title": "Consistency King",
-    "desc":
-        "Disiplin mengikuti jadwal latihan rutin.",
+    "desc": "Disiplin mengikuti jadwal latihan rutin.",
     "count": 30,
   },
 ];
@@ -51,15 +47,9 @@ const Map<String, dynamic> _userProgress = {
     "Shoulder Specialist",
     "Arms Master",
     "Flexibility Guru",
-    "Consistency King"
+    "Consistency King",
   ],
-  "dateAcquired": [
-    "17 Okt 2025",
-    "22 Sept 2025",
-    "-",
-    "-",
-    "-"
-  ],
+  "dateAcquired": ["17 Okt 2025", "22 Sept 2025", "-", "-", "-"],
   "progress": [25, 9, 9, 20, 22],
 };
 
@@ -145,9 +135,7 @@ class AchievementScreen extends StatelessWidget {
           },
         ),
       ),
-      bottomNavigationBar: const SafeArea(
-        child: NavigationBarWidget(location: '/achievementScreen'),
-      ),
+      bottomNavigationBar: NavigationBarWidget(location: '/achievementScreen'),
     );
   }
 }

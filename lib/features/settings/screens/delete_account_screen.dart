@@ -146,7 +146,11 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
       final success = await _controller.deleteAccount();
 
       if (success && mounted) {
-        Navigator.pushReplacementNamed(context, '/loginScreen');
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/loginScreen',
+          (route) => false,
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -167,7 +171,6 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     return Column(

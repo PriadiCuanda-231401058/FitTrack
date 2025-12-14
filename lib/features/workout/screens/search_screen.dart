@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class WorkoutTileData {
   final String title;
   final String details;
-  final String imagePath; 
+  final String imagePath;
 
   const WorkoutTileData({
     required this.title,
@@ -38,7 +38,6 @@ const List<WorkoutTileData> _fullWorkoutList = [
   ),
 ];
 
-
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
 
@@ -50,19 +49,19 @@ class _SearchScreenState extends State<SearchScreen> {
   List<WorkoutTileData> _searchResults = _fullWorkoutList;
   final TextEditingController _searchController = TextEditingController();
 
-
   void _performSearch(String query) {
     final lowerCaseQuery = query.toLowerCase();
 
     if (query.isEmpty) {
-
       setState(() {
-        _searchResults = _fullWorkoutList; 
+        _searchResults = _fullWorkoutList;
       });
       return;
     }
 
-    final filteredResults = _fullWorkoutList.where((item) => item.title.toLowerCase().startsWith(lowerCaseQuery)).toList();
+    final filteredResults = _fullWorkoutList
+        .where((item) => item.title.toLowerCase().startsWith(lowerCaseQuery))
+        .toList();
 
     setState(() {
       _searchResults = filteredResults;
@@ -72,7 +71,7 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
-    _searchResults = _fullWorkoutList; 
+    _searchResults = _fullWorkoutList;
     _searchController.addListener(() {
       _performSearch(_searchController.text);
     });
@@ -90,16 +89,15 @@ class _SearchScreenState extends State<SearchScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: Colors.black, 
+      backgroundColor: Colors.black,
       appBar: _buildCustomAppBar(context, screenWidth, screenHeight),
       body: _searchResults.isEmpty
-          ? _buildNoResultsFound(screenWidth) 
-          : _buildSearchResultsList(screenWidth), 
+          ? _buildNoResultsFound(screenWidth)
+          : _buildSearchResultsList(screenWidth),
     );
   }
 
   Widget _buildNoResultsFound(double screenWidth) {
-
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -107,8 +105,8 @@ class _SearchScreenState extends State<SearchScreen> {
           'Result Not Found',
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: Colors.white, 
-            fontSize: screenWidth * 0.12, 
+            color: Colors.white,
+            fontSize: screenWidth * 0.12,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -116,9 +114,9 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-Widget _buildSearchResultsList(double screenWidth) {
+  Widget _buildSearchResultsList(double screenWidth) {
     return ListView.separated(
-      padding: EdgeInsets.only(top: screenWidth * 0.04), 
+      padding: EdgeInsets.only(top: screenWidth * 0.04),
       itemCount: _searchResults.length,
       separatorBuilder: (context, index) => Divider(
         color: Colors.white,
@@ -133,23 +131,27 @@ Widget _buildSearchResultsList(double screenWidth) {
           onTap: () {
             print('${data.title} clicked!');
           },
-          screenWidth: screenWidth, 
+          screenWidth: screenWidth,
         );
       },
     );
   }
 
-  PreferredSizeWidget _buildCustomAppBar(BuildContext context, double screenWidth, double screenHeight) {
+  PreferredSizeWidget _buildCustomAppBar(
+    BuildContext context,
+    double screenWidth,
+    double screenHeight,
+  ) {
     final searchBarHeight = screenHeight * 0.05;
     final cancelFontSize = screenWidth * 0.04;
 
     return AppBar(
       backgroundColor: Colors.black,
-      automaticallyImplyLeading: false, 
+      automaticallyImplyLeading: false,
       titleSpacing: 0,
       title: Row(
         children: <Widget>[
-          Expanded( 
+          Expanded(
             child: Container(
               height: searchBarHeight,
               margin: const EdgeInsets.symmetric(horizontal: 10),
@@ -157,11 +159,11 @@ Widget _buildSearchResultsList(double screenWidth) {
                 color: Color(0xFFF4F4F6),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: TextField( 
+              child: TextField(
                 controller: _searchController,
                 style: const TextStyle(color: Color(0xff000000)),
                 decoration: const InputDecoration(
-                  hintText: 'Search workouts...', 
+                  hintText: 'Search workouts...',
                   hintStyle: TextStyle(color: Color(0xFF9999A1)),
                   prefixIcon: Icon(Icons.search, color: Color(0xFF9999A1)),
                   border: InputBorder.none,
@@ -172,14 +174,11 @@ Widget _buildSearchResultsList(double screenWidth) {
           ),
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop(); 
+              Navigator.pop(context);
             },
             child: Text(
               'Cancel',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: cancelFontSize, 
-              ),
+              style: TextStyle(color: Colors.white, fontSize: cancelFontSize),
             ),
           ),
           const SizedBox(width: 10),
@@ -192,12 +191,12 @@ Widget _buildSearchResultsList(double screenWidth) {
 class _WorkoutTile extends StatelessWidget {
   final WorkoutTileData data;
   final VoidCallback? onTap;
-  final double screenWidth; 
+  final double screenWidth;
 
   const _WorkoutTile({
     required this.data,
     this.onTap,
-    required this.screenWidth, 
+    required this.screenWidth,
   });
 
   @override
@@ -209,11 +208,14 @@ class _WorkoutTile extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: screenWidth * 0.03, horizontal:  screenWidth * 0.04),
+        padding: EdgeInsets.symmetric(
+          vertical: screenWidth * 0.03,
+          horizontal: screenWidth * 0.04,
+        ),
         child: Row(
           children: <Widget>[
             Container(
-              width: imageSize, 
+              width: imageSize,
               height: imageSize,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
@@ -225,8 +227,12 @@ class _WorkoutTile extends StatelessWidget {
                   image: AssetImage(data.imagePath),
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => Center(
-                    child: Icon(Icons.image_not_supported, color: Colors.white, size: imageSize * 0.5),
-                  ), 
+                    child: Icon(
+                      Icons.image_not_supported,
+                      color: Colors.white,
+                      size: imageSize * 0.5,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -238,11 +244,11 @@ class _WorkoutTile extends StatelessWidget {
                 children: <Widget>[
                   Text(
                     data.title,
-                    maxLines: 1, 
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: titleFontSize, 
+                      fontSize: titleFontSize,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -253,7 +259,7 @@ class _WorkoutTile extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: Colors.white70,
-                      fontSize: detailsFontSize, 
+                      fontSize: detailsFontSize,
                     ),
                   ),
                 ],

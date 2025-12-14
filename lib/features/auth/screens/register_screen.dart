@@ -49,7 +49,11 @@ class RegisterState extends State<RegisterScreen> {
 
       Future.delayed(Duration(seconds: 3), () {
         if (!mounted) return;
-        Navigator.pushNamed(context, '/loginScreen');
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/loginScreen',
+          (route) => false,
+        );
       });
     } on FirebaseAuthException catch (e) {
       // showAlert(context, e.message ?? 'An error occurred');
@@ -90,8 +94,12 @@ class RegisterState extends State<RegisterScreen> {
       if (!mounted) return;
 
       if (userModel != null) {
-        // 🔹 Jika berhasil, pindah ke HomeScreen
-        Navigator.pushNamed(context, '/homeScreen');
+        // 🔹 Jika berhasil, pindah ke WorkoutScreen
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          '/workoutScreen',
+          (route) => false,
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Gagal login dengan Google')),
@@ -130,11 +138,11 @@ class RegisterState extends State<RegisterScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      body: SafeArea(
-        child: Container(
-          color: Colors.black,
-          child: !successRegister
-              ? Stack(
+      body: Container(
+        color: Colors.black,
+        child: !successRegister
+            ? Center(
+                child: Stack(
                   children: [
                     SingleChildScrollView(
                       child: Padding(
@@ -604,42 +612,42 @@ class RegisterState extends State<RegisterScreen> {
                         ),
                       ),
                   ],
-                )
-              : SizedBox(
-                  width: screenWidth,
-                  height: screenHeight,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        'assets/images/register_success.png',
-                        width: screenWidth * 0.4,
-                      ),
-
-                      SizedBox(height: screenHeight * 0.015),
-
-                      Text(
-                        'Success!',
-                        style: TextStyle(
-                          fontFamily: 'LeagueSpartan',
-                          color: Colors.white,
-                          fontSize: screenWidth * 0.085,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-
-                      Text(
-                        textAlign: TextAlign.center,
-                        'Your account has been created successfully',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: screenWidth * 0.045,
-                        ),
-                      ),
-                    ],
-                  ),
                 ),
-        ),
+              )
+            : SizedBox(
+                width: screenWidth,
+                height: screenHeight,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/images/register_success.png',
+                      width: screenWidth * 0.4,
+                    ),
+
+                    SizedBox(height: screenHeight * 0.015),
+
+                    Text(
+                      'Success!',
+                      style: TextStyle(
+                        fontFamily: 'LeagueSpartan',
+                        color: Colors.white,
+                        fontSize: screenWidth * 0.085,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+
+                    Text(
+                      textAlign: TextAlign.center,
+                      'Your account has been created successfully',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: screenWidth * 0.045,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
       ),
     );
   }
