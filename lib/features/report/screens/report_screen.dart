@@ -8,7 +8,7 @@ import 'package:fittrack/features/auth/auth_controller.dart';
 import 'package:fittrack/models/report_model.dart';
 import 'dart:convert';
 
-import 'package:fittrack/models/user_model.dart';
+// import 'package:fittrack/models/user_model.dart';
 // import 'package:fittrack/features/settings/screens/settings_screen.dart';
 
 class ReportScreen extends StatefulWidget {
@@ -45,7 +45,6 @@ class _ReportScreenState extends State<ReportScreen> {
   ImageProvider getProfileImage() {
     final user = _authController.currentUser;
 
-    // Priority 1: Base64 dari Firestore
     if (userData?.photoBase64 != null && userData!.photoBase64!.isNotEmpty) {
       try {
         final bytes = base64.decode(userData!.photoBase64!);
@@ -55,12 +54,10 @@ class _ReportScreenState extends State<ReportScreen> {
       }
     }
 
-    // Priority 2: Photo dari Firebase Auth (untuk social login)
     if (user?.photoURL != null && user!.photoURL!.isNotEmpty) {
       return NetworkImage(user.photoURL!);
     }
 
-    // Fallback: Default asset image
     return const AssetImage('assets/images/profile_icon.png');
   }
 
@@ -68,7 +65,7 @@ class _ReportScreenState extends State<ReportScreen> {
     setState(() => _isLoading = true);
 
     try {
-      final user = _authController.currentUser; // Get current user
+      final user = _authController.currentUser; 
       if (user != null) {
         final progress = await _reportController.getUserProgress(user.uid);
         setState(() {

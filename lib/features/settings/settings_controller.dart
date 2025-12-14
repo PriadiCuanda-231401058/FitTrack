@@ -18,48 +18,38 @@ class SettingsController extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final ImagePicker _picker = ImagePicker();
 
-  // 1. Compress Image ke ukuran kecil (untuk Base64)
   Future<File?> _compressImage(File file, {int maxSize = 100}) async {
     try {
-      // Baca file asli
       final originalBytes = await file.readAsBytes();
       final originalImage = img.decodeImage(originalBytes);
 
       if (originalImage == null) return null;
 
-      // Resize ke ukuran maksimum
       final resizedImage = img.copyResize(
         originalImage,
         width: maxSize,
         height: maxSize,
       );
 
-      // Encode ke JPEG dengan kualitas 70%
       final compressedBytes = img.encodeJpg(resizedImage, quality: 70);
 
-      // Buat file temporary
       final tempFile = File('${file.path}_compressed.jpg');
       await tempFile.writeAsBytes(compressedBytes);
 
       return tempFile;
     } catch (e) {
-      // print('Image compression error: $e');
       return null;
     }
   }
 
-  // 2. Convert Image to Base64
   Future<String?> _imageToBase64(File imageFile) async {
     try {
-      // Compress dulu
       final compressedFile = await _compressImage(imageFile, maxSize: 150);
       if (compressedFile == null) return null;
 
-      // Convert ke Base64
       final bytes = await compressedFile.readAsBytes();
       final base64String = base64Encode(bytes);
 
-      // Hapus file temporary
       await compressedFile.delete();
 
       return base64String;
@@ -69,16 +59,13 @@ class SettingsController extends ChangeNotifier {
     }
   }
 
-  // 3. Update Username
   Future<bool> updateUsername(String newUsername) async {
     try {
       final user = _auth.currentUser;
       if (user == null) return false;
 
-      // Update di Firebase Auth
       await user.updateDisplayName(newUsername);
 
-      // Update di Firestore
       await _firestore.collection('users').doc(user.uid).update({
         'name': newUsername,
         'updatedAt': FieldValue.serverTimestamp(),
@@ -91,13 +78,11 @@ class SettingsController extends ChangeNotifier {
     }
   }
 
-  // 4. Upload Profile Photo sebagai Base64
   Future<bool> uploadProfilePhotoBase64(String base64Image) async {
     try {
       final user = _auth.currentUser;
       if (user == null) return false;
 
-      // Simpan Base64 ke Firestore
       await _firestore.collection('users').doc(user.uid).update({
         'photoBase64': base64Image,
         'updatedAt': FieldValue.serverTimestamp(),
@@ -110,14 +95,13 @@ class SettingsController extends ChangeNotifier {
     }
   }
 
-  // 5. Pilih Foto dari Gallery dan Convert ke Base64
   Future<String?> pickProfilePhotoFromGallery() async {
     try {
       final pickedFile = await _picker.pickImage(
         source: ImageSource.gallery,
         maxWidth: 800,
         maxHeight: 800,
-        imageQuality: 70, // Kurangi quality untuk size lebih kecil
+        imageQuality: 70,
       );
 
       if (pickedFile != null) {
@@ -131,7 +115,6 @@ class SettingsController extends ChangeNotifier {
     }
   }
 
-  // 6. Ambil Foto dari Kamera
   Future<String?> takeProfilePhotoWithCamera() async {
     try {
       final pickedFile = await _picker.pickImage(
@@ -152,13 +135,11 @@ class SettingsController extends ChangeNotifier {
     }
   }
 
-  // 7. Hapus Foto Profil
   Future<bool> deleteProfilePhoto() async {
     try {
       final user = _auth.currentUser;
       if (user == null) return false;
 
-      // Hapus photoBase64 dari Firestore
       await _firestore.collection('users').doc(user.uid).update({
         'photoBase64': FieldValue.delete(),
         'updatedAt': FieldValue.serverTimestamp(),
@@ -174,7 +155,6 @@ class SettingsController extends ChangeNotifier {
     }
   }
 
-  // 8. Change Password
   Future<bool> changePassword(
     String currentPassword,
     String newPassword,
@@ -186,7 +166,6 @@ class SettingsController extends ChangeNotifier {
       final email = user.email;
       if (email == null) return false;
 
-      // Re-authenticate user
       final credential = EmailAuthProvider.credential(
         email: email,
         password: currentPassword,
@@ -194,7 +173,6 @@ class SettingsController extends ChangeNotifier {
 
       await user.reauthenticateWithCredential(credential);
 
-      // Update password
       await user.updatePassword(newPassword);
 
       return true;
@@ -204,7 +182,6 @@ class SettingsController extends ChangeNotifier {
     }
   }
 
-  // 9. Delete Account
   Future<bool> deleteAccount() async {
     try {
       final user = _auth.currentUser;
@@ -215,7 +192,6 @@ class SettingsController extends ChangeNotifier {
 
       // final password = user.password;
 
-      // Re-authenticate user
       // final credential = EmailAuthProvider.credential(
       //   email: email,
       //   password: password,
@@ -223,10 +199,8 @@ class SettingsController extends ChangeNotifier {
 
       // await user.reauthenticateWithCredential(credential);
 
-      // Delete user data dari Firestore
       await _firestore.collection('users').doc(user.uid).delete();
 
-      // Delete user dari Firebase Auth
       await user.delete();
       await GoogleSignIn().signOut();
       await FirebaseAuth.instance.signOut();
@@ -238,7 +212,6 @@ class SettingsController extends ChangeNotifier {
     }
   }
 
-  // 10. Get Current User Data
   Future<Map<String, dynamic>?> getUserData() async {
     try {
       final user = _auth.currentUser;
@@ -265,16 +238,13 @@ class SettingsController extends ChangeNotifier {
   //       return false;
   //     }
 
-  //     // 1. Hapus data user di Firestore
   //     await FirebaseFirestore.instance
   //         .collection('users')
   //         .doc(user.uid)
   //         .delete();
 
-  //     // 2. Hapus akun dari FirebaseAuth
   //     await user.delete();
 
-  //     // 3. Logout Google Sign In (kalau pakai Google)
   //     try {
   //       await GoogleSignIn().signOut();
   //     } catch (_) {}
@@ -293,3 +263,4 @@ class SettingsController extends ChangeNotifier {
   //     return false;
   //   }
   // }
+

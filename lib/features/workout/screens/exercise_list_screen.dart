@@ -1,7 +1,12 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:fittrack/shared/widgets/navigation_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:fittrack/models/workout_model.dart';
 import 'package:fittrack/features/workout/workout_controller.dart';
+import 'package:fittrack/features/settings/screens/premium_features_screen.dart';
+import 'package:fittrack/features/settings/widgets/custom_popup.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ExerciseListScreen extends StatefulWidget {
   const ExerciseListScreen({super.key});
@@ -20,7 +25,6 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
   void initState() {
     super.initState();
 
-    // memastikan ModalRoute sudah siap
     Future.delayed(Duration.zero, () {
       _loadExercises();
     });
@@ -29,24 +33,7 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
   void _showPremiumDialog() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Premium Workout'),
-        content: Text(
-          'This workout is available for premium users only. Upgrade to access all features.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text('Upgrade'),
-          ),
-        ],
-      ),
+      builder: (_) => CustomPopup(child: PremiumFeaturesScreen()),
     );
   }
 
@@ -65,9 +52,22 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
       final bool? isPremium = args?['isPremium'];
 
       if (isPremium == true) {
-        _showPremiumDialog();
-        setState(() => _isLoading = false);
-        return;
+        final currentUser = FirebaseAuth.instance.currentUser;
+        if (currentUser != null) {
+          final doc = await FirebaseFirestore.instance
+              .collection('users')
+              .doc(currentUser.uid)
+              .get();
+          final data = doc.data();
+          print('Premium data: $data["isPremium"]');
+          if (data != null && data['isPremium'] != true) {
+            setState(() => _isLoading = false);
+            Navigator.pushReplacementNamed(context, '/workoutScreen');
+            _showPremiumDialog();
+            // Navigator.pop(context);
+            return;
+          }
+        }
       }
 
       List<Exercise> exercises = [];
@@ -89,7 +89,6 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
         );
       }
 
-      // Convert ke map yang digunakan UI
       final List<Map<String, dynamic>> exerciseList = exercises.map((exercise) {
         int? minutes;
         int? seconds;
@@ -154,6 +153,10 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
     if (_isLoading) {
       return Scaffold(body: Center(child: CircularProgressIndicator()));
     }
+
+    // if (_exerciseList.isEmpty) {
+    //   Navigator.pushReplacementNamed(context, '/workoutScreen');
+    // }
 
     // ini nanti select exercise yang challengeID-nya sama dengan challengeID
     // kalau challengeID null, select berdasarkan workoutID
