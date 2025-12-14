@@ -186,6 +186,20 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
           child: ElevatedButton(
             onPressed: () {
               // tambahi fungsi untuk back ke halaman sebelumnya
+              if (index > 0) {
+                setState(() {
+                  index--;
+                  seconds = 0;
+                  minutes = 0;
+                  isStart = false;
+                });
+              } else {
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  '/workoutScreen',
+                  (route) => false,
+                );
+              }
             },
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.zero,
@@ -290,13 +304,16 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
                     ? () {
                         if (index == _exerciseList.length - 1) {
                           _completeWorkout();
-                          Navigator.pushReplacementNamed(
+                          Navigator.pushNamedAndRemoveUntil(
                             context,
                             '/workoutScreen',
+                            (route) => false,
                           );
                         } else {
                           setState(() {
                             index++;
+                            seconds = null;
+                            minutes = null;
                             isStart = false;
                           });
                         }

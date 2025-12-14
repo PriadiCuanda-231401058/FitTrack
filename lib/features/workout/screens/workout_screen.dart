@@ -17,7 +17,7 @@ class WorkoutScreen extends StatefulWidget {
 }
 
 class _WorkoutScreenState extends State<WorkoutScreen> {
-  String focusArea = "Arms";
+  String focusArea = "Abs";
   String goalType = "Strength";
 
   final WorkoutController _workoutController = WorkoutController();
@@ -37,22 +37,23 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     checkAndUpdatePremiumStatus();
   }
 
-Future<void> checkAndUpdatePremiumStatus() async {
+  Future<void> checkAndUpdatePremiumStatus() async {
     final currentUser = FirebaseAuth.instance.currentUser;
-  if (currentUser != null) {
-    final paymentService = PaymentService();
-    await paymentService.checkPremiumStatus();
-  }}
+    if (currentUser != null) {
+      final paymentService = PaymentService();
+      await paymentService.checkPremiumStatus();
+    }
+  }
 
   Future<void> _loadStreak() async {
     // final authController = context.read<AuthController>();
     // final user = authController.currentUser;
     final user = FirebaseAuth.instance.currentUser;
-    
+
     if (user != null) {
       final streakManager = StreakManager();
       final streakData = await streakManager.getUserStreakData(user.uid);
-      
+
       setState(() {
         _currentStreak = streakData.streak;
         _isActive = streakData.isActive;
@@ -113,426 +114,414 @@ Future<void> checkAndUpdatePremiumStatus() async {
     }
 
     return Scaffold(
-      body: SafeArea(
-        child: Container(
-          width: screenWidth,
-          color: Colors.black,
-          child: Column(
-            children: [
-              Padding(
+      body: Container(
+        width: screenWidth,
+        color: Colors.black,
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(
+                left: screenWidth * 0.05,
+                right: screenWidth * 0.05,
+                top: screenHeight * 0.05,
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    'Daily Workout',
+                    style: TextStyle(
+                      fontFamily: 'LeagueSpartan',
+                      fontSize: screenWidth * 0.07,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+
+                  SizedBox(width: screenWidth * 0.05),
+
+                  Image.asset(
+                    'assets/images/streak.png',
+                    width: screenWidth * 0.05,
+                    height: screenHeight * 0.05,
+                    color: isStreak ? Color(0xFFFF7518) : Color(0xFF66666E),
+                  ),
+
+                  SizedBox(width: screenWidth * 0.02),
+
+                  Text(
+                    '$streak',
+                    style: TextStyle(
+                      fontFamily: 'LeagueSpartan',
+                      fontSize: screenWidth * 0.045,
+                      fontWeight: FontWeight.bold,
+                      color: isStreak ? Color(0xFFFF7518) : Color(0xFF66666E),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            SizedBox(height: screenHeight * 0.01),
+
+            Expanded(
+              child: Padding(
                 padding: EdgeInsets.only(
                   left: screenWidth * 0.05,
                   right: screenWidth * 0.05,
-                  top: screenHeight * 0.015,
                 ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Daily Workout',
-                      style: TextStyle(
-                        fontFamily: 'LeagueSpartan',
-                        fontSize: screenWidth * 0.07,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextField(
+                        readOnly: true,
+                        onTap: () {
+                          Navigator.pushNamed(context, '/searchScreen');
+                        },
 
-                    SizedBox(width: screenWidth * 0.05),
-
-                    Image.asset(
-                      'assets/images/streak.png',
-                      width: screenWidth * 0.05,
-                      height: screenHeight * 0.05,
-                      color: isStreak ? Color(0xFFFF7518) : Color(0xFF66666E),
-                    ),
-
-                    SizedBox(width: screenWidth * 0.02),
-
-                    Text(
-                      '$streak',
-                      style: TextStyle(
-                        fontFamily: 'LeagueSpartan',
-                        fontSize: screenWidth * 0.045,
-                        fontWeight: FontWeight.bold,
-                        color: isStreak ? Color(0xFFFF7518) : Color(0xFF66666E),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              SizedBox(height: screenHeight * 0.01),
-
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    left: screenWidth * 0.05,
-                    right: screenWidth * 0.05,
-                    bottom: screenHeight * 0.015,
-                  ),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TextField(
-                          readOnly: true,
-                          onTap: () {
-                            Navigator.pushNamed(context, '/searchScreen');
-                          },
-
-                          decoration: InputDecoration(
-                            filled: true,
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: screenWidth * 0.035,
-                              vertical: screenHeight * 0.015,
-                            ),
-                            fillColor: Color(0xFFF4F4F6),
-                            hint: Row(
-                              children: [
-                                Image.asset(
-                                  'assets/images/search.png',
-                                  width: screenWidth * 0.07,
-                                  height: screenWidth * 0.07,
-                                ),
-
-                                SizedBox(width: screenWidth * 0.02),
-
-                                Text(
-                                  'Search Exercise',
-                                  style: TextStyle(
-                                    fontSize: screenWidth * 0.045,
-                                    color: Color(0xFF9999A1),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                              borderRadius: BorderRadius.circular(
-                                screenWidth * 0.035,
+                        decoration: InputDecoration(
+                          filled: true,
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: screenWidth * 0.035,
+                            vertical: screenHeight * 0.015,
+                          ),
+                          fillColor: Color(0xFFF4F4F6),
+                          hint: Row(
+                            children: [
+                              Image.asset(
+                                'assets/images/search.png',
+                                width: screenWidth * 0.07,
+                                height: screenWidth * 0.07,
                               ),
+
+                              SizedBox(width: screenWidth * 0.02),
+
+                              Text(
+                                'Search Exercise',
+                                style: TextStyle(
+                                  fontSize: screenWidth * 0.045,
+                                  color: Color(0xFF9999A1),
+                                ),
+                              ),
+                            ],
+                          ),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(
+                              screenWidth * 0.035,
                             ),
                           ),
                         ),
+                      ),
 
-                        SizedBox(height: screenHeight * 0.025),
+                      SizedBox(height: screenHeight * 0.025),
 
-                        Text(
-                          'Challenges',
-                          style: TextStyle(
-                            fontFamily: 'LeagueSpartan',
-                            fontSize: screenWidth * 0.065,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
+                      Text(
+                        'Challenges',
+                        style: TextStyle(
+                          fontFamily: 'LeagueSpartan',
+                          fontSize: screenWidth * 0.065,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
+                      ),
 
-                        SizedBox(height: screenHeight * 0.015),
+                      SizedBox(height: screenHeight * 0.015),
 
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: _challenges.map((challenge) {
-                              return Row(
-                                children: [
-                                  Container(
-                                    width: screenWidth * 0.7,
-                                    height: screenHeight * 0.25,
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: _challenges.map((challenge) {
+                            return Row(
+                              children: [
+                                Container(
+                                  width: screenWidth * 0.7,
+                                  height: screenHeight * 0.25,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: AssetImage(challenge['imageURL']),
+                                      fit: BoxFit.cover,
+                                    ),
+                                    borderRadius: BorderRadius.circular(
+                                      screenWidth * 0.05,
+                                    ),
+                                  ),
+                                  child: Container(
                                     decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: AssetImage(
-                                          challenge['imageURL'],
-                                        ),
-                                        fit: BoxFit.cover,
-                                      ),
+                                      color: challenge['bgColor'],
                                       borderRadius: BorderRadius.circular(
                                         screenWidth * 0.05,
                                       ),
                                     ),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: challenge['bgColor'],
-                                        borderRadius: BorderRadius.circular(
-                                          screenWidth * 0.05,
-                                        ),
+                                    child: Padding(
+                                      padding: EdgeInsets.all(
+                                        screenWidth * 0.03,
                                       ),
-                                      child: Padding(
-                                        padding: EdgeInsets.all(
-                                          screenWidth * 0.03,
-                                        ),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              challenge['title'],
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: screenWidth * 0.045,
-                                                fontFamily: 'LeagueSpartan',
-                                                fontWeight: FontWeight.w700,
-                                              ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            challenge['title'],
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: screenWidth * 0.045,
+                                              fontFamily: 'LeagueSpartan',
+                                              fontWeight: FontWeight.w700,
                                             ),
+                                          ),
 
-                                            SizedBox(
-                                              height: screenHeight * 0.003,
+                                          SizedBox(
+                                            height: screenHeight * 0.003,
+                                          ),
+
+                                          Text(
+                                            challenge['description'],
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: screenWidth * 0.035,
                                             ),
+                                          ),
 
-                                            Text(
-                                              challenge['description'],
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: screenWidth * 0.035,
-                                              ),
-                                            ),
+                                          SizedBox(height: screenHeight * 0.02),
 
-                                            SizedBox(
-                                              height: screenHeight * 0.02,
-                                            ),
-
-                                            SizedBox(
-                                              width: double.infinity,
-                                              child: ElevatedButton(
-                                                onPressed: () {
-                                                  // pindah ke halaman exercise list
-                                                  Navigator.pushNamed(
-                                                    context,
-                                                    '/exerciseListScreen',
-                                                    arguments: {
-                                                      'workoutType':
-                                                          'challenge',
-                                                      'challengeID':
-                                                          challenge['id'],
-                                                      'title':
-                                                          challenge['title'],
-                                                      'duration':
-                                                          challenge['duration'],
-                                                      'exerciseCount':
-                                                          challenge['exerciseCount'],
-                                                    },
-                                                  );
-                                                },
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor: Colors.white,
-                                                  padding: EdgeInsets.symmetric(
-                                                    vertical:
-                                                        screenHeight * 0.005,
-                                                  ),
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          1000,
-                                                        ),
-                                                  ),
+                                          SizedBox(
+                                            width: double.infinity,
+                                            child: ElevatedButton(
+                                              onPressed: () {
+                                                // pindah ke halaman exercise list
+                                                Navigator.pushNamed(
+                                                  context,
+                                                  '/exerciseListScreen',
+                                                  arguments: {
+                                                    'workoutType': 'challenge',
+                                                    'challengeID':
+                                                        challenge['id'],
+                                                    'title': challenge['title'],
+                                                    'duration':
+                                                        challenge['duration'],
+                                                    'exerciseCount':
+                                                        challenge['exerciseCount'],
+                                                  },
+                                                );
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colors.white,
+                                                padding: EdgeInsets.symmetric(
+                                                  vertical:
+                                                      screenHeight * 0.005,
                                                 ),
-                                                child: Text(
-                                                  'Start',
-                                                  style: TextStyle(
-                                                    fontFamily: 'LeagueSpartan',
-                                                    fontSize:
-                                                        screenWidth * 0.05,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.black,
-                                                  ),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                        1000,
+                                                      ),
+                                                ),
+                                              ),
+                                              child: Text(
+                                                'Start',
+                                                style: TextStyle(
+                                                  fontFamily: 'LeagueSpartan',
+                                                  fontSize: screenWidth * 0.05,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black,
                                                 ),
                                               ),
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
+                                ),
 
-                                  SizedBox(width: screenWidth * 0.04),
-                                ],
-                              );
-                            }).toList(),
-                          ),
+                                SizedBox(width: screenWidth * 0.04),
+                              ],
+                            );
+                          }).toList(),
                         ),
+                      ),
 
-                        SizedBox(height: screenHeight * 0.025),
+                      SizedBox(height: screenHeight * 0.025),
 
-                        Text(
-                          'Body Focus',
-                          style: TextStyle(
-                            fontFamily: 'LeagueSpartan',
-                            fontSize: screenWidth * 0.065,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
+                      Text(
+                        'Body Focus',
+                        style: TextStyle(
+                          fontFamily: 'LeagueSpartan',
+                          fontSize: screenWidth * 0.065,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
+                      ),
 
-                        SizedBox(height: screenHeight * 0.01),
+                      SizedBox(height: screenHeight * 0.01),
 
-                        Column(
-                          children: [
-                            SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                children:
-                                    [
-                                      "Abs",
-                                      "Arms",
-                                      "Chest",
-                                      "Legs",
-                                      "Shoulders",
-                                      "Back",
-                                    ].map((area) {
-                                      return Row(
-                                        children: [
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              setState(() => focusArea = area);
-                                              _loadWorkoutData();
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              padding: EdgeInsets.symmetric(
-                                                horizontal: screenWidth * 0.065,
-                                              ),
-                                              side: BorderSide(
-                                                color: area == focusArea
-                                                    ? Color(0xFF1E90FF)
-                                                    : Color(0xFF9999A1),
-                                              ),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(1000),
-                                              ),
-                                              backgroundColor:
-                                                  Colors.transparent,
+                      Column(
+                        children: [
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children:
+                                  [
+                                    "Abs",
+                                    "Arms",
+                                    "Chest",
+                                    "Legs",
+                                    "Shoulders",
+                                    "Back",
+                                  ].map((area) {
+                                    return Row(
+                                      children: [
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            setState(() => focusArea = area);
+                                            _loadWorkoutData();
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: screenWidth * 0.065,
                                             ),
-                                            child: Text(
-                                              area,
-                                              style: TextStyle(
-                                                color: area == focusArea
-                                                    ? Color(0xFF1E90FF)
-                                                    : Color(0xFF9999A1),
-                                                fontSize: screenWidth * 0.035,
-                                                fontWeight: FontWeight.w700,
-                                              ),
+                                            side: BorderSide(
+                                              color: area == focusArea
+                                                  ? Color(0xFF1E90FF)
+                                                  : Color(0xFF9999A1),
+                                            ),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(1000),
+                                            ),
+                                            backgroundColor: Colors.transparent,
+                                          ),
+                                          child: Text(
+                                            area,
+                                            style: TextStyle(
+                                              color: area == focusArea
+                                                  ? Color(0xFF1E90FF)
+                                                  : Color(0xFF9999A1),
+                                              fontSize: screenWidth * 0.035,
+                                              fontWeight: FontWeight.w700,
                                             ),
                                           ),
+                                        ),
 
-                                          SizedBox(width: screenWidth * 0.03),
-                                        ],
-                                      );
-                                    }).toList(),
-                              ),
+                                        SizedBox(width: screenWidth * 0.03),
+                                      ],
+                                    );
+                                  }).toList(),
                             ),
-
-                            SizedBox(height: screenHeight * 0.02),
-
-                            WorkoutList(
-                              workouts: _workoutByFocusArea,
-                              workoutType: 'bodyFocus',
-                            ),
-                          ],
-                        ),
-
-                        SizedBox(height: screenHeight * 0.005),
-
-                        Text(
-                          'Target',
-                          style: TextStyle(
-                            fontFamily: 'LeagueSpartan',
-                            fontSize: screenWidth * 0.065,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
                           ),
+
+                          SizedBox(height: screenHeight * 0.02),
+
+                          WorkoutList(
+                            workouts: _workoutByFocusArea,
+                            workoutType: 'bodyFocus',
+                          ),
+                        ],
+                      ),
+
+                      SizedBox(height: screenHeight * 0.005),
+
+                      Text(
+                        'Target',
+                        style: TextStyle(
+                          fontFamily: 'LeagueSpartan',
+                          fontSize: screenWidth * 0.065,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
+                      ),
 
-                        SizedBox(height: screenHeight * 0.01),
+                      SizedBox(height: screenHeight * 0.01),
 
-                        Column(
-                          children: [
-                            SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                children: ["Strength", "Cardio", "Flexibility"]
-                                    .map((goal) {
-                                      return Row(
-                                        children: [
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              setState(() => goalType = goal);
-                                              _loadWorkoutData();
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              padding: EdgeInsets.symmetric(
-                                                horizontal: screenWidth * 0.065,
-                                              ),
-                                              side: BorderSide(
-                                                color: goal == goalType
-                                                    ? Color(0xFF1E90FF)
-                                                    : Color(0xFF9999A1),
-                                              ),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(1000),
-                                              ),
-                                              backgroundColor:
-                                                  Colors.transparent,
+                      Column(
+                        children: [
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: ["Strength", "Cardio", "Flexibility"]
+                                  .map((goal) {
+                                    return Row(
+                                      children: [
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            setState(() => goalType = goal);
+                                            _loadWorkoutData();
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: screenWidth * 0.065,
                                             ),
-                                            child: Text(
-                                              goal,
-                                              style: TextStyle(
-                                                color: goal == goalType
-                                                    ? Color(0xFF1E90FF)
-                                                    : Color(0xFF9999A1),
-                                                fontSize: screenWidth * 0.035,
-                                                fontWeight: FontWeight.w700,
-                                              ),
+                                            side: BorderSide(
+                                              color: goal == goalType
+                                                  ? Color(0xFF1E90FF)
+                                                  : Color(0xFF9999A1),
+                                            ),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(1000),
+                                            ),
+                                            backgroundColor: Colors.transparent,
+                                          ),
+                                          child: Text(
+                                            goal,
+                                            style: TextStyle(
+                                              color: goal == goalType
+                                                  ? Color(0xFF1E90FF)
+                                                  : Color(0xFF9999A1),
+                                              fontSize: screenWidth * 0.035,
+                                              fontWeight: FontWeight.w700,
                                             ),
                                           ),
+                                        ),
 
-                                          SizedBox(width: screenWidth * 0.03),
-                                        ],
-                                      );
-                                    })
-                                    .toList(),
-                              ),
+                                        SizedBox(width: screenWidth * 0.03),
+                                      ],
+                                    );
+                                  })
+                                  .toList(),
                             ),
-
-                            SizedBox(height: screenHeight * 0.02),
-
-                            WorkoutList(
-                              workouts: _workoutByGoalType,
-                              workoutType: 'target',
-                            ),
-                          ],
-                        ),
-
-                        SizedBox(height: screenHeight * 0.005),
-
-                        Text(
-                          'Popular',
-                          style: TextStyle(
-                            fontFamily: 'LeagueSpartan',
-                            fontSize: screenWidth * 0.065,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
                           ),
-                        ),
 
-                        SizedBox(height: screenHeight * 0.01),
+                          SizedBox(height: screenHeight * 0.02),
 
-                        WorkoutList(
-                          workouts: _popularWorkouts,
-                          workoutType: 'popular',
+                          WorkoutList(
+                            workouts: _workoutByGoalType,
+                            workoutType: 'target',
+                          ),
+                        ],
+                      ),
+
+                      SizedBox(height: screenHeight * 0.005),
+
+                      Text(
+                        'Popular',
+                        style: TextStyle(
+                          fontFamily: 'LeagueSpartan',
+                          fontSize: screenWidth * 0.065,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
-                      ],
-                    ),
+                      ),
+
+                      SizedBox(height: screenHeight * 0.01),
+
+                      WorkoutList(
+                        workouts: _popularWorkouts,
+                        workoutType: 'popular',
+                      ),
+                    ],
                   ),
                 ),
               ),
-              NavigationBarWidget(location: '/workoutScreen'),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
+      bottomNavigationBar: NavigationBarWidget(location: '/workoutScreen'),
     );
   }
 }
