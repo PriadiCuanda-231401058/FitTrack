@@ -17,21 +17,20 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
   TextEditingController emailController = TextEditingController();
 
   Future<void> handleResetPassword(BuildContext context, String email) async {
-  // Tampilkan loading
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (context) => const Center(child: CircularProgressIndicator()),
-  );
+    // Tampilkan loading
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
 
-  // Jalankan fungsi utama dari controller
-  successSendEmail = await authController.value.resetPassword(email);
+    // Jalankan fungsi utama dari controller
+    successSendEmail = await authController.value.resetPassword(email);
 
-  // Tutup loading
-  if (!mounted) return;
-  Navigator.of(context).pop();
-}
-
+    // Tutup loading
+    if (!mounted) return;
+    Navigator.of(context).pop();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -170,15 +169,19 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
-                              onPressed: () async{
+                              onPressed: () async {
                                 if (_formKey.currentState!.validate()) {
                                   final email = emailController.text.trim();
-                                    if (email.isEmpty) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text('Please enter your email')),
-                                      );
-                                      return;
-                                    }
+                                  if (email.isEmpty) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Please enter your email',
+                                        ),
+                                      ),
+                                    );
+                                    return;
+                                  }
                                   await handleResetPassword(context, email);
                                 }
                               },
@@ -210,7 +213,11 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
                     TextButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/loginScreen');
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          '/loginScreen',
+                          (route) => false,
+                        );
                       },
                       style: TextButton.styleFrom(
                         padding: EdgeInsets.zero,

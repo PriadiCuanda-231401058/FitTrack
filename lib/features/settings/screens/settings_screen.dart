@@ -12,7 +12,6 @@ import 'package:fittrack/shared/widgets/navigation_bar_widget.dart';
 import 'package:fittrack/features/settings/settings_controller.dart';
 import 'package:fittrack/models/user_model.dart';
 
-
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
@@ -21,9 +20,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-
-
-    final SettingsController _settingsController = SettingsController();
+  final SettingsController _settingsController = SettingsController();
   UserModel? _userData;
   // bool _isLoading = true;
 
@@ -56,7 +53,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   ImageProvider getProfileImage() {
     final user = FirebaseAuth.instance.currentUser;
-    
+
     // Priority 1: Base64 dari Firestore
     if (_userData?.photoBase64 != null && _userData!.photoBase64!.isNotEmpty) {
       try {
@@ -66,12 +63,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
         print('Error decoding Base64: $e');
       }
     }
-    
+
     // Priority 2: Photo dari Firebase Auth (untuk social login)
     if (user?.photoURL != null && user!.photoURL!.isNotEmpty) {
       return NetworkImage(user.photoURL!);
     }
-    
+
     // Fallback: Default asset image
     return const AssetImage('assets/images/profile_icon.png');
   }
@@ -105,13 +102,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w700,
-            fontSize: screenWidth  * 0.05,
+            fontSize: screenWidth * 0.05,
           ),
         ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: screenHeight * 0.03, vertical: screenWidth * 0.06),
+        padding: EdgeInsets.symmetric(
+          horizontal: screenHeight * 0.03,
+          vertical: screenWidth * 0.06,
+        ),
         child: Column(
           children: [
             CircleAvatar(
@@ -164,7 +164,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         barrierColor: Colors.black.withOpacity(0.7),
                         builder: (context) {
                           return CustomPopup(
-                           child: EditProfileScreen(
+                            child: EditProfileScreen(
                               currentName: _getDisplayName(),
                               onProfileUpdated: _refreshProfile,
                             ),
@@ -226,10 +226,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           return Dialog(
                             backgroundColor: Colors.transparent,
                             insetPadding: EdgeInsets.zero,
-                            child: CustomPopup(
-                              child:
-                                  DeleteAccountScreen(), 
-                            ),
+                            child: CustomPopup(child: DeleteAccountScreen()),
                           );
                         },
                       );
@@ -247,17 +244,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       await FirebaseAuth.instance.signOut();
 
                       if (context.mounted) {
-                        Navigator.pushReplacementNamed(context, '/loginScreen');
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          '/loginScreen',
+                          (route) => false,
+                        );
                       }
                     },
                   ),
-                  NavigationBarWidget(location: '/settingsScreen'),
                 ],
               ),
             ),
           ],
         ),
       ),
+      bottomNavigationBar: NavigationBarWidget(location: '/settingsScreen'),
     );
   }
 }
