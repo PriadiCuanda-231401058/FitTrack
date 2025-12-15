@@ -7,6 +7,7 @@ import 'package:fittrack/models/workout_model.dart';
 import 'package:fittrack/features/report/streakManager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fittrack/services/payment_services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:fittrack/features/workout/workout_controller.dart';
 
 class WorkoutScreen extends StatefulWidget {
@@ -19,13 +20,13 @@ class WorkoutScreen extends StatefulWidget {
 class _WorkoutScreenState extends State<WorkoutScreen> {
   String focusArea = "Abs";
   String goalType = "Strength";
-
   final WorkoutController _workoutController = WorkoutController();
   List<Workout> _challenges = [];
   List<Workout> _workoutByFocusArea = [];
   List<Workout> _workoutByGoalType = [];
   List<Workout> _popularWorkouts = [];
   bool _isLoading = true;
+  bool _isPremiumUser = false;
   int _currentStreak = 0;
   bool _isActive = false;
 
@@ -35,6 +36,27 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     _loadWorkoutData();
     _loadStreak();
     checkAndUpdatePremiumStatus();
+    checkUserPremium();
+  }
+
+    Future<void> checkUserPremium() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUser.uid)
+          .get();
+      final data = doc.data();
+      if (data != null && data['isPremium'] == true) {
+        setState(() {
+          _isPremiumUser = true;
+        });
+      } else {
+        setState(() {
+          _isPremiumUser = false;
+        });
+      }
+    }
   }
 
   Future<void> checkAndUpdatePremiumStatus() async {
@@ -70,20 +92,83 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     setState(() => _isLoading = true);
 
     try {
-      final challenges = await _workoutController.getChallenges();
-      final focusWorkouts = await _workoutController.getWorkoutsByBodyFocus(
-        focusArea,
-      );
-      final targetWorkouts = await _workoutController.getWorkoutsByTarget(
-        goalType,
-      );
+      await Future.wait([
+        _loadChallengesData(),
+        _loadBodyFocusData(),
+        _loadTargetData(),
+        _loadPopularData(),
+      ]);
+
+      setState(() {
+        _isLoading = false;
+      });
+    } catch (e) {
+      // print('Error loading workout data: $e');
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _loadPopularData() async {
+    setState(() => _isLoading = true);
+
+    try {
       final popular = await _workoutController.getPopularWorkouts();
 
       setState(() {
-        _challenges = challenges;
-        _workoutByFocusArea = focusWorkouts;
-        _workoutByGoalType = targetWorkouts;
         _popularWorkouts = popular;
+      });
+    } catch (e) {
+      print('Error loading workout data: $e');
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _loadTargetData() async {
+    setState(() => _isLoading = true);
+
+    try {
+      final targetWorkouts = await _workoutController.getWorkoutsByTarget(
+        goalType,
+      );
+
+      setState(() {
+        _workoutByGoalType = targetWorkouts;
+      });
+    } catch (e) {
+      print('Error loading workout data: $e');
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _loadBodyFocusData() async {
+    setState(() => _isLoading = true);
+
+    try {
+      final focusWorkouts = await _workoutController.getWorkoutsByBodyFocus(
+        focusArea,
+      );
+
+      setState(() {
+        _workoutByFocusArea = focusWorkouts;
+      });
+    } catch (e) {
+      print('Error loading workout data: $e');
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _loadChallengesData() async {
+    setState(() => _isLoading = true);
+
+    try {
+      final challenges = await _workoutController.getChallenges();
+
+      setState(() {
+        _challenges = challenges;
       });
     } catch (e) {
       print('Error loading workout data: $e');
@@ -103,7 +188,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
 
     if (_isLoading) {
       return Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.black.withAlpha(150),
         body: Center(
           child: CircularProgressIndicator(
             valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
@@ -378,7 +463,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                                         ElevatedButton(
                                           onPressed: () {
                                             setState(() => focusArea = area);
-                                            _loadWorkoutData();
+                                            _loadBodyFocusData();
                                           },
                                           style: ElevatedButton.styleFrom(
                                             padding: EdgeInsets.symmetric(
@@ -417,6 +502,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                           SizedBox(height: screenHeight * 0.02),
 
                           WorkoutList(
+                            isPremiumUser: _isPremiumUser,
                             workouts: _workoutByFocusArea,
                             workoutType: 'bodyFocus',
                           ),
@@ -449,7 +535,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                                         ElevatedButton(
                                           onPressed: () {
                                             setState(() => goalType = goal);
-                                            _loadWorkoutData();
+                                            _loadTargetData();
                                           },
                                           style: ElevatedButton.styleFrom(
                                             padding: EdgeInsets.symmetric(
@@ -489,6 +575,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                           SizedBox(height: screenHeight * 0.02),
 
                           WorkoutList(
+                            isPremiumUser: _isPremiumUser,
                             workouts: _workoutByGoalType,
                             workoutType: 'target',
                           ),
@@ -510,6 +597,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                       SizedBox(height: screenHeight * 0.01),
 
                       WorkoutList(
+                        isPremiumUser: _isPremiumUser,
                         workouts: _popularWorkouts,
                         workoutType: 'popular',
                       ),
