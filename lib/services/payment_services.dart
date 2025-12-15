@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fittrack/models/user_model.dart';
+// import 'package:fittrack/models/user_model.dart';
 
 class PaymentService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -73,7 +73,6 @@ class PaymentService {
     try {
       final data = await createPaymentSheet(customerId, amount);
 
-      // Optional: override dengan key dari backend
       // Stripe.publishableKey = data['publishableKey'] ?? Stripe.publishableKey;
 
       await Stripe.instance.initPaymentSheet(
@@ -120,7 +119,6 @@ print('Premium Start Date: $premiumEndDate');
     return DateTime.now();
   }
 
-  // Fungsi untuk update premium status di Firestore
   Future<void> _updatePremiumStatus(
     String premiumType,
     int durationInMonths,
@@ -145,7 +143,6 @@ print('Premium Start Date: $premiumEndDate');
     print('Premium status updated for user: ${user.uid}');
   }
 
-  // Hitung tanggal berakhir premium berdasarkan tipe plan
   DateTime _calculatePremiumEndDate(DateTime startDate, String premiumType) {
     switch (premiumType) {
       case 'Basic':
@@ -161,7 +158,6 @@ print('Premium Start Date: $premiumEndDate');
     }
   }
 
-  // Fungsi untuk mengecek apakah user masih premium
   Future<bool> checkPremiumStatus() async {
     final user = _auth.currentUser;
     if (user == null) return false;
@@ -174,14 +170,12 @@ print('Premium Start Date: $premiumEndDate');
       final data = userDoc.data();
       if (data == null || !(data['isPremium'] ?? false)) return false;
 
-      // Cek apakah premium sudah expired
       final premiumEndTimestamp = data['premiumDateEnd'] as Timestamp?;
       if (premiumEndTimestamp == null) return false;
 
       final premiumEndDate = premiumEndTimestamp.toDate();
       final now = DateTime.now();
 
-      // Jika premium sudah expired, update status
       if (now.isAfter(premiumEndDate)) {
         await _firestore.collection('users').doc(user.uid).update({
           'isPremium': false,
@@ -198,7 +192,6 @@ print('Premium Start Date: $premiumEndDate');
     }
   }
 
-  // Fungsi untuk mendapatkan info premium user
   Future<Map<String, dynamic>?> getPremiumInfo() async {
     final user = _auth.currentUser;
     if (user == null) return null;

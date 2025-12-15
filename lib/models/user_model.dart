@@ -31,7 +31,6 @@ class UserModel {
     // this.totalWorkouts = 0,
   });
 
-  // 🔸 Konversi dari DocumentSnapshot (ambil dari Firestore)
   factory UserModel.fromDocument(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return UserModel(
@@ -57,7 +56,6 @@ class UserModel {
     );
   }
 
-  // 🔸 Konversi dari Map (misalnya dari Auth + Firestore)
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
       uid: map['uid'] ?? '',
@@ -82,7 +80,6 @@ class UserModel {
       stripeCustomerId: map['stripeCustomerId'],
     );
   }
-  // 🔸 Konversi ke Map (untuk simpan ke Firestore)
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,

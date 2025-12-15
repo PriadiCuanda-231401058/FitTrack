@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fittrack/models/report_model.dart';
 import 'streakManager.dart';
+import 'package:fittrack/features/achievement/achievement_controller.dart';
 
 class ReportController {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -38,10 +39,9 @@ class ReportController {
         final freshDoc = await transaction.get(userRef);
         if (!freshDoc.exists) return;
 
-        final userData = freshDoc.data()!;
-        final achievements = List<String>.from(userData['achievements'] ?? []);
+        // final userData = freshDoc.data()!;
+        // final achievements = List<String>.from(userData['achievements'] ?? []);
 
-        // 1. Log workout session terlebih dahulu
         await _logWorkoutSession(
           userId: userId,
           workoutType: workoutType,
@@ -50,29 +50,26 @@ class ReportController {
           duration: duration,
         );
 
-        // 2. Hitung progress dari workout_history berdasarkan periode
         final progress = await _calculateProgressFromHistory(userId);
 
-        // 3. Update streak
         await _streakManager.updateStreak(userId);
         final streakData = await _streakManager.getUserStreakData(userId);
         final int streak = streakData.streak;
         final bool isStreak = streakData.isActive;
+        // final achievementController = AchievementController();
 
-        // 4. Check achievements
-        final newAchievements = await _checkAchievements(
-          userId: userId,
-          focusArea: focusArea,
-          level: level,
-          currentAchievements: achievements,
-        );
+await AchievementController.checkAndAwardAchievements(
+  userId: userId,
+  focusArea: focusArea,
+  level: level,
+  workoutType: workoutType,
+);
 
-        // 5. Update user document
         transaction.update(userRef, {
           'progress': progress,
           'streak': streak,
           'isStreak': isStreak,
-          'achievements': FieldValue.arrayUnion(newAchievements),
+          // 'achievements': FieldValue.arrayUnion(newAchievements),
           'lastWorkoutDate': FieldValue.serverTimestamp(),
         });
       });
@@ -82,7 +79,6 @@ class ReportController {
     }
   }
 
-  // Initialize user progress
   Future<void> initializeUserProgress(
     String userId,
     DocumentReference userRef,
@@ -134,13 +130,11 @@ class ReportController {
     }, SetOptions(merge: true));
   }
 
-  // Hitung progress dari workout_history berdasarkan periode
   Future<Map<String, dynamic>> _calculateProgressFromHistory(
     String userId,
   ) async {
     final now = DateTime.now();
 
-    // Definisi rentang waktu untuk setiap periode
     final timeRanges = {
       'today': Duration(hours: 24),
       '1 week': Duration(days: 7),
@@ -157,7 +151,6 @@ class ReportController {
       final startTime = now.subtract(range);
 
       try {
-        // Query workout_history berdasarkan rentang waktu
         final snapshot = await _db
             .collection('workout_history')
             .doc(userId)
@@ -166,14 +159,12 @@ class ReportController {
             .where('completed_at', isLessThanOrEqualTo: now)
             .get();
 
-        // Inisialisasi data untuk periode ini
         int cardioTotal = 0;
         int flexibilityTotal = 0;
         int strengthTotal = 0;
         int totalTraining = 0;
         int totalTime = 0;
 
-        // Hitung total untuk setiap workout type
         for (final doc in snapshot.docs) {
           final data = doc.data();
           final duration = data['duration'] as int? ?? 0;
@@ -204,7 +195,6 @@ class ReportController {
         };
       } catch (e) {
         print('Error calculating progress for $period: $e');
-        // Jika error, set ke nilai default
         progress[period] = {
           'cardio': 0,
           'flexibility': 0,
@@ -230,118 +220,118 @@ class ReportController {
   // }
 
   // Check and award achievements based on workout completion
-  Future<List<String>> _checkAchievements({
-    required String userId,
-    required String focusArea,
-    required String level,
-    required List<String> currentAchievements,
-  }) async {
-    final newAchievements = <String>[];
+  // Future<List<String>> _checkAchievements({
+  //   required String userId,
+  //   required String focusArea,
+  //   required String level,
+  //   required List<String> currentAchievements,
+  // }) async {
+  //   final newAchievements = <String>[];
 
-    try {
-      // Get user's workout history
-      final workoutHistory = await _getUserWorkoutHistory(userId);
+  //   try {
+  //     // Get user's workout history
+  //     final workoutHistory = await _getUserWorkoutHistory(userId);
 
-      // Achievement criteria
-      final achievementCriteria = {
-        'Abs Beginner': {'focusArea': 'ABS', 'level': 'Beginner', 'count': 5},
-        'Abs Intermediate': {
-          'focusArea': 'ABS',
-          'level': 'Intermediate',
-          'count': 10,
-        },
-        'Abs Advanced': {'focusArea': 'ABS', 'level': 'Advanced', 'count': 15},
-        'Arms Master': {'focusArea': 'ARMS', 'level': 'Advanced', 'count': 10},
-        'Chest Bro': {
-          'focusArea': 'CHEST',
-          'level': 'Intermediate',
-          'count': 8,
-        },
-        'Leg Day Lover': {
-          'focusArea': 'LEGS',
-          'level': 'Advanced',
-          'count': 12,
-        },
-        'Shoulder Specialist': {
-          'focusArea': 'SHOULDERS',
-          'level': 'Intermediate',
-          'count': 8,
-        },
-        'Back Builder': {'focusArea': 'BACK', 'level': 'Advanced', 'count': 10},
-        'Cardio King': {'workoutType': 'cardio', 'count': 20},
-        'Strength Master': {'workoutType': 'strength', 'count': 25},
-        'Flexibility Guru': {'workoutType': 'flexibility', 'count': 15},
-        'Week Warrior': {'totalWorkouts': 7},
-        'Month Master': {'totalWorkouts': 30},
-        'Consistency King': {'streak': 30},
-        'Dedication Pro': {'streak': 90},
-      };
+  //     // Achievement criteria
+  //     final achievementCriteria = {
+  //       'Abs Beginner': {'focusArea': 'ABS', 'level': 'Beginner', 'count': 5},
+  //       'Abs Intermediate': {
+  //         'focusArea': 'ABS',
+  //         'level': 'Intermediate',
+  //         'count': 10,
+  //       },
+  //       'Abs Advanced': {'focusArea': 'ABS', 'level': 'Advanced', 'count': 15},
+  //       'Arms Master': {'focusArea': 'ARMS', 'level': 'Advanced', 'count': 10},
+  //       'Chest Bro': {
+  //         'focusArea': 'CHEST',
+  //         'level': 'Intermediate',
+  //         'count': 8,
+  //       },
+  //       'Leg Day Lover': {
+  //         'focusArea': 'LEGS',
+  //         'level': 'Advanced',
+  //         'count': 12,
+  //       },
+  //       'Shoulder Specialist': {
+  //         'focusArea': 'SHOULDERS',
+  //         'level': 'Intermediate',
+  //         'count': 8,
+  //       },
+  //       'Back Builder': {'focusArea': 'BACK', 'level': 'Advanced', 'count': 10},
+  //       'Cardio King': {'workoutType': 'cardio', 'count': 20},
+  //       'Strength Master': {'workoutType': 'strength', 'count': 25},
+  //       'Flexibility Guru': {'workoutType': 'flexibility', 'count': 15},
+  //       'Week Warrior': {'totalWorkouts': 7},
+  //       'Month Master': {'totalWorkouts': 30},
+  //       'Consistency King': {'streak': 30},
+  //       'Dedication Pro': {'streak': 90},
+  //     };
 
-      for (final achievement in achievementCriteria.entries) {
-        final achievementName = achievement.key;
-        final criteria = achievement.value;
+  //     for (final achievement in achievementCriteria.entries) {
+  //       final achievementName = achievement.key;
+  //       final criteria = achievement.value;
 
-        if (currentAchievements.contains(achievementName)) continue;
+  //       if (currentAchievements.contains(achievementName)) continue;
 
-        bool achieved = false;
+  //       bool achieved = false;
 
-        if (criteria.containsKey('focusArea') &&
-            criteria.containsKey('level')) {
-          // Focus area and level based achievement
-          final count = workoutHistory
-              .where(
-                (workout) =>
-                    workout['focus_area'] == criteria['focusArea'] &&
-                    workout['level'] == criteria['level'],
-              )
-              .length;
+  //       if (criteria.containsKey('focusArea') &&
+  //           criteria.containsKey('level')) {
+  //         // Focus area and level based achievement
+  //         final count = workoutHistory
+  //             .where(
+  //               (workout) =>
+  //                   workout['focus_area'] == criteria['focusArea'] &&
+  //                   workout['level'] == criteria['level'],
+  //             )
+  //             .length;
 
-          achieved = count >= (criteria['count'] as int);
-        } else if (criteria.containsKey('workoutType')) {
-          final count = workoutHistory
-              .where(
-                (workout) => workout['workout_type'] == criteria['workoutType'],
-              )
-              .length;
+  //         achieved = count >= (criteria['count'] as int);
+  //       } else if (criteria.containsKey('workoutType')) {
+  //         final count = workoutHistory
+  //             .where(
+  //               (workout) => workout['workout_type'] == criteria['workoutType'],
+  //             )
+  //             .length;
 
-          achieved = count >= (criteria['count'] as int);
-        } else if (criteria.containsKey('totalWorkouts')) {
-          achieved =
-              workoutHistory.length >= (criteria['totalWorkouts'] as int);
-        } else if (criteria.containsKey('streak')) {
-          final userProgress = await getUserProgress(userId);
-          achieved = userProgress!.streak >= (criteria['streak'] as int);
-        }
+  //         achieved = count >= (criteria['count'] as int);
+  //       } else if (criteria.containsKey('totalWorkouts')) {
+  //         achieved =
+  //             workoutHistory.length >= (criteria['totalWorkouts'] as int);
+  //       } else if (criteria.containsKey('streak')) {
+  //         final userProgress = await getUserProgress(userId);
+  //         achieved = userProgress!.streak >= (criteria['streak'] as int);
+  //       }
 
-        if (achieved) {
-          newAchievements.add(achievementName);
-        }
-      }
-    } catch (e) {
-      print('Error checking achievements: $e');
-    }
+  //       if (achieved) {
+  //         newAchievements.add(achievementName);
+  //       }
+  //     }
+  //   } catch (e) {
+  //     print('Error checking achievements: $e');
+  //   }
 
-    return newAchievements;
-  }
+  //   return newAchievements;
+  // }
 
   // Get user's workout history
-  Future<List<Map<String, dynamic>>> _getUserWorkoutHistory(
-    String userId,
-  ) async {
-    try {
-      final snapshot = await _db
-          .collection('workout_history')
-          .doc(userId)
-          .collection('sessions')
-          .orderBy('completed_at', descending: true)
-          .get();
+  // Future<List<Map<String, dynamic>>> _getUserWorkoutHistory(
+  //   String userId,
+  // ) async {
+  //   try {
+  //     final snapshot = await _db
+  //         .collection('workout_history')
+  //         .doc(userId)
+  //         .collection('sessions')
+  //         .orderBy('completed_at', descending: true)
+  //         .get();
 
-      return snapshot.docs.map((doc) => doc.data()).toList();
-    } catch (e) {
-      print('Error getting workout history: $e');
-      return [];
-    }
-  }
+  //     return snapshot.docs.map((doc) => doc.data()).toList();
+  //   } catch (e) {
+  //     print('Error getting workout history: $e');
+  //     return [];
+  //   }
+  // }
 
   // Log workout session for history (versi private untuk internal use)
   Future<void> _logWorkoutSession({

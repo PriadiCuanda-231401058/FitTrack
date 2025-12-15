@@ -10,7 +10,7 @@ class StreakManager {
       final userDoc = await userRef.get();
       
       if (!userDoc.exists) {
-        print('❌ User tidak ditemukan');
+        print('User tidak ditemukan');
         return;
       }
 
@@ -26,7 +26,6 @@ class StreakManager {
         lastWorkoutDate = lastWorkoutTimestamp.toDate();
       }
 
-      // LOGIKA STREAK
       int newStreak = currentStreak;
       // bool isStreakContinued = false;
 
@@ -56,10 +55,10 @@ class StreakManager {
         'updatedAt': FieldValue.serverTimestamp(),
       });
 
-      print('✅ Streak updated: $newStreak days');
+      print('Streak updated: $newStreak days');
 
     } catch (e) {
-      print('❌ Error updating streak: $e');
+      print(' Error updating streak: $e');
       throw e;
     }
   }
@@ -72,7 +71,6 @@ class StreakManager {
   }
 
 
-  // Reset streak jika melewatkan hari (dipanggil saat cek harian)
   // Future<void> checkAndResetStreak(String userId) async {
   //   try {
   //     final userRef = _firestore.collection('users').doc(userId);
@@ -94,11 +92,11 @@ class StreakManager {
   //         'streak': 0,
   //         'updatedAt': FieldValue.serverTimestamp(),
   //       });
-  //       print('🔄 Streak auto-reset due to inactivity');
+  //       print('Streak auto-reset due to inactivity');
   //     }
       
   //   } catch (e) {
-  //     print('❌ Error checking streak: $e');
+  //     print('Error checking streak: $e');
   //   }
   // }
 
@@ -122,7 +120,7 @@ class StreakManager {
         isActive: isActive,
       );
     } catch (e) {
-      print('❌ Error getting streak data: $e');
+      print('Error getting streak data: $e');
       return UserStreakData(streak: 0, lastWorkout: null, isActive: false);
     }
   }
