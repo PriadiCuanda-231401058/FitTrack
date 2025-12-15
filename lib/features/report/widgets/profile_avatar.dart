@@ -4,11 +4,7 @@ class ProfileAvatar extends StatelessWidget {
   final String imagePath;
   final double size;
 
-  const ProfileAvatar({
-    super.key,
-    required this.imagePath,
-    required this.size,
-  });
+  const ProfileAvatar({super.key, required this.imagePath, required this.size});
 
   @override
   Widget build(BuildContext context) {
@@ -17,10 +13,7 @@ class ProfileAvatar extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(size * 0.2),
-        image: DecorationImage(
-          image: AssetImage(imagePath),
-          fit: BoxFit.cover,
-        ),
+        image: DecorationImage(image: AssetImage(imagePath), fit: BoxFit.cover),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.4),

@@ -1,10 +1,8 @@
-// services/payment_services.dart
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:fittrack/models/user_model.dart';
 
 class PaymentService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -72,16 +70,12 @@ class PaymentService {
   }) async {
     try {
       final data = await createPaymentSheet(customerId, amount);
-
-      // Stripe.publishableKey = data['publishableKey'] ?? Stripe.publishableKey;
-
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
           merchantDisplayName: "FitTrack",
           customerId: data['customerId'],
           customerEphemeralKeySecret: data['ephemeralKey'],
           paymentIntentClientSecret: data['paymentIntent'],
-          // merchantCountryCode: 'ID',
         ),
       );
 
@@ -89,10 +83,10 @@ class PaymentService {
 
       await _updatePremiumStatus(premiumType, durationInMonths);
     } on StripeException catch (e) {
-      print('Stripe Error: ${e.error.localizedMessage}');
+      // print('Stripe Error: ${e.error.localizedMessage}');
       throw Exception('Payment failed: ${e.error.localizedMessage}');
     } catch (e) {
-      print('Payment Error: $e');
+      // print('Payment Error: $e');
       rethrow;
     }
   }
@@ -111,8 +105,7 @@ class PaymentService {
           data['premiumDateStart'] != null) {
         DateTime premiumEndDate = (data['premiumDateEnd'] as Timestamp)
             .toDate();
-        // DateTime now = DateTime.now();
-print('Premium Start Date: $premiumEndDate');
+        // print('Premium Start Date: $premiumEndDate');
         return premiumEndDate;
       }
     }
@@ -140,7 +133,7 @@ print('Premium Start Date: $premiumEndDate');
       'updatedAt': FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
 
-    print('Premium status updated for user: ${user.uid}');
+    // print('Premium status updated for user: ${user.uid}');
   }
 
   DateTime _calculatePremiumEndDate(DateTime startDate, String premiumType) {
@@ -187,7 +180,7 @@ print('Premium Start Date: $premiumEndDate');
 
       return true;
     } catch (e) {
-      print('Error checking premium status: $e');
+      // print('Error checking premium status: $e');
       return false;
     }
   }
@@ -214,7 +207,7 @@ print('Premium Start Date: $premiumEndDate');
         ),
       };
     } catch (e) {
-      print('Error getting premium info: $e');
+      // print('Error getting premium info: $e');
       return null;
     }
   }

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fittrack/features/auth/auth_controller.dart';
-// import 'package:fittrack/features/auth/screens/login_screen.dart';
 import 'package:fittrack/shared/widgets/error_message.dart';
-// import 'package:fittrack/features/home/home_screen.dart';
 import 'package:fittrack/models/user_model.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -19,8 +17,6 @@ class RegisterState extends State<RegisterScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
-  // String username = "", password = "", email = "";
-  // final _formKey = GlobalKey<FormState>();
   bool showError = false;
   bool successRegister = false;
   String errorMessage = '';
@@ -56,7 +52,6 @@ class RegisterState extends State<RegisterScreen> {
         );
       });
     } on FirebaseAuthException catch (e) {
-      // showAlert(context, e.message ?? 'An error occurred');
       setState(() {
         showError = true;
         errorMessage = e.message ?? 'Something went wrong.';
@@ -64,37 +59,19 @@ class RegisterState extends State<RegisterScreen> {
     }
   }
 
-  // void signInWithGoogle() async {
-  //   try {
-  //     await authController.value.signInWithGoogle();
-
-  //     if (!mounted) return;
-
-  //     Navigator.pushNamed(context, '/homeScreen');
-  //   } on FirebaseAuthException catch (e) {
-  //     // showAlert(context, e.message ?? 'An error occurred');
-  //     setState(() {
-  //       showError = true;
-  //       errorMessage = e.message ?? 'Something went wrong.';
-  //     });
-  //   }
-  // }
-
   void pop() {
     Navigator.pop(context);
   }
 
   Future<void> handleGoogleSignIn() async {
-    // setState(() => _isLoading = true);
-
     try {
-      // 🔹 Panggil fungsi dari AuthController
+      // Panggil fungsi dari AuthController
       UserModel? userModel = await authController.value.signInWithGoogle();
 
       if (!mounted) return;
 
       if (userModel != null) {
-        // 🔹 Jika berhasil, pindah ke WorkoutScreen
+        // Jika berhasil, pindah ke WorkoutScreen
         Navigator.pushNamedAndRemoveUntil(
           context,
           '/workoutScreen',
@@ -111,26 +88,6 @@ class RegisterState extends State<RegisterScreen> {
       ).showSnackBar(SnackBar(content: Text('Error: $e')));
     }
   }
-
-  // void showAlert(BuildContext context, String message) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (context) {
-  //       return AlertDialog(
-  //         title: const Text("Notifikasi"),
-  //         content: Text(message),
-  //         actions: [
-  //           TextButton(
-  //             child: const Text("Tutup"),
-  //             onPressed: () {
-  //               Navigator.pop(context); // menutup dialog
-  //             },
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -286,7 +243,6 @@ class RegisterState extends State<RegisterScreen> {
                                             borderSide: BorderSide(
                                               width: screenWidth * 0.0027,
                                               color: Color(0xFF9999A1),
-                                              // color: Colors.blue,
                                             ),
                                             borderRadius: BorderRadius.circular(
                                               1000,
@@ -296,7 +252,6 @@ class RegisterState extends State<RegisterScreen> {
                                             borderSide: BorderSide(
                                               width: screenWidth * 0.0027,
                                               color: Colors.white,
-                                              // color: Colors.blue,
                                             ),
                                             borderRadius: BorderRadius.circular(
                                               1000,
@@ -316,7 +271,6 @@ class RegisterState extends State<RegisterScreen> {
                                                 borderSide: BorderSide(
                                                   width: screenWidth * 0.0027,
                                                   color: Colors.white,
-                                                  // color: Colors.blue,
                                                 ),
                                                 borderRadius:
                                                     BorderRadius.circular(1000),
@@ -326,11 +280,6 @@ class RegisterState extends State<RegisterScreen> {
                                             vertical: screenHeight * 0.022,
                                           ),
                                         ),
-                                        // onChanged: (value) {
-                                        //   setState(() {
-                                        //     username = value;
-                                        //   });
-                                        // },
                                       ),
                                     ],
                                   ),
@@ -379,7 +328,6 @@ class RegisterState extends State<RegisterScreen> {
                                             borderSide: BorderSide(
                                               width: screenWidth * 0.0027,
                                               color: Color(0xFF9999A1),
-                                              // color: Colors.blue,
                                             ),
                                             borderRadius: BorderRadius.circular(
                                               1000,
@@ -389,7 +337,6 @@ class RegisterState extends State<RegisterScreen> {
                                             borderSide: BorderSide(
                                               width: screenWidth * 0.0027,
                                               color: Colors.white,
-                                              // color: Colors.blue,
                                             ),
                                             borderRadius: BorderRadius.circular(
                                               1000,
@@ -409,7 +356,6 @@ class RegisterState extends State<RegisterScreen> {
                                                 borderSide: BorderSide(
                                                   width: screenWidth * 0.0027,
                                                   color: Colors.white,
-                                                  // color: Colors.blue,
                                                 ),
                                                 borderRadius:
                                                     BorderRadius.circular(1000),
@@ -419,11 +365,6 @@ class RegisterState extends State<RegisterScreen> {
                                             vertical: screenHeight * 0.022,
                                           ),
                                         ),
-                                        // onChanged: (value) {
-                                        //   setState(() {
-                                        //     email = value;
-                                        //   });
-                                        // },
                                       ),
                                     ],
                                   ),
@@ -471,7 +412,6 @@ class RegisterState extends State<RegisterScreen> {
                                             borderSide: BorderSide(
                                               width: screenWidth * 0.0027,
                                               color: Color(0xFF9999A1),
-                                              // color: Colors.blue,
                                             ),
                                             borderRadius: BorderRadius.circular(
                                               1000,
@@ -481,7 +421,6 @@ class RegisterState extends State<RegisterScreen> {
                                             borderSide: BorderSide(
                                               width: screenWidth * 0.0027,
                                               color: Colors.white,
-                                              // color: Colors.blue,
                                             ),
                                             borderRadius: BorderRadius.circular(
                                               1000,
@@ -511,11 +450,6 @@ class RegisterState extends State<RegisterScreen> {
                                             vertical: screenHeight * 0.022,
                                           ),
                                         ),
-                                        // onChanged: (value) {
-                                        //   setState(() {
-                                        //     password = value;
-                                        //   });
-                                        // },
                                       ),
                                     ],
                                   ),

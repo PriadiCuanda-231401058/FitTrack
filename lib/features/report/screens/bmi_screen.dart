@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "../widgets/bmi_input_card.dart";
 import "../widgets/profile_avatar.dart";
-import "../widgets/bmi_result_dialog.dart"; 
+import "../widgets/bmi_result_dialog.dart";
 import "package:fittrack/shared/widgets/navigation_bar_widget.dart";
 
 class BmiScreen extends StatefulWidget {
@@ -33,7 +33,8 @@ class _BmiScreenState extends State<BmiScreen> {
     if (!mounted) return;
 
     setState(() {
-      isFormComplete = ageController.text.isNotEmpty &&
+      isFormComplete =
+          ageController.text.isNotEmpty &&
           heightController.text.isNotEmpty &&
           weightController.text.isNotEmpty &&
           selectedGender.isNotEmpty;
@@ -58,7 +59,10 @@ class _BmiScreenState extends State<BmiScreen> {
     if (weight <= 0 || height <= 0) return;
 
     final double bmiValue = BmiService.calculateBmi(weight, height);
-    final Map<String, dynamic> interpretation = BmiService.interpretBmi(bmiValue, selectedGender);
+    final Map<String, dynamic> interpretation = BmiService.interpretBmi(
+      bmiValue,
+      selectedGender,
+    );
 
     showDialog(
       context: context,
@@ -91,21 +95,21 @@ class _BmiScreenState extends State<BmiScreen> {
     final double screenHeight = MediaQuery.of(context).size.height;
     final bool keyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
 
-    final MaterialStateProperty<Color> buttonBackgroundColor = 
+    final MaterialStateProperty<Color> buttonBackgroundColor =
         MaterialStateProperty.resolveWith<Color>((states) {
-      if (states.contains(MaterialState.disabled)) {
-        return const Color(0xFFD9D9D9); 
-      }
-      return const Color(0xFF3B82F6);
-    });
+          if (states.contains(MaterialState.disabled)) {
+            return const Color(0xFFD9D9D9);
+          }
+          return const Color(0xFF3B82F6);
+        });
 
-    final MaterialStateProperty<Color> buttonForegroundColor = 
+    final MaterialStateProperty<Color> buttonForegroundColor =
         MaterialStateProperty.resolveWith<Color>((states) {
-      if (states.contains(MaterialState.disabled)) {
-        return Colors.black54; 
-      }
-      return Colors.white70;
-    });
+          if (states.contains(MaterialState.disabled)) {
+            return Colors.black54;
+          }
+          return Colors.white70;
+        });
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
@@ -214,13 +218,16 @@ class _BmiScreenState extends State<BmiScreen> {
                       style: ButtonStyle(
                         backgroundColor: buttonBackgroundColor,
                         foregroundColor: buttonForegroundColor,
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                        ),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                            ),
                         elevation: MaterialStateProperty.all<double>(0),
-                        shadowColor: MaterialStateProperty.all<Color>(Colors.transparent),
+                        shadowColor: MaterialStateProperty.all<Color>(
+                          Colors.transparent,
+                        ),
                       ),
                       child: Text(
                         "Calculate BMI",

@@ -13,7 +13,7 @@ class _PremiumFeaturesScreenState extends State<PremiumFeaturesScreen> {
   bool _isProcessing = false;
   final PaymentService _paymentService = PaymentService();
   String? _stripeCustomerId;
-  bool _isLoadingCustomer = true;
+  // bool _isLoadingCustomer = true;
   String customerId = '';
 
   @override
@@ -30,17 +30,17 @@ class _PremiumFeaturesScreenState extends State<PremiumFeaturesScreen> {
   };
 
   final Map<String, int> _planAmounts = {
-    'Basic': 4900000,    
-    'Standard': 9900000, 
-    'Pro': 22900000,      
-    'Ultimate': 39900000, 
+    'Basic': 4900000,
+    'Standard': 9900000,
+    'Pro': 22900000,
+    'Ultimate': 39900000,
   };
-  
+
   Future<void> _initializePayment() async {
     try {
       _stripeCustomerId = await _paymentService.getOrCreateStripeCustomer();
     } catch (e) {
-      print('Error initializing payment: $e');
+      // print('Error initializing payment: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -52,7 +52,7 @@ class _PremiumFeaturesScreenState extends State<PremiumFeaturesScreen> {
     } finally {
       if (mounted) {
         setState(() {
-          _isLoadingCustomer = false;
+          // _isLoadingCustomer = false;
         });
       }
     }
@@ -99,7 +99,7 @@ class _PremiumFeaturesScreenState extends State<PremiumFeaturesScreen> {
     });
   }
 
-Future<void> _onGetAccessPressed() async {
+  Future<void> _onGetAccessPressed() async {
     if (_selectedPlan == null || _isProcessing || _stripeCustomerId == null) {
       return;
     }
@@ -129,12 +129,10 @@ Future<void> _onGetAccessPressed() async {
         );
 
         await Future.delayed(const Duration(seconds: 2));
-        
-        Navigator.of(context).pop({
-          'success': true,
-          'plan': _selectedPlan,
-          'isPremium': true,
-        });
+
+        Navigator.of(
+          context,
+        ).pop({'success': true, 'plan': _selectedPlan, 'isPremium': true});
       }
     } catch (e) {
       if (mounted) {
@@ -146,7 +144,7 @@ Future<void> _onGetAccessPressed() async {
           ),
         );
       }
-      print('Payment error: $e');
+      // print('Payment error: $e');
     } finally {
       if (mounted) {
         setState(() {
@@ -160,7 +158,7 @@ Future<void> _onGetAccessPressed() async {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -195,7 +193,7 @@ Future<void> _onGetAccessPressed() async {
 
         ..._plans.map((plan) {
           final isSelected = _selectedPlan == plan['title'];
-          
+
           return Column(
             children: [
               GestureDetector(
@@ -220,15 +218,14 @@ Future<void> _onGetAccessPressed() async {
 
         SizedBox(height: screenHeight * 0.05),
 
-
         GestureDetector(
           onTap: _selectedPlan != null ? _onGetAccessPressed : null,
           child: Container(
             padding: EdgeInsets.symmetric(vertical: screenHeight * 0.008),
             decoration: BoxDecoration(
-              color: _selectedPlan != null 
-                ? const Color(0xff1E90FF) 
-                : const Color(0xffD9D9D9), 
+              color: _selectedPlan != null
+                  ? const Color(0xff1E90FF)
+                  : const Color(0xffD9D9D9),
               borderRadius: BorderRadius.circular(30),
             ),
             child: Row(
@@ -276,12 +273,7 @@ Future<void> _onGetAccessPressed() async {
       decoration: BoxDecoration(
         color: isSelected ? const Color(0xFF1E90FF) : const Color(0xffD9D9D9),
         borderRadius: BorderRadius.circular(screenWidth * 0.04),
-        border: isSelected
-            ? Border.all(
-                color: Colors.white,
-                width: 2.0,
-              )
-            : null,
+        border: isSelected ? Border.all(color: Colors.white, width: 2.0) : null,
       ),
       child: Row(
         children: [
@@ -338,10 +330,7 @@ Future<void> _onGetAccessPressed() async {
             ),
           ),
           SizedBox(width: screenWidth * 0.03),
-          SizedBox(
-            width: screenWidth * 0.06,
-            child: icon,
-          ),
+          SizedBox(width: screenWidth * 0.06, child: icon),
           if (isSelected)
             Padding(
               padding: EdgeInsets.only(left: screenWidth * 0.02),

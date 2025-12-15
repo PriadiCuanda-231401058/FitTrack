@@ -58,7 +58,7 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
               .doc(currentUser.uid)
               .get();
           final data = doc.data();
-          print("Premium data: $data['isPremium']");
+          // print("Premium data: $data['isPremium']");
           if (data != null && data['isPremium'] != true) {
             setState(() => _isLoading = false);
             Navigator.pushNamedAndRemoveUntil(
@@ -124,7 +124,7 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
         _exerciseList = exerciseList;
       });
     } catch (e) {
-      print('Error loading exercises: $e');
+      // print('Error loading exercises: $e');
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Failed to load exercises')));
@@ -142,7 +142,7 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
     final duration = args?['duration'] ?? 0;
     final int exerciseCount = args?['exerciseCount'] ?? 0;
 
-    print("DEBUG ARGS: $args");
+    // print("DEBUG ARGS: $args");
 
     // print("workoutType: ${args?['workoutType']} (${args?['workoutType'].runtimeType})");
     // print("focusArea:   ${args?['focusArea']}   (${args?['focusArea'].runtimeType})");

@@ -44,7 +44,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         });
       }
     } catch (e) {
-      print('❌ Load user data error: $e');
+      // print('❌ Load user data error: $e');
       setState(() {
         // _isLoading = false;
       });
@@ -60,7 +60,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         final bytes = base64.decode(_userData!.photoBase64!);
         return MemoryImage(bytes);
       } catch (e) {
-        print('Error decoding Base64: $e');
+        // print('Error decoding Base64: $e');
       }
     }
 

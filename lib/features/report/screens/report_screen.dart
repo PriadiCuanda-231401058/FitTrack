@@ -8,9 +8,6 @@ import 'package:fittrack/features/auth/auth_controller.dart';
 import 'package:fittrack/models/report_model.dart';
 import 'dart:convert';
 
-// import 'package:fittrack/models/user_model.dart';
-// import 'package:fittrack/features/settings/screens/settings_screen.dart';
-
 class ReportScreen extends StatefulWidget {
   const ReportScreen({super.key});
 
@@ -50,7 +47,7 @@ class _ReportScreenState extends State<ReportScreen> {
         final bytes = base64.decode(userData!.photoBase64!);
         return MemoryImage(bytes);
       } catch (e) {
-        print('Error decoding Base64: $e');
+        // print('Error decoding Base64: $e');
       }
     }
 
@@ -73,124 +70,39 @@ class _ReportScreenState extends State<ReportScreen> {
           progressw =
               (userData?.achievements.length.toDouble() ?? 0) /
               15.0; // ganti 15 dengan total achievement yang ada
-          print('progressw: $progressw');
+          // print('progressw: $progressw');
         });
-        print('User Progressw: $progressw');
-        print('User ID: ${user.uid}');
-        print('UserProgress: $progress');
-        print('User Progress Data: ${userData?.toFirestore()}');
-        if (progress != null) {
-          print('Progress Map: ${progress.progress}');
-        }
+        // print('User Progressw: $progressw');
+        // print('User ID: ${user.uid}');
+        // print('UserProgress: $progress');
+        // print('User Progress Data: ${userData?.toFirestore()}');
+        // if (progress != null) {
+        //   print('Progress Map: ${progress.progress}');
+        // }
       }
     } catch (e) {
-      print('Error loading user progress: $e');
+      // print('Error loading user progress: $e');
     } finally {
       setState(() => _isLoading = false);
     }
   }
 
-  // Map<String, dynamic> _getCurrentProgress() {
-  //   if (userData == null) return {};
-  //   final filterKey = filterBy.toLowerCase().replaceAll(' ', '_') ?? 'today';
-  //   return userData!.progress[filterKey] ?? {};
-  // }
-
+  @override
   Widget build(BuildContext context) {
-    // ini data progress yang harus dicapai (jangan dihapus), ku tarok ke controller aj
-
     final target = _reportController.getTargetData();
-    // final Map<String, dynamic> target = {
-    //   "today": {
-    //     "cardio": 45,
-    //     "flexibility": 35,
-    //     "strength": 30,
-    //     "total_training": 5,
-    //     "total_time": 110,
-    //   },
-    //   "1 week": {
-    //     "cardio": 315,
-    //     "flexibility": 245,
-    //     "strength": 210,
-    //     "total_training": 10,
-    //     "total_time": 770,
-    //   },
-    //   "2 weeks": {
-    //     "cardio": 630,
-    //     "flexibility": 490,
-    //     "strength": 420,
-    //     "total_training": 20,
-    //     "total_time": 1540,
-    //   },
-    //   "1 month": {
-    //     "cardio": 1350,
-    //     "flexibility": 1050,
-    //     "strength": 900,
-    //     "total_training": 40,
-    //     "total_time": 3300,
-    //   },
-    //   "3 months": {
-    //     "cardio": 4050,
-    //     "flexibility": 3150,
-    //     "strength": 2700,
-    //     "total_training": 120,
-    //     "total_time": 9900,
-    //   },
-    // };
-
-    // dummy data
-    // final Map<String, dynamic> userData = {
-    //   "username": "Andre Lim",
-    //   "email": "andre@gmail.com",
-    //   "profilePhoto":
-    //       "assets/profiles/andre.jfif", // harusnya nnti bisa upload png aja
-    //   "streak": 10,
-    //   "isStreak": true,
-    //   "today": {
-    //     "cardio": 20,
-    //     "flexibility": 30,
-    //     "strength": 10,
-    //     "total_training": 4,
-    //   },
-    //   "1 week": {
-    //     "cardio": 50,
-    //     "flexibility": 50,
-    //     "strength": 50,
-    //     "total_training": 7,
-    //   },
-    //   "2 weeks": {
-    //     "cardio": 100,
-    //     "flexibility": 100,
-    //     "strength": 100,
-    //     "total_training": 10,
-    //   },
-    //   "1 month": {
-    //     "cardio": 200,
-    //     "flexibility": 200,
-    //     "strength": 200,
-    //     "total_training": 20,
-    //   },
-    //   "3 months": {
-    //     "cardio": 4200,
-    //     "flexibility": 4300,
-    //     "strength": 4300,
-    //     "total_training": 424,
-    //   },
-    //   "achievement": ["Arms Master", "Abs Monster", "Chest Bro"],
-    // };
 
     // print("progressw :${userData?.achievements.length.toDouble()}");
     // print("progressw :${progressw}");
 
-    print('_isLoading: $_isLoading');
-    print('userData is null: ${userData == null}');
-    print('userData: $userData');
-    if (userData != null) {
-      print('userData.name: ${userData!.name}');
-      print('userData.achievements: ${userData!.achievements}');
-      print('userData.achievements.length: ${userData!.achievements.length}');
-    }
-    print('progressw: $progressw');
+    // print('_isLoading: $_isLoading');
+    // print('userData is null: ${userData == null}');
+    // print('userData: $userData');
+    // if (userData != null) {
+    //   print('userData.name: ${userData!.name}');
+    //   print('userData.achievements: ${userData!.achievements}');
+    //   print('userData.achievements.length: ${userData!.achievements.length}');
+    // }
+    // print('progressw: $progressw');
 
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
@@ -273,7 +185,6 @@ class _ReportScreenState extends State<ReportScreen> {
                           decoration: BoxDecoration(
                             color: Colors.white,
                             image: DecorationImage(
-                              // image: AssetImage(userData?['profilePhoto']),
                               image: getProfileImage(),
                               fit: BoxFit.cover,
                             ),

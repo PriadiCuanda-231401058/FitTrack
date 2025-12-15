@@ -13,36 +13,6 @@ class LeaderboardScreen extends StatefulWidget {
 class _LeaderboardScreenState extends State<LeaderboardScreen> {
   bool isWeekly = true;
   bool isLoading = false;
-  // contoh data dummy, tinggal diganti dengan data dari database
-  // final List<Map<String, dynamic>> weeklyLeaderboard = [
-  //   {'name': 'Alice', 'point': 120},
-  //   {'name': 'Bob', 'point': 90},
-  //   {'name': 'James', 'point': 80},
-  //   {'name': 'Charlie', 'point': 70},
-  //   {'name': 'Charlie', 'point': 70},
-  //   {'name': 'Charlie', 'point': 70},
-  //   {'name': 'Charlie', 'point': 70},
-  //   {'name': 'Charlie', 'point': 70},
-  //   {'name': 'Charlie', 'point': 65},
-  //   {'name': 'Charlie', 'point': 70},
-  //   {'name': 'Charlie', 'point': 70},
-  //   {'name': 'Charlie', 'point': 65},
-  // ];
-
-  // final List<Map<String, dynamic>> monthlyLeaderboard = [
-  //   {'name': 'Alice', 'point': 450},
-  //   {'name': 'Bob', 'point': 410},
-  //   {'name': 'Charlie', 'point': 380},
-  //   {'name': 'James', 'point': 280},
-  //   {'name': 'James', 'point': 280},
-  //   {'name': 'James', 'point': 280},
-  //   {'name': 'James', 'point': 280},
-  //   {'name': 'James', 'point': 280},
-  //   {'name': 'James', 'point': 280},
-  //   {'name': 'James', 'point': 280},
-  //   {'name': 'James', 'point': 280},
-  //   {'name': 'James', 'point': 280},
-  // ];
 
   final LeaderboardController _leaderboardController = LeaderboardController();
 
@@ -70,7 +40,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
         });
       }
     } catch (e) {
-      print('Error loading weekly leaderboard: $e');
+      // print('Error loading weekly leaderboard: $e');
       if (mounted) {
         setState(() => isLoading = false);
       }
@@ -91,7 +61,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
         });
       }
     } catch (e) {
-      print('Error loading monthly leaderboard: $e');
+      // print('Error loading monthly leaderboard: $e');
       if (mounted) {
         setState(() => isLoading = false);
       }

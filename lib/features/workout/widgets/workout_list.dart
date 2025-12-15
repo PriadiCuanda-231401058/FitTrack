@@ -31,7 +31,6 @@ class WorkoutList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -42,7 +41,6 @@ class WorkoutList extends StatelessWidget {
             GestureDetector(
               onTap: workoutType != 'popular'
                   ? () {
-                      print(workout);
                       // Pindah ke exercise list dengan data body focus
                       Navigator.pushNamed(
                         context,
@@ -144,7 +142,7 @@ class WorkoutList extends StatelessWidget {
                       ),
                     ),
 
-                    if (workout['isPremium']==true && false == isPremiumUser)
+                    if (workout['isPremium'] == true && false == isPremiumUser)
                       Image.asset(
                         'assets/images/lock.png',
                         width: screenWidth * 0.085,

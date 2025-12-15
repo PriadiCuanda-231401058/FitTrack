@@ -15,8 +15,8 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   bool _isLoading = false;
   bool _isPremiumUser = false;
-  List<Workout> _fullWorkoutList = [];
   List<Workout> _searchResults = [];
+  final List<Workout> _fullWorkoutList = [];
 
   final WorkoutController _workoutController = WorkoutController();
   final TextEditingController _searchController = TextEditingController();
@@ -129,7 +129,7 @@ class _SearchScreenState extends State<SearchScreen> {
         _fullWorkoutList.addAll(targetWorkouts);
       });
     } catch (e) {
-      print('Error loading workout data: $e');
+      // print('Error loading workout data: $e');
     } finally {
       setState(() => _isLoading = false);
     }
@@ -157,13 +157,13 @@ class _SearchScreenState extends State<SearchScreen> {
         await _workoutController.getWorkoutsByBodyFocus('Back'),
       );
 
-      print(focusWorkouts.length);
+      // print(focusWorkouts.length);
 
       setState(() {
         _fullWorkoutList.addAll(focusWorkouts);
       });
     } catch (e) {
-      print('Error loading workout data: $e');
+      // print('Error loading workout data: $e');
     } finally {
       setState(() => _isLoading = false);
     }
