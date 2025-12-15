@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fittrack/models/workout_model.dart';
 
 class WorkoutList extends StatelessWidget {
+  final bool isPremiumUser;
   final List<Workout> workouts;
   final String workoutType;
 
@@ -9,6 +10,7 @@ class WorkoutList extends StatelessWidget {
     super.key,
     required this.workouts,
     required this.workoutType,
+    required this.isPremiumUser,
   });
 
   String parseDurationFromTitle(String title) {
@@ -29,6 +31,7 @@ class WorkoutList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -141,7 +144,7 @@ class WorkoutList extends StatelessWidget {
                       ),
                     ),
 
-                    if (workout['isPremium'])
+                    if (workout['isPremium']==true && false == isPremiumUser)
                       Image.asset(
                         'assets/images/lock.png',
                         width: screenWidth * 0.085,
