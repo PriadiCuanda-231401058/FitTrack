@@ -39,7 +39,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     checkUserPremium();
   }
 
-    Future<void> checkUserPremium() async {
+  Future<void> checkUserPremium() async {
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
       final doc = await FirebaseFirestore.instance

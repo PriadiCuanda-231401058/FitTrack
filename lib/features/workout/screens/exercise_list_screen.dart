@@ -1,4 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:fittrack/shared/widgets/navigation_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:fittrack/models/workout_model.dart';

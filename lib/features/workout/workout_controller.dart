@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 class WorkoutController {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-
-static int _safeCastInt(dynamic value) {
+  static int _safeCastInt(dynamic value) {
     if (value == null) return 0;
     if (value is int) return value;
     if (value is double) return value.toInt();
@@ -19,63 +18,63 @@ static int _safeCastInt(dynamic value) {
     if (value is String) return value;
     return value.toString();
   }
+
   // Get Challenges
   Future<List<Workout>> getChallenges() async {
-  try {
-    final snapshot = await _db
-        .collection('workouts')
-        .doc('challenges')
-        .collection('categories')
-        .get();
+    try {
+      final snapshot = await _db
+          .collection('workouts')
+          .doc('challenges')
+          .collection('categories')
+          .get();
 
-    final challenges = <Workout>[];
-    
-    for (final doc in snapshot.docs) {
-      try {
-        final data = doc.data();
-        final challenge = Workout(
-          id: doc.id,
-          title: _safeCastString(data['title']),
-          description: _safeCastString(data['description']),
-          exerciseCount: _safeCastInt(data['exerciseCount']),
-          duration: _safeCastInt(data['duration']),
-          isPremium: false, // Challenges are free
-          imageURL: _safeCastString(data['imageURL']),
-          bgColor: data['bgColor'] != null ? Color(data['bgColor'] as int) : null,
-        );
-        challenges.add(challenge);
-      } catch (e) {
-        print('Error parsing challenge ${doc.id}: $e');
+      final challenges = <Workout>[];
+
+      for (final doc in snapshot.docs) {
+        try {
+          final data = doc.data();
+          final challenge = Workout(
+            id: doc.id,
+            title: _safeCastString(data['title']),
+            description: _safeCastString(data['description']),
+            exerciseCount: _safeCastInt(data['exerciseCount']),
+            duration: _safeCastInt(data['duration']),
+            isPremium: false, // Challenges are free
+            imageURL: _safeCastString(data['imageURL']),
+            bgColor: data['bgColor'] != null
+                ? Color(data['bgColor'] as int)
+                : null,
+          );
+          challenges.add(challenge);
+        } catch (e) {
+          print('Error parsing challenge ${doc.id}: $e');
+        }
       }
+
+      return challenges;
+    } catch (e) {
+      print('Error getting challenges: $e');
+      return [];
     }
-    
-    return challenges;
-  } catch (e) {
-    print('Error getting challenges: $e');
-    return [];
   }
-}
 
-Future<List<Exercise>> getChallengeExercises(String challengeId) async {
-  try {
-    final snapshot = await _db
-        .collection('workouts')
-        .doc('challenges')
-        .collection('categories')
-        .doc(challengeId)
-        .collection('exercises')
-        .orderBy('order')
-        .get();
+  Future<List<Exercise>> getChallengeExercises(String challengeId) async {
+    try {
+      final snapshot = await _db
+          .collection('workouts')
+          .doc('challenges')
+          .collection('categories')
+          .doc(challengeId)
+          .collection('exercises')
+          .orderBy('order')
+          .get();
 
-    return snapshot.docs
-        .map((doc) => Exercise.fromFirestore(doc))
-        .toList();
-  } catch (e) {
-    print('Error getting challenge exercises for $challengeId: $e');
-    return [];
+      return snapshot.docs.map((doc) => Exercise.fromFirestore(doc)).toList();
+    } catch (e) {
+      print('Error getting challenge exercises for $challengeId: $e');
+      return [];
+    }
   }
-}
-
 
   // Get Body Focus Categories
   Future<List<String>> getBodyFocusCategories() async {
@@ -85,7 +84,7 @@ Future<List<Exercise>> getChallengeExercises(String challengeId) async {
           .doc('bodyFocus')
           .collection('categories')
           .get();
-      
+
       return snapshot.docs.map((doc) => doc.id).toList();
     } catch (e) {
       print('Error getting body focus categories: $e');
@@ -105,14 +104,14 @@ Future<List<Exercise>> getChallengeExercises(String challengeId) async {
           .get();
 
       final workouts = <Workout>[];
-      
+
       for (final doc in snapshot.docs) {
         try {
           // Get exercises count for this level
           final exercisesSnapshot = await doc.reference
               .collection('exercises')
               .get();
-          
+
           final workout = Workout(
             id: '${focusArea}_${doc.id}',
             title: doc.id, // Level name (Beginner, Intermediate, Advanced)
@@ -122,13 +121,13 @@ Future<List<Exercise>> getChallengeExercises(String challengeId) async {
             isPremium: doc.id == 'Advanced', // Advanced is premium
             imageURL: _getWorkoutImageURL(focusArea, doc.id),
           );
-          
+
           workouts.add(workout);
         } catch (e) {
           print('Error parsing workout ${doc.id}: $e');
         }
       }
-      
+
       return workouts;
     } catch (e) {
       print('Error getting workouts for $focusArea: $e');
@@ -144,7 +143,7 @@ Future<List<Exercise>> getChallengeExercises(String challengeId) async {
           .doc('target')
           .collection('categories')
           .get();
-      
+
       return snapshot.docs.map((doc) => doc.id).toList();
     } catch (e) {
       print('Error getting target categories: $e');
@@ -164,14 +163,14 @@ Future<List<Exercise>> getChallengeExercises(String challengeId) async {
           .get();
 
       final workouts = <Workout>[];
-      
+
       for (final doc in snapshot.docs) {
         try {
           // Get exercises count for this level
           final exercisesSnapshot = await doc.reference
               .collection('exercises')
               .get();
-          
+
           final workout = Workout(
             id: '${target}_${doc.id}',
             title: doc.id,
@@ -181,13 +180,13 @@ Future<List<Exercise>> getChallengeExercises(String challengeId) async {
             isPremium: _isTargetWorkoutPremium(target, doc.id),
             imageURL: _getTargetWorkoutImageURL(target, doc.id),
           );
-          
+
           workouts.add(workout);
         } catch (e) {
           print('Error parsing target workout ${doc.id}: $e');
         }
       }
-      
+
       return workouts;
     } catch (e) {
       print('Error getting workouts for target $target: $e');
@@ -201,27 +200,29 @@ Future<List<Exercise>> getChallengeExercises(String challengeId) async {
       // For now, return a mix of body focus and target workouts
       // You can implement your own logic for popularity
       final popularWorkouts = <Workout>[];
-      
+
       // Get some body focus workouts
       final absWorkouts = await getWorkoutsByBodyFocus('ABS');
       if (absWorkouts.isNotEmpty) {
         popularWorkouts.add(absWorkouts.first);
       }
-      
+
       // Get some target workouts
       final strengthWorkouts = await getWorkoutsByTarget('Strength');
       if (strengthWorkouts.isNotEmpty) {
         popularWorkouts.add(strengthWorkouts.first);
       }
-      
+
       final cardioWorkouts = await getWorkoutsByTarget('Cardio');
       if (cardioWorkouts.isNotEmpty) {
-        popularWorkouts.add(cardioWorkouts.firstWhere(
-          (workout) => workout.duration == 10,
-          orElse: () => cardioWorkouts.first,
-        ));
+        popularWorkouts.add(
+          cardioWorkouts.firstWhere(
+            (workout) => workout.duration == 10,
+            orElse: () => cardioWorkouts.first,
+          ),
+        );
       }
-      
+
       return popularWorkouts;
     } catch (e) {
       print('Error getting popular workouts: $e');
@@ -253,7 +254,7 @@ Future<List<Exercise>> getChallengeExercises(String challengeId) async {
         // Implementation depends on your ID structure
         return [];
       }
-      
+
       return [];
     } catch (e) {
       print('Error getting exercises: $e');
@@ -262,7 +263,10 @@ Future<List<Exercise>> getChallengeExercises(String challengeId) async {
   }
 
   // Private method to get body focus exercises
-  Future<List<Exercise>> _getBodyFocusExercises(String focusArea, String level) async {
+  Future<List<Exercise>> _getBodyFocusExercises(
+    String focusArea,
+    String level,
+  ) async {
     try {
       final snapshot = await _db
           .collection('workouts')
@@ -275,9 +279,7 @@ Future<List<Exercise>> getChallengeExercises(String challengeId) async {
           .orderBy('order')
           .get();
 
-      return snapshot.docs
-          .map((doc) => Exercise.fromFirestore(doc))
-          .toList();
+      return snapshot.docs.map((doc) => Exercise.fromFirestore(doc)).toList();
     } catch (e) {
       print('Error getting body focus exercises: $e');
       return [];
@@ -285,7 +287,10 @@ Future<List<Exercise>> getChallengeExercises(String challengeId) async {
   }
 
   // Private method to get target exercises
-  Future<List<Exercise>> _getTargetExercises(String target, String duration) async {
+  Future<List<Exercise>> _getTargetExercises(
+    String target,
+    String duration,
+  ) async {
     try {
       final snapshot = await _db
           .collection('workouts')
@@ -298,9 +303,7 @@ Future<List<Exercise>> getChallengeExercises(String challengeId) async {
           .orderBy('order')
           .get();
 
-      return snapshot.docs
-          .map((doc) => Exercise.fromFirestore(doc))
-          .toList();
+      return snapshot.docs.map((doc) => Exercise.fromFirestore(doc)).toList();
     } catch (e) {
       print('Error getting target exercises: $e');
       return [];
@@ -308,16 +311,18 @@ Future<List<Exercise>> getChallengeExercises(String challengeId) async {
   }
 
   // Helper methods
-  int _calculateWorkoutDuration(List<QueryDocumentSnapshot<Map<String, dynamic>>> exercises) {
+  int _calculateWorkoutDuration(
+    List<QueryDocumentSnapshot<Map<String, dynamic>>> exercises,
+  ) {
     // Calculate approximate duration based on exercises
     // This is a simplified calculation - adjust based on your needs
     int totalSeconds = 0;
-    
+
     for (final exerciseDoc in exercises) {
       final exercise = Exercise.fromFirestore(exerciseDoc);
       totalSeconds += exercise.value + exercise.rest;
     }
-    
+
     // Convert to minutes and add some buffer
     return (totalSeconds / 60).ceil() + 2;
   }
@@ -334,7 +339,7 @@ Future<List<Exercise>> getChallengeExercises(String challengeId) async {
   //     '7 Menit': '7-Min ${_getTargetSuffix(target)}',
   //     '10 Menit': '10-Min ${_getTargetSuffix(target)}',
   //   };
-    
+
   //   return durationMap[duration] ?? '$duration $target';
   // }
 
@@ -368,6 +373,9 @@ Future<List<Exercise>> getChallengeExercises(String challengeId) async {
 
   bool _isTargetWorkoutPremium(String target, String level) {
     level = _parseDurationFromLevel(level).toString();
-    return (target == 'Cardio' || target == 'Flexibility' || target == 'Strength') && level == '10';
+    return (target == 'Cardio' ||
+            target == 'Flexibility' ||
+            target == 'Strength') &&
+        level == '10';
   }
 }
