@@ -80,7 +80,6 @@ class Workout {
     );
   }
 
-  // Helper methods for safe casting
   static int _safeCastInt(dynamic value) {
     if (value == null) return 0;
     if (value is int) return value;
@@ -99,7 +98,6 @@ class Workout {
     if (value == null) return null;
     if (value is int) return Color(value);
     if (value is String) {
-      // Handle hex color strings
       if (value.startsWith('0x') || value.startsWith('0X')) {
         return Color(int.parse(value));
       }
@@ -110,7 +108,6 @@ class Workout {
     return null;
   }
 
-  // Convert to Map for Firestore
   Map<String, dynamic> toFirestore() {
     return {
       'title': title,
@@ -148,7 +145,6 @@ class Exercise {
     this.createdAt,
   });
 
-  // Convert Firestore Document to Exercise object
   factory Exercise.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
     final data = doc.data();
     if (data == null) {
@@ -167,7 +163,6 @@ class Exercise {
     );
   }
 
-  // Helper methods for safe casting
   static int _safeCastInt(dynamic value) {
     if (value == null) return 0;
     if (value is int) return value;
@@ -182,7 +177,6 @@ class Exercise {
     return value.toString();
   }
 
-  // Convert to Map for Firestore
   Map<String, dynamic> toFirestore() {
     return {
       'order': order,
@@ -195,7 +189,6 @@ class Exercise {
     };
   }
 
-  // Helper method to get display text for exercise
   String get displayValue {
     switch (type) {
       case 'repetition':

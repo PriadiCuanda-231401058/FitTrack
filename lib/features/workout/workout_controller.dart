@@ -367,7 +367,7 @@ Future<List<Exercise>> getChallengeExercises(String challengeId) async {
   }
 
   bool _isTargetWorkoutPremium(String target, String level) {
-    // Define which target workouts are premium
-    return target == 'Cardio' && level == '10 Menit';
+    level = _parseDurationFromLevel(level).toString();
+    return (target == 'Cardio' || target == 'Flexibility' || target == 'Strength') && level == '10';
   }
 }
