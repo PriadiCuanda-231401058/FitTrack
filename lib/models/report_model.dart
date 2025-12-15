@@ -60,20 +60,6 @@ class UserProgress {
     };
   }
 
-  // static int _safeCastInt(dynamic value) {
-  //   if (value == null) return 0;
-  //   if (value is int) return value;
-  //   if (value is double) return value.toInt();
-  //   if (value is String) return int.tryParse(value) ?? 0;
-  //   return 0;
-  // }
-
-  // static String _safeCastString(dynamic value) {
-  //   if (value == null) return '';
-  //   if (value is String) return value;
-  //   return value.toString();
-  // }
-
   static Map<String, dynamic> _safeCastMap(dynamic value) {
     if (value == null) return {};
     if (value is Map<String, dynamic>) return value;
