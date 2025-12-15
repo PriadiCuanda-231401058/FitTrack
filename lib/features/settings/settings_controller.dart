@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/material.dart';
 import '../auth/auth_controller.dart';
 import 'package:image_picker/image_picker.dart';
@@ -9,7 +8,6 @@ import 'package:image/image.dart' as img;
 import 'dart:convert';
 import 'dart:async';
 import 'package:google_sign_in/google_sign_in.dart';
-
 
 final authController = AuthController();
 
@@ -73,7 +71,7 @@ class SettingsController extends ChangeNotifier {
 
       return true;
     } catch (e) {
-      print('❌ Update username error: $e');
+      // print('❌ Update username error: $e');
       return false;
     }
   }
@@ -90,7 +88,7 @@ class SettingsController extends ChangeNotifier {
 
       return true;
     } catch (e) {
-      print('❌ Upload profile photo error: $e');
+      // print('❌ Upload profile photo error: $e');
       return false;
     }
   }
@@ -110,7 +108,7 @@ class SettingsController extends ChangeNotifier {
       }
       return null;
     } catch (e) {
-      print('❌ Pick photo error: $e');
+      // print('❌ Pick photo error: $e');
       return null;
     }
   }
@@ -130,7 +128,7 @@ class SettingsController extends ChangeNotifier {
       }
       return null;
     } catch (e) {
-      print('❌ Take photo error: $e');
+      // print('❌ Take photo error: $e');
       return null;
     }
   }
@@ -150,7 +148,7 @@ class SettingsController extends ChangeNotifier {
 
       return true;
     } catch (e) {
-      print('Delete profile photo error: $e');
+      // print('Delete profile photo error: $e');
       return false;
     }
   }
@@ -177,7 +175,7 @@ class SettingsController extends ChangeNotifier {
 
       return true;
     } catch (e) {
-      print('❌ Change password error: $e');
+      // print('❌ Change password error: $e');
       return false;
     }
   }
@@ -207,7 +205,7 @@ class SettingsController extends ChangeNotifier {
 
       return true;
     } catch (e) {
-      print('❌ Delete account error: $e');
+      // print('❌ Delete account error: $e');
       return false;
     }
   }
@@ -223,44 +221,8 @@ class SettingsController extends ChangeNotifier {
       }
       return null;
     } catch (e) {
-      print('❌ Get user data error: $e');
+      // print('❌ Get user data error: $e');
       return null;
     }
   }
 }
-  // Future<bool> deleteAccount() async {
-  //   try {
-  //     final FirebaseAuth auth = FirebaseAuth.instance;
-  //     User? user = auth.currentUser;
-
-  //     if (user == null) {
-  //       debugPrint("No user is logged in.");
-  //       return false;
-  //     }
-
-  //     await FirebaseFirestore.instance
-  //         .collection('users')
-  //         .doc(user.uid)
-  //         .delete();
-
-  //     await user.delete();
-
-  //     try {
-  //       await GoogleSignIn().signOut();
-  //     } catch (_) {}
-
-  //     return true;
-  //   } on FirebaseAuthException catch (e) {
-  //     // Error paling umum: butuh login ulang
-  //     if (e.code == 'requires-recent-login') {
-  //       debugPrint('User needs to reauthenticate before deleting the account.');
-  //     } else {
-  //       debugPrint('Failed to delete account: ${e.message}');
-  //     }
-  //     return false;
-  //   } catch (e) {
-  //     debugPrint('Unexpected error: $e');
-  //     return false;
-  //   }
-  // }
-

@@ -47,13 +47,13 @@ class WorkoutController {
           );
           challenges.add(challenge);
         } catch (e) {
-          print('Error parsing challenge ${doc.id}: $e');
+          // print('Error parsing challenge ${doc.id}: $e');
         }
       }
 
       return challenges;
     } catch (e) {
-      print('Error getting challenges: $e');
+      // print('Error getting challenges: $e');
       return [];
     }
   }
@@ -71,7 +71,7 @@ class WorkoutController {
 
       return snapshot.docs.map((doc) => Exercise.fromFirestore(doc)).toList();
     } catch (e) {
-      print('Error getting challenge exercises for $challengeId: $e');
+      // print('Error getting challenge exercises for $challengeId: $e');
       return [];
     }
   }
@@ -87,7 +87,7 @@ class WorkoutController {
 
       return snapshot.docs.map((doc) => doc.id).toList();
     } catch (e) {
-      print('Error getting body focus categories: $e');
+      // print('Error getting body focus categories: $e');
       return [];
     }
   }
@@ -124,13 +124,13 @@ class WorkoutController {
 
           workouts.add(workout);
         } catch (e) {
-          print('Error parsing workout ${doc.id}: $e');
+          // print('Error parsing workout ${doc.id}: $e');
         }
       }
 
       return workouts;
     } catch (e) {
-      print('Error getting workouts for $focusArea: $e');
+      // print('Error getting workouts for $focusArea: $e');
       return [];
     }
   }
@@ -146,7 +146,7 @@ class WorkoutController {
 
       return snapshot.docs.map((doc) => doc.id).toList();
     } catch (e) {
-      print('Error getting target categories: $e');
+      // print('Error getting target categories: $e');
       return [];
     }
   }
@@ -183,13 +183,13 @@ class WorkoutController {
 
           workouts.add(workout);
         } catch (e) {
-          print('Error parsing target workout ${doc.id}: $e');
+          // print('Error parsing target workout ${doc.id}: $e');
         }
       }
 
       return workouts;
     } catch (e) {
-      print('Error getting workouts for target $target: $e');
+      // print('Error getting workouts for target $target: $e');
       return [];
     }
   }
@@ -225,7 +225,7 @@ class WorkoutController {
 
       return popularWorkouts;
     } catch (e) {
-      print('Error getting popular workouts: $e');
+      // print('Error getting popular workouts: $e');
       return [];
     }
   }
@@ -257,7 +257,7 @@ class WorkoutController {
 
       return [];
     } catch (e) {
-      print('Error getting exercises: $e');
+      // print('Error getting exercises: $e');
       return [];
     }
   }
@@ -281,7 +281,7 @@ class WorkoutController {
 
       return snapshot.docs.map((doc) => Exercise.fromFirestore(doc)).toList();
     } catch (e) {
-      print('Error getting body focus exercises: $e');
+      // print('Error getting body focus exercises: $e');
       return [];
     }
   }
@@ -305,7 +305,7 @@ class WorkoutController {
 
       return snapshot.docs.map((doc) => Exercise.fromFirestore(doc)).toList();
     } catch (e) {
-      print('Error getting target exercises: $e');
+      // print('Error getting target exercises: $e');
       return [];
     }
   }
@@ -332,35 +332,8 @@ class WorkoutController {
     return 'assets/workouts/$focusArea/images/$level.jfif';
   }
 
-  // String _getTargetWorkoutTitle(String target, String duration) {
-  //   // Map duration to proper title
-  //   final durationMap = {
-  //     '5 Menit': '5-Min ${_getTargetSuffix(target)}',
-  //     '7 Menit': '7-Min ${_getTargetSuffix(target)}',
-  //     '10 Menit': '10-Min ${_getTargetSuffix(target)}',
-  //   };
-
-  //   return durationMap[duration] ?? '$duration $target';
-  // }
-
-  // String _getTargetSuffix(String target) {
-  //   switch (target) {
-  //     case 'Strength':
-  //       return 'Strength Boost';
-  //     case 'Cardio':
-  //       return 'Cardio Burn';
-  //     case 'Flexibility':
-  //       return 'Flex Flow';
-  //     default:
-  //       return target;
-  //   }
-  // }
-
   String _getTargetWorkoutImageURL(String target, String duration) {
     // Map to your actual image paths
-    // final title = _getTargetWorkoutTitle(target, duration)
-    //     .replaceAll(' ', '')
-    //     .replaceAll('-', ' ');
     return 'assets/workouts/$target/images/$duration.jfif';
   }
 

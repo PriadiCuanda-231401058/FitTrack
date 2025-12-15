@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
-
 class BmiService {
   static double calculateBmi(double weightKg, double heightCm) {
     final double heightM = heightCm / 100.0;
-    
+
     return weightKg / (heightM * heightM);
   }
 
@@ -14,7 +13,7 @@ class BmiService {
     Color color;
 
     double adjustedBmi = bmi;
-    
+
     if (gender == 'male' && bmi < 20) {
       adjustedBmi = bmi + 0.5;
     } else if (gender == 'female' && bmi > 25) {
@@ -22,7 +21,8 @@ class BmiService {
     }
 
     if (adjustedBmi < 18.5) {
-      advice = "Your BMI is below normal. Try to eat a bit more and stay consistent";
+      advice =
+          "Your BMI is below normal. Try to eat a bit more and stay consistent";
       resultTest = "UnderWeight!";
       color = Colors.blue;
     } else if (adjustedBmi >= 18.5 && adjustedBmi < 25.0) {
@@ -30,24 +30,25 @@ class BmiService {
       resultTest = "Normal!";
       color = Colors.green;
     } else if (adjustedBmi >= 25.0 && adjustedBmi < 30.0) {
-      advice = "Your BMI is slightly above normal. Small changes = big progress!";
+      advice =
+          "Your BMI is slightly above normal. Small changes = big progress!";
       resultTest = "OverWeight!";
       color = Colors.orange;
     } else {
-      advice = "Your BMI is much higher than normal. Don’t worry, you can start improving today!";
+      advice =
+          "Your BMI is much higher than normal. Don’t worry, you can start improving today!";
       resultTest = "Obesity!";
       color = Colors.red;
     }
 
     return {
-      'bmi': bmi.toStringAsFixed(1), 
+      'bmi': bmi.toStringAsFixed(1),
       'advice': advice,
       'resultText': resultTest,
       'color': color,
     };
   }
 }
-
 
 class BmiResultDialog extends StatelessWidget {
   final String bmiValue;
@@ -159,18 +160,33 @@ class BmiResultDialog extends StatelessWidget {
   Widget _buildBmiIndicator(double screenWidth) {
     const double minRange = 16.0;
     const double maxRange = 32.0;
-    
+
     double bmiNum = double.tryParse(bmiValue) ?? 0.0;
-    
-    double normalizedBmi = (bmiNum.clamp(minRange, maxRange) - minRange) / (maxRange - minRange);
+
+    double normalizedBmi =
+        (bmiNum.clamp(minRange, maxRange) - minRange) / (maxRange - minRange);
 
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("<18.5", style: TextStyle(fontSize: screenWidth * 0.035, color: Color(0xFF9999A1), fontWeight: FontWeight.w700)),
-            Text("30<", style: TextStyle(fontSize: screenWidth * 0.035, color: Color(0xFF9999A1), fontWeight: FontWeight.w700)),
+            Text(
+              "<18.5",
+              style: TextStyle(
+                fontSize: screenWidth * 0.035,
+                color: Color(0xFF9999A1),
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            Text(
+              "30<",
+              style: TextStyle(
+                fontSize: screenWidth * 0.035,
+                color: Color(0xFF9999A1),
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           ],
         ),
         SizedBox(height: 4),
@@ -195,10 +211,7 @@ class BmiResultDialog extends StatelessWidget {
             ),
             Positioned.fill(
               child: Align(
-                alignment: Alignment(
-                  (normalizedBmi * 2) - 1,
-                  0,
-                ),
+                alignment: Alignment((normalizedBmi * 2) - 1, 0),
                 child: Container(
                   width: 16,
                   height: 16,
@@ -207,8 +220,8 @@ class BmiResultDialog extends StatelessWidget {
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.black, width: 2),
                     boxShadow: [
-                      BoxShadow(color: Colors.black38, blurRadius: 3)
-                    ]
+                      BoxShadow(color: Colors.black38, blurRadius: 3),
+                    ],
                   ),
                 ),
               ),

@@ -157,11 +157,6 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                 vertical: screenHeight * 0.022,
                               ),
                             ),
-                            // onChanged: (value) {
-                            //   setState(() {
-                            //     email = value;
-                            //   });
-                            // },
                           ),
 
                           SizedBox(height: screenHeight * 0.04),
@@ -243,7 +238,6 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
                             padding: EdgeInsets.all(screenWidth * 0.05),
                             child: SuccessMessage(
                               message: "Success",
-                              // message: successMessage,
                               onDismiss: () =>
                                   setState(() => successSendEmail = null),
                             ),
@@ -252,7 +246,6 @@ class ResetPasswordScreenState extends State<ResetPasswordScreen> {
                             padding: EdgeInsets.all(screenWidth * 0.05),
                             child: ErrorMessage(
                               message: "Error",
-                              // message: errorMessage,
                               onDismiss: () =>
                                   setState(() => successSendEmail = null),
                             ),

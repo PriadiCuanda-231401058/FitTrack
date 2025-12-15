@@ -133,7 +133,8 @@ class AchievementController {
   };
 
   static Future<List<Map<String, dynamic>>> _getUserWorkoutHistory(
-      String userId) async {
+    String userId,
+  ) async {
     try {
       final snapshot = await _firestore
           .collection('workout_history')
@@ -153,7 +154,7 @@ class AchievementController {
         };
       }).toList();
     } catch (e) {
-      print('Error getting workout history: $e');
+      // print('Error getting workout history: $e');
       return [];
     }
   }
@@ -164,7 +165,7 @@ class AchievementController {
       final userData = userDoc.data();
       return userData?['streak'] ?? 0;
     } catch (e) {
-      print('Error getting user streak: $e');
+      // print('Error getting user streak: $e');
       return 0;
     }
   }
@@ -178,57 +179,65 @@ class AchievementController {
 
       final userDoc = await _firestore.collection('users').doc(userId).get();
       final userData = userDoc.data() ?? {};
-      
+
       final List<dynamic> userAchievements = userData['achievements'] ?? [];
       final List<dynamic> achievementDates = userData['achievementDates'] ?? [];
-      
+
       final workoutHistory = await _getUserWorkoutHistory(userId);
       final userStreak = await getUserStreak(userId);
-      
+
       final List<String> achievementId = [];
       final List<String> dateAcquired = [];
       final List<int> progress = [];
-      
+
       final List<String> criteriaKeys = _achievementCriteria.keys.toList();
-      
+
       for (final achievementName in criteriaKeys) {
         final criteria = _achievementCriteria[achievementName]!;
         int currentProgress = 0;
-        
-        if (criteria.containsKey('focusArea') && criteria.containsKey('level')) {
+
+        if (criteria.containsKey('focusArea') &&
+            criteria.containsKey('level')) {
           currentProgress = workoutHistory
-              .where((workout) =>
-                  workout['focus_area'] == criteria['focusArea'] &&
-                  workout['level'] == criteria['level'])
+              .where(
+                (workout) =>
+                    workout['focus_area'] == criteria['focusArea'] &&
+                    workout['level'] == criteria['level'],
+              )
               .length;
         } else if (criteria.containsKey('workoutType')) {
           currentProgress = workoutHistory
-              .where((workout) => 
-                  workout['workout_type'] == criteria['workoutType'])
+              .where(
+                (workout) => workout['workout_type'] == criteria['workoutType'],
+              )
               .length;
         } else if (criteria.containsKey('totalWorkouts')) {
           currentProgress = workoutHistory.length;
         } else if (criteria.containsKey('streak')) {
           currentProgress = userStreak;
         }
-        
+
         final hasAchievement = userAchievements.contains(achievementName);
         final dateIndex = userAchievements.indexOf(achievementName);
-        
+
         achievementId.add(achievementName);
         progress.add(currentProgress);
-        dateAcquired.add(hasAchievement && dateIndex != -1 && dateIndex < achievementDates.length
-            ? achievementDates[dateIndex].toString()
-            : '-');
+        dateAcquired.add(
+          hasAchievement &&
+                  dateIndex != -1 &&
+                  dateIndex < achievementDates.length
+              ? achievementDates[dateIndex].toString()
+              : '-',
+        );
       }
-      
+
       return {
         'achievementId': achievementId,
         'dateAcquired': dateAcquired,
         'progress': progress,
       };
     } catch (e) {
-      print('Error getting achievement data: $e');
+      // print('Error getting achievement data: $e');
       return _getEmptyData();
     }
   }
@@ -237,7 +246,7 @@ class AchievementController {
     final List<String> achievementId = _achievementCriteria.keys.toList();
     final List<String> dateAcquired = List.filled(achievementId.length, '-');
     final List<int> progress = List.filled(achievementId.length, 0);
-    
+
     return {
       'achievementId': achievementId,
       'dateAcquired': dateAcquired,
@@ -249,15 +258,17 @@ class AchievementController {
     return _achievementCriteria.entries.map((entry) {
       final achievementName = entry.key;
       final criteria = entry.value;
-      
+
       return {
         'image': criteria['image'] ?? 'assets/images/default_badge.png',
         'category': criteria['category'] ?? 'General',
         'Title': criteria['Title'] ?? achievementName,
         'desc': criteria['desc'] ?? 'Achievement description',
-        'count': criteria['count'] ?? 
-                criteria['totalWorkouts'] ?? 
-                criteria['streak'] ?? 0,
+        'count':
+            criteria['count'] ??
+            criteria['totalWorkouts'] ??
+            criteria['streak'] ??
+            0,
       };
     }).toList();
   }
@@ -271,66 +282,82 @@ class AchievementController {
     try {
       final workoutHistory = await _getUserWorkoutHistory(userId);
       final userStreak = await getUserStreak(userId);
-      
+
       final userDoc = await _firestore.collection('users').doc(userId).get();
       final userData = userDoc.data() ?? {};
       final List<dynamic> currentAchievements = userData['achievements'] ?? [];
       // final List<dynamic> currentDates = userData['achievementDates'] ?? [];
-      
+
       final newAchievements = <String>[];
-      
+
       for (final entry in _achievementCriteria.entries) {
         final achievementName = entry.key;
         final criteria = entry.value;
-        
+
         if (currentAchievements.contains(achievementName)) continue;
-        
+
         bool achieved = false;
-        
-        if (criteria.containsKey('focusArea') && criteria.containsKey('level')) {
+
+        if (criteria.containsKey('focusArea') &&
+            criteria.containsKey('level')) {
           final count = workoutHistory
-              .where((workout) =>
-                  workout['focus_area'] == criteria['focusArea'] &&
-                  workout['level'] == criteria['level'])
+              .where(
+                (workout) =>
+                    workout['focus_area'] == criteria['focusArea'] &&
+                    workout['level'] == criteria['level'],
+              )
               .length;
           achieved = count >= (criteria['count'] as int);
         } else if (criteria.containsKey('workoutType')) {
           final count = workoutHistory
-              .where((workout) => 
-                  workout['workout_type'] == criteria['workoutType'])
+              .where(
+                (workout) => workout['workout_type'] == criteria['workoutType'],
+              )
               .length;
           achieved = count >= (criteria['count'] as int);
         } else if (criteria.containsKey('totalWorkouts')) {
-          achieved = workoutHistory.length >= (criteria['totalWorkouts'] as int);
+          achieved =
+              workoutHistory.length >= (criteria['totalWorkouts'] as int);
         } else if (criteria.containsKey('streak')) {
           achieved = userStreak >= (criteria['streak'] as int);
         }
-        
+
         if (achieved) {
           newAchievements.add(achievementName);
         }
       }
-      
+
       if (newAchievements.isNotEmpty) {
         final now = DateTime.now();
-        final formattedDate = '${now.day} ${_getMonthName(now.month)} ${now.year}';
-        
+        final formattedDate =
+            '${now.day} ${_getMonthName(now.month)} ${now.year}';
+
         await _firestore.collection('users').doc(userId).update({
           'achievements': FieldValue.arrayUnion(newAchievements),
           'achievementDates': FieldValue.arrayUnion(
-            List.filled(newAchievements.length, formattedDate)
+            List.filled(newAchievements.length, formattedDate),
           ),
         });
       }
     } catch (e) {
-      print('Error checking achievements: $e');
+      // print('Error checking achievements: $e');
     }
   }
 
   static String _getMonthName(int month) {
     const monthNames = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return monthNames[month - 1];
   }

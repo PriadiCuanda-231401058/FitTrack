@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-
 import 'package:fittrack/features/settings/settings_controller.dart';
 
 class EditProfileScreen extends StatefulWidget {
-final String currentName;
+  final String currentName;
   final VoidCallback? onProfileUpdated;
 
   const EditProfileScreen({
@@ -36,15 +35,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           children: [
             ListTile(
               leading: Icon(Icons.photo_library, color: Colors.white),
-              title: Text('Choose from Gallery', style: TextStyle(color: Colors.white)),
+              title: Text(
+                'Choose from Gallery',
+                style: TextStyle(color: Colors.white),
+              ),
               onTap: () async {
                 Navigator.pop(context);
                 setState(() => _isLoading = true);
-                
+
                 try {
-                  final base64Image = await _controller.pickProfilePhotoFromGallery();
+                  final base64Image = await _controller
+                      .pickProfilePhotoFromGallery();
                   if (base64Image != null) {
-                    final success = await _controller.uploadProfilePhotoBase64(base64Image);
+                    final success = await _controller.uploadProfilePhotoBase64(
+                      base64Image,
+                    );
                     if (success && mounted) {
                       widget.onProfileUpdated?.call();
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -54,27 +59,30 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   }
                 } catch (e) {
                   if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Error: $e')),
-                    );
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text('Error: $e')));
                   }
                 } finally {
                   if (mounted) setState(() => _isLoading = false);
                 }
               },
             ),
-            
+
             ListTile(
               leading: Icon(Icons.camera_alt, color: Colors.white),
               title: Text('Take Photo', style: TextStyle(color: Colors.white)),
               onTap: () async {
                 Navigator.pop(context);
                 setState(() => _isLoading = true);
-                
+
                 try {
-                  final base64Image = await _controller.takeProfilePhotoWithCamera();
+                  final base64Image = await _controller
+                      .takeProfilePhotoWithCamera();
                   if (base64Image != null) {
-                    final success = await _controller.uploadProfilePhotoBase64(base64Image);
+                    final success = await _controller.uploadProfilePhotoBase64(
+                      base64Image,
+                    );
                     if (success && mounted) {
                       widget.onProfileUpdated?.call();
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -84,23 +92,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   }
                 } catch (e) {
                   if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Error: $e')),
-                    );
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text('Error: $e')));
                   }
                 } finally {
                   if (mounted) setState(() => _isLoading = false);
                 }
               },
             ),
-            
+
             ListTile(
               leading: Icon(Icons.delete, color: Colors.red),
               title: Text('Remove Photo', style: TextStyle(color: Colors.red)),
               onTap: () async {
                 Navigator.pop(context);
                 setState(() => _isLoading = true);
-                
+
                 try {
                   final success = await _controller.deleteProfilePhoto();
                   if (success && mounted) {
@@ -111,9 +119,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   }
                 } catch (e) {
                   if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Error: $e')),
-                    );
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text('Error: $e')));
                   }
                 } finally {
                   if (mounted) setState(() => _isLoading = false);
@@ -128,9 +136,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   Future<void> _saveProfile() async {
     if (nameController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please enter a username')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Please enter a username')));
       return;
     }
 
@@ -138,22 +146,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     try {
       final success = await _controller.updateUsername(nameController.text);
-      
+
       if (success && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Profile updated successfully')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Profile updated successfully')));
         widget.onProfileUpdated?.call();
         Navigator.pop(context);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to update profile')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to update profile')));
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }

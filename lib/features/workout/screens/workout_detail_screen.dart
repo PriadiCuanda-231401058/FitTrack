@@ -71,7 +71,7 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
   }
 
   void startTimer() {
-    print(_timer);
+    // print(_timer);
     if (_timer != null && _timer!.isActive) return;
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -149,12 +149,6 @@ class _WorkoutDetailScreenState extends State<WorkoutDetailScreen> {
       // print(' Workout completed successfully');
     } catch (e) {
       // print(' Error completing workout: $e');
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(
-      //     content: Text('Error updating progress: $e'),
-      //     backgroundColor: Colors.red,
-      //   ),
-      // );
     }
   }
 

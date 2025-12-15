@@ -4,8 +4,6 @@ import 'package:fittrack/features/auth/auth_controller.dart';
 import 'package:fittrack/shared/widgets/error_message.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fittrack/models/user_model.dart';
-// import 'package:fittrack/features/auth/screens/register_screen.dart';
-// import 'package:fittrack/features/home/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -37,9 +35,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  // String email = "", password = "";
-
-  // bool rememberMe = false;
   bool showError = false;
   String errorMessage = "";
 
@@ -51,14 +46,12 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> handleGoogleSignIn() async {
-    // setState(() => _isLoading = true);
-
     try {
-      // 🔹 Panggil fungsi dari AuthController
+      // Panggil fungsi dari AuthController
       UserModel? userModel = await authController.value.signInWithGoogle();
 
       if (userModel != null && mounted) {
-        // 🔹 Jika berhasil, pindah ke WorkoutScreen
+        // Jika berhasil, pindah ke WorkoutScreen
         Navigator.pushNamedAndRemoveUntil(
           context,
           '/workoutScreen',
@@ -252,7 +245,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                       borderSide: BorderSide(
                                         width: screenWidth * 0.0027,
                                         color: Color(0xFF9999A1),
-                                        // color: Colors.blue,
                                       ),
                                       borderRadius: BorderRadius.circular(1000),
                                     ),
@@ -260,7 +252,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                       borderSide: BorderSide(
                                         width: screenWidth * 0.0027,
                                         color: Colors.white,
-                                        // color: Colors.blue,
                                       ),
                                       borderRadius: BorderRadius.circular(1000),
                                     ),
@@ -275,7 +266,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                       borderSide: BorderSide(
                                         width: screenWidth * 0.0027,
                                         color: Colors.white,
-                                        // color: Colors.blue,
                                       ),
                                       borderRadius: BorderRadius.circular(1000),
                                     ),
@@ -284,11 +274,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                       vertical: screenHeight * 0.022,
                                     ),
                                   ),
-                                  // onChanged: (value) {
-                                  //   setState(() {
-                                  //     email = value;
-                                  //   });
-                                  // },
                                 ),
                               ],
                             ),
@@ -336,7 +321,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                       borderSide: BorderSide(
                                         width: screenWidth * 0.0027,
                                         color: Color(0xFF9999A1),
-                                        // color: Colors.blue,
                                       ),
                                       borderRadius: BorderRadius.circular(1000),
                                     ),
@@ -344,7 +328,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                       borderSide: BorderSide(
                                         width: screenWidth * 0.0027,
                                         color: Colors.white,
-                                        // color: Colors.blue,
                                       ),
                                       borderRadius: BorderRadius.circular(1000),
                                     ),
@@ -359,7 +342,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                       borderSide: BorderSide(
                                         width: screenWidth * 0.0027,
                                         color: Colors.white,
-                                        // color: Colors.blue,
                                       ),
                                       borderRadius: BorderRadius.circular(1000),
                                     ),
@@ -368,11 +350,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                       vertical: screenHeight * 0.022,
                                     ),
                                   ),
-                                  // onChanged: (value) {
-                                  //   setState(() {
-                                  //     password = value;
-                                  //   });
-                                  // },
                                 ),
                               ],
                             ),

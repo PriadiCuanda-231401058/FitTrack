@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:fittrack/features/report/widgets/three_segment_circular_painter.dart';
 

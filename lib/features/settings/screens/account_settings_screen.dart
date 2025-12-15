@@ -1,57 +1,5 @@
 import 'package:flutter/material.dart';
-
 import 'package:fittrack/features/settings/settings_controller.dart';
-
-// class AccountSettingsScreen extends StatelessWidget {
-//   const AccountSettingsScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final SettingsController _controller = SettingsController();
-//     final TextEditingController oldPass = TextEditingController();
-//     final TextEditingController newPass = TextEditingController();
-//     final TextEditingController confirmPass = TextEditingController();
-
-//     Future<void> _changePassword() async {
-//     if (newPass.text != confirmPass.text) {
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         SnackBar(content: Text('New passwords do not match')),
-//       );
-//       return;
-//     }
-
-//     if (newPass.text.length < 6) {
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         SnackBar(content: Text('Password must be at least 6 characters')),
-//       );
-//       return;
-//     }
-
-//     // setState(() { _isLoading = true; });
-
-//     try {
-//       final success = await _controller.changePassword(oldPass.text, newPass.text);
-
-//       if (success && mounted) {
-//         ScaffoldMessenger.of(context).showSnackBar(
-//           SnackBar(content: Text('Password changed successfully')),
-//         );
-//         Navigator.pop(context);
-//       } else {
-//         ScaffoldMessenger.of(context).showSnackBar(
-//           SnackBar(content: Text('Failed to change password. Check your current password.')),
-//         );
-//       }
-//     } catch (e) {
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         SnackBar(content: Text('Error: $e')),
-//       );
-//     } finally {
-//       // if (mounted) {
-//       //   setState(() { _isLoading = false; });
-//       // }
-//     }
-//   }
 
 class AccountSettingsScreen extends StatefulWidget {
   const AccountSettingsScreen({super.key});

@@ -9,11 +9,10 @@ class UserModel {
   final bool? isPremium;
   final int? streak;
   final DateTime? lastWorkoutDate;
-    final String? premiumType;
+  final String? premiumType;
   final DateTime? premiumDateStart;
   final DateTime? premiumDateEnd;
   final String? stripeCustomerId;
-  // final int totalWorkouts;
 
   UserModel({
     required this.uid,
@@ -28,7 +27,6 @@ class UserModel {
     this.premiumDateStart,
     this.premiumDateEnd,
     this.stripeCustomerId,
-    // this.totalWorkouts = 0,
   });
 
   factory UserModel.fromDocument(DocumentSnapshot doc) {
@@ -40,17 +38,15 @@ class UserModel {
       photoBase64: data['photoBase64'],
       provider: data['provider'],
       isPremium: data['isPremium'] ?? false,
-      // streak: data['streak'] ?? '',
       lastWorkoutDate: data['lastWorkoutDate'] != null
           ? (data['lastWorkoutDate'] as Timestamp).toDate()
           : null,
-      // totalWorkouts: data['totalWorkouts'] ?? 0,
       premiumType: data['premiumType'],
-      premiumDateStart: data['premiumDateStart'] != null 
-          ? (data['premiumDateStart'] as Timestamp).toDate() 
+      premiumDateStart: data['premiumDateStart'] != null
+          ? (data['premiumDateStart'] as Timestamp).toDate()
           : null,
-      premiumDateEnd: data['premiumDateEnd'] != null 
-          ? (data['premiumDateEnd'] as Timestamp).toDate() 
+      premiumDateEnd: data['premiumDateEnd'] != null
+          ? (data['premiumDateEnd'] as Timestamp).toDate()
           : null,
       stripeCustomerId: data['stripeCustomerId'],
     );
@@ -64,12 +60,9 @@ class UserModel {
       photoBase64: map['photoBase64'],
       provider: map['provider'],
       isPremium: map['isPremium'] ?? false,
-      // photo: map['photo'],
-      // streak: map['streak'] ?? 0,
       lastWorkoutDate: map['lastWorkoutDate'] != null
           ? DateTime.parse(map['lastWorkoutDate'])
           : null,
-      // totalWorkouts: map['totalWorkouts'] ?? 0,
       premiumType: map['premiumType'],
       premiumDateStart: map['premiumDateStart'] != null
           ? DateTime.parse(map['premiumDateStart'])
@@ -88,13 +81,11 @@ class UserModel {
       'photoBase64': photoBase64,
       'provider': provider,
       'isPremium': isPremium,
-      // 'streak': streak,
       'lastWorkoutDate': lastWorkoutDate?.toIso8601String(),
       'premiumDateEnd': premiumDateEnd?.toIso8601String(),
       'premiumDateStart': premiumDateStart?.toIso8601String(),
       'premiumType': premiumType,
       'stripeCustomerId': stripeCustomerId,
-      // 'totalWorkouts': totalWorkouts,
     };
   }
 

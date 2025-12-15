@@ -91,7 +91,7 @@ class DetailAchievementScreen extends StatelessWidget {
 
             SizedBox(height: screenHeight * 0.03),
 
-            /// --- PROGRESS CARD ---
+            // PROGRESS CARD
             InfoCard(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -148,7 +148,7 @@ class DetailAchievementScreen extends StatelessWidget {
 
             SizedBox(height: screenHeight * 0.015),
 
-            /// --- CATEGORY ---
+            // CATEGORY
             InfoCard(
               child: Row(
                 children: [
@@ -173,7 +173,7 @@ class DetailAchievementScreen extends StatelessWidget {
 
             SizedBox(height: screenHeight * 0.015),
 
-            /// --- DATE ACQUIRED ---
+            // DATE ACQUIRED
             InfoCard(
               child: Row(
                 children: [

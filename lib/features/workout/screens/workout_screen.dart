@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:fittrack/shared/widgets/navigation_bar_widget.dart';
 import 'package:fittrack/features/workout/workout_controller.dart';
 import 'package:fittrack/models/workout_model.dart';
-// import 'package:fittrack/features/auth/auth_controller.dart';
 import 'package:fittrack/features/report/streakManager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fittrack/services/payment_services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:fittrack/features/workout/workout_controller.dart';
 
 class WorkoutScreen extends StatefulWidget {
   const WorkoutScreen({super.key});
@@ -119,7 +117,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
         _popularWorkouts = popular;
       });
     } catch (e) {
-      print('Error loading workout data: $e');
+      // print('Error loading workout data: $e');
     } finally {
       setState(() => _isLoading = false);
     }
@@ -137,7 +135,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
         _workoutByGoalType = targetWorkouts;
       });
     } catch (e) {
-      print('Error loading workout data: $e');
+      // print('Error loading workout data: $e');
     } finally {
       setState(() => _isLoading = false);
     }
@@ -155,7 +153,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
         _workoutByFocusArea = focusWorkouts;
       });
     } catch (e) {
-      print('Error loading workout data: $e');
+      // print('Error loading workout data: $e');
     } finally {
       setState(() => _isLoading = false);
     }
@@ -171,7 +169,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
         _challenges = challenges;
       });
     } catch (e) {
-      print('Error loading workout data: $e');
+      // print('Error loading workout data: $e');
     } finally {
       setState(() => _isLoading = false);
     }
@@ -179,7 +177,6 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // ini harus ambil dari data user
     final int streak = _currentStreak;
     final bool isStreak = _isActive;
 
