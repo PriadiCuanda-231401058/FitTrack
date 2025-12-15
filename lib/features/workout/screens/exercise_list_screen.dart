@@ -59,7 +59,7 @@ class _ExerciseListScreenState extends State<ExerciseListScreen> {
               .doc(currentUser.uid)
               .get();
           final data = doc.data();
-          print('Premium data: $data["isPremium"]');
+          print("Premium data: $data['isPremium']");
           if (data != null && data['isPremium'] != true) {
             setState(() => _isLoading = false);
             Navigator.pushNamedAndRemoveUntil(

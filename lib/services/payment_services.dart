@@ -10,7 +10,10 @@ class PaymentService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<Map<String, dynamic>> createPaymentSheet(String customerId, int amount) async {
+  Future<Map<String, dynamic>> createPaymentSheet(
+    String customerId,
+    int amount,
+  ) async {
     final url = Uri.parse(
       "https://railway-backend-production-7649.up.railway.app/create-payment-sheet",
     );
@@ -18,10 +21,7 @@ class PaymentService {
     final response = await http.post(
       url,
       headers: {"Content-Type": "application/json"},
-      body: jsonEncode({
-        "customerId": customerId,
-        "amount": amount,
-      }),
+      body: jsonEncode({"customerId": customerId, "amount": amount}),
     );
 
     return jsonDecode(response.body);
@@ -32,7 +32,7 @@ class PaymentService {
     if (user == null) throw Exception('User not authenticated');
 
     final userDoc = await _firestore.collection('users').doc(user.uid).get();
-    
+
     if (userDoc.exists && userDoc.data()?['stripeCustomerId'] != null) {
       return userDoc.data()!['stripeCustomerId'] as String;
     }
@@ -89,7 +89,6 @@ class PaymentService {
       await Stripe.instance.presentPaymentSheet();
 
       await _updatePremiumStatus(premiumType, durationInMonths);
-
     } on StripeException catch (e) {
       print('Stripe Error: ${e.error.localizedMessage}');
       throw Exception('Payment failed: ${e.error.localizedMessage}');
@@ -99,19 +98,44 @@ class PaymentService {
     }
   }
 
+  Future<DateTime> checkStartDate() async {
+    final currentUser = _auth.currentUser;
+    if (currentUser != null) {
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUser.uid)
+          .get();
+      final data = doc.data();
+
+      if (data != null &&
+          data['isPremium'] == true &&
+          data['premiumDateStart'] != null) {
+        DateTime premiumEndDate = (data['premiumDateEnd'] as Timestamp)
+            .toDate();
+        // DateTime now = DateTime.now();
+print('Premium Start Date: $premiumEndDate');
+        return premiumEndDate;
+      }
+    }
+    return DateTime.now();
+  }
+
   // Fungsi untuk update premium status di Firestore
-  Future<void> _updatePremiumStatus(String premiumType, int durationInMonths) async {
+  Future<void> _updatePremiumStatus(
+    String premiumType,
+    int durationInMonths,
+  ) async {
     final user = _auth.currentUser;
     if (user == null) throw Exception('User not authenticated');
 
-    final now = DateTime.now();
+    final now = await checkStartDate();
     final premiumEndDate = _calculatePremiumEndDate(now, premiumType);
 
     // Update data user di Firestore
     await _firestore.collection('users').doc(user.uid).set({
       'isPremium': true,
       'premiumType': premiumType,
-      'premiumDateStart': Timestamp.fromDate(now),
+      'premiumDateStart': await checkStartDate(),
       'premiumDateEnd': Timestamp.fromDate(premiumEndDate),
       'lastPaymentDate': Timestamp.fromDate(now),
       'premiumDurationMonths': durationInMonths,
@@ -144,9 +168,9 @@ class PaymentService {
 
     try {
       final userDoc = await _firestore.collection('users').doc(user.uid).get();
-      
+
       if (!userDoc.exists) return false;
-      
+
       final data = userDoc.data();
       if (data == null || !(data['isPremium'] ?? false)) return false;
 
@@ -181,9 +205,9 @@ class PaymentService {
 
     try {
       final userDoc = await _firestore.collection('users').doc(user.uid).get();
-      
+
       if (!userDoc.exists) return null;
-      
+
       final data = userDoc.data();
       if (data == null) return null;
 
@@ -192,7 +216,9 @@ class PaymentService {
         'premiumType': data['premiumType'],
         'premiumDateStart': (data['premiumDateStart'] as Timestamp?)?.toDate(),
         'premiumDateEnd': (data['premiumDateEnd'] as Timestamp?)?.toDate(),
-        'daysRemaining': _calculateDaysRemaining(data['premiumDateEnd'] as Timestamp?),
+        'daysRemaining': _calculateDaysRemaining(
+          data['premiumDateEnd'] as Timestamp?,
+        ),
       };
     } catch (e) {
       print('Error getting premium info: $e');
@@ -202,11 +228,11 @@ class PaymentService {
 
   int? _calculateDaysRemaining(Timestamp? premiumEndTimestamp) {
     if (premiumEndTimestamp == null) return null;
-    
+
     final endDate = premiumEndTimestamp.toDate();
     final now = DateTime.now();
     final difference = endDate.difference(now);
-    
+
     return difference.inDays.clamp(0, 365);
   }
 }
