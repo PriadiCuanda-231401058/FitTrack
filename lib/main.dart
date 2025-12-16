@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'firebase_options.dart';
 import 'package:fittrack/services/route.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
-
+//release v1
 void main() async {
 
   //load firebase
