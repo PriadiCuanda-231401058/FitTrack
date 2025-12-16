@@ -72,3 +72,7 @@ FitTrack dikembangkan menggunakan model Waterfall, dengan tahapan:
 3. Implementation
 4. Testing
 5. Deployment & Maintenance
+
+# Dokumen SRS
+
+https://drive.google.com/drive/folders/1KjLBiTFEsNydx9WAVIDGbMfx87Nm0zhk?usp=sharing
