@@ -6,6 +6,8 @@ import 'package:fittrack/services/route.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 
 void main() async {
+
+  //load firebase
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
