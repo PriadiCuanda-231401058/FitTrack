@@ -11,7 +11,7 @@ FitTrack dikembangkan sebagai sistem mandiri (<i>self-contained system</i>) deng
 - Memantau progress latihan dan kesehatan (BMI)
 - Menjaga konsistensi melalui fitur motivasi berbasis gamifikasi
 
-Aplikasi ini menggunakan Firebase sebagai backend service untuk autentikasi dan penyimpanan data secara real-time, serta mendukung platform Android dan iOS.
+Aplikasi ini menggunakan Firebase sebagai backend service untuk autentikasi dan penyimpanan data secara real-time, serta mendukung platform Android.
 
 # Tujuan Pengembangan
 
